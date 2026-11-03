@@ -1,0 +1,24 @@
+# Dependencies
+/node_modules
+
+# Next.js output
+/.next
+/out
+
+# Tests and tooling
+/coverage
+/test-results
+/playwright-report
+*.tsbuildinfo
+next-env.d.ts
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs and local files
+*.log
+.DS_Store
+Thumbs.db
+.vercel

@@ -1,0 +1,18 @@
+import "server-only";
+
+import { parseServerEnvironment } from "./env-schema";
+
+export const serverEnvironment = parseServerEnvironment({
+  NODE_ENV: process.env.NODE_ENV,
+  DATABASE_URL: process.env.DATABASE_URL,
+  BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
+  BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
+  AUTH_ALLOW_SIGN_UP: process.env.AUTH_ALLOW_SIGN_UP,
+  PRIVATE_STORAGE_BUCKET: process.env.PRIVATE_STORAGE_BUCKET,
+  PRIVATE_STORAGE_REGION: process.env.PRIVATE_STORAGE_REGION,
+  PRIVATE_STORAGE_ENDPOINT: process.env.PRIVATE_STORAGE_ENDPOINT,
+  PRIVATE_STORAGE_ACCESS_KEY_ID: process.env.PRIVATE_STORAGE_ACCESS_KEY_ID,
+  PRIVATE_STORAGE_SECRET_ACCESS_KEY: process.env.PRIVATE_STORAGE_SECRET_ACCESS_KEY,
+  CLOCKED_API_KEY: process.env.CLOCKED_API_KEY,
+  CLOCKED_BASE_URL: process.env.CLOCKED_BASE_URL,
+});

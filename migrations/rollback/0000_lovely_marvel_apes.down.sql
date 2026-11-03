@@ -1,0 +1,35 @@
+DROP TABLE IF EXISTS "audit_events";
+DROP TABLE IF EXISTS "decisions";
+DROP TABLE IF EXISTS "review_actions";
+DROP TABLE IF EXISTS "evidence_references";
+DROP TABLE IF EXISTS "findings";
+DROP TABLE IF EXISTS "analysis_runs";
+DROP TABLE IF EXISTS "change_requests";
+DROP TABLE IF EXISTS "document_versions";
+DROP TABLE IF EXISTS "source_documents";
+DROP TABLE IF EXISTS "project_memberships";
+DROP TABLE IF EXISTS "projects";
+DROP TABLE IF EXISTS "workspace_memberships";
+DROP TABLE IF EXISTS "workspaces";
+DROP TABLE IF EXISTS "authenticated_identities";
+DROP TABLE IF EXISTS "users";
+
+DROP FUNCTION IF EXISTS "necra_validate_evidence_input"();
+DROP FUNCTION IF EXISTS "necra_validate_decision_agreement_kind"();
+DROP FUNCTION IF EXISTS "necra_validate_change_request_version_kind"();
+DROP FUNCTION IF EXISTS "necra_validate_analysis_version_kinds"();
+DROP FUNCTION IF EXISTS "necra_protect_analysis_inputs"();
+DROP FUNCTION IF EXISTS "necra_reject_row_change"();
+
+DROP TYPE IF EXISTS "audit_origin";
+DROP TYPE IF EXISTS "decision_outcome";
+DROP TYPE IF EXISTS "review_action";
+DROP TYPE IF EXISTS "evidence_relationship";
+DROP TYPE IF EXISTS "finding_category";
+DROP TYPE IF EXISTS "analysis_status";
+DROP TYPE IF EXISTS "change_request_status";
+DROP TYPE IF EXISTS "version_processing_status";
+DROP TYPE IF EXISTS "source_kind";
+DROP TYPE IF EXISTS "project_role";
+DROP TYPE IF EXISTS "workspace_role";
+DROP TYPE IF EXISTS "membership_status";

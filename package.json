@@ -1,0 +1,55 @@
+{
+  "name": "necra",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Evidence-backed agreement change review and decision history.",
+  "engines": {
+    "node": ">=24.18.0 <25",
+    "npm": ">=11.16.0 <13"
+  },
+  "packageManager": "npm@11.16.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "test": "vitest run",
+    "test:integration": "vitest run --config vitest.integration.config.mts",
+    "test:e2e": "playwright test",
+    "test:watch": "vitest",
+    "db:generate": "drizzle-kit generate",
+    "db:check": "drizzle-kit check",
+    "db:migrate": "drizzle-kit migrate --config=drizzle.migrate.config.ts",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "check": "npm run typecheck && npm run lint && npm run test && npm run format:check && npm run build"
+  },
+  "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.7.15",
+    "better-auth": "^1.7.15",
+    "drizzle-orm": "0.45.4",
+    "next": "16.4.3",
+    "pg": "8.23.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "server-only": "0.0.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@biomejs/biome": "2.6.3",
+    "@playwright/test": "^1.64.1",
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "24.19.2",
+    "@types/pg": "8.23.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "drizzle-kit": "0.31.11",
+    "postcss": "8.5.31",
+    "tailwindcss": "4.3.3",
+    "typescript": "7.0.2",
+    "vitest": "5.0.5"
+  }
+}
