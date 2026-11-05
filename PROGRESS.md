@@ -2,7 +2,7 @@
 
 ## Current state
 
-Phase 0 governance and T001–T005 are complete. The repository now contains a strict TypeScript Next.js application, an accessible responsive product shell, reusable interface primitives, real PostgreSQL-backed authentication, default-deny project authorization, text-first evidence ingestion with immutable versions, local quality tooling, and version-controlled migrations with real database and browser tests.
+Phase 0 governance and T001–T006 are complete. The repository now contains a strict TypeScript Next.js application, an accessible responsive product shell, reusable interface primitives, real PostgreSQL-backed authentication, default-deny project authorization, text-first evidence ingestion with immutable versions, and a reviewed Clocked text-contract specification. Clocked is not integrated.
 
 Authenticated users can deliberately create a private workspace/project, but signup alone grants no access to an existing workspace. Exact pasted agreement and later-instruction text can be saved, retrieved, and revised without overwriting history. File ingestion/extraction, Clocked calls, Agreement Reality Check processing, findings, the explicit decision workflow, and Decision Replay remain unimplemented. Evidence creation never creates an approval.
 
@@ -32,6 +32,7 @@ Authenticated users can deliberately create a private workspace/project, but sig
 - Authenticated project creation that transactionally creates a private workspace, active owner memberships, the project, and a human-origin audit event without granting decision authority.
 - Text-only agreement and later-instruction ingestion with strict JSON/Unicode/size validation, optional known provenance, exact non-normalized content, server-calculated SHA-256, server-generated identifiers/version numbers/timestamps, project-scoped retry keys, and audit metadata that excludes source content.
 - PostgreSQL-private source storage, transaction/advisory-lock concurrency control, immutable source/version triggers, authorized reads/writes, expandable exact-content history, and revisions that always append a new version.
+- Reviewed Clocked Compare and Verify/Grounding text contracts with strict Zod request/response schemas, official recorded-response contract fixtures, Unicode code-point/UTF-16 offset conversion helpers, and a provider note that separates documented behavior, live unauthenticated observations, and unresolved privacy/operational terms.
 
 ## Development stack verified on 2026-10-27
 
@@ -96,6 +97,22 @@ The initial partial scaffold selected ESLint 10 and `eslint-config-next` 16.4.3.
 - `.next/static` contained none of the test secret/password values or `DATABASE_URL`, `PRIVATE_STORAGE_SECRET_ACCESS_KEY`, and `CLOCKED_API_KEY` markers. `git diff --check` passed apart from informational LF-to-CRLF working-tree warnings.
 - `npm.cmd audit --omit=dev`: the sandboxed registry request failed. The approved registry run reported four moderate findings in Drizzle Kit's legacy `@esbuild-kit`/esbuild development chain and proposed an incompatible forced downgrade to Drizzle Kit 0.18.1; no forced fix was applied.
 - No PDF, DOCX, image, OCR, object-storage, download, archive, or malware-scanning path exists, so safe-file/extraction checks are not applicable to T005's pasted-text-only boundary.
+
+## Files created or modified for T006
+
+- Contract specification: `docs/providers/clocked-contract.md` and the Clocked section of `ARCHITECTURE.md`.
+- Internal contract: `src/server/integrations/clocked/contract.ts`, containing text-only request/response schemas and offset conversion helpers but no HTTP client or credential access.
+- Test-only official documentation captures: `tests/fixtures/clocked/` and `tests/unit/clocked-contract.test.ts`.
+- Status documentation: `README.md`, `TASKS.md`, and `PROGRESS.md`.
+
+## T006 verification actually executed on 2026-11-05
+
+- Reviewed the official Compare, Grounding, Authentication, Responses/source-position, Errors/retries, Limits/usage, Security/data-handling, security overview, and Pricing pages. The normal browsing service could not access or index the site; approved direct read-only HTTPS retrieval succeeded. Sources and access date are recorded in the provider note.
+- Confirmed from official documentation: HTTPS base URL; Bearer account-key authentication; required JSON and UUID idempotency headers; Compare/Grounding methods, paths, text request/response fields, defaults and limits; code-point offsets; error categories; 110-second gateway allowance; bounded retry rules; plan concurrency; credit/cost headers; and documented response/data retention behavior.
+- No `CLOCKED_API_KEY` was configured. No authenticated inference, success response, model latency, credit debit, cost, accuracy, or application integration was observed.
+- Credential-free cURL POSTs with fictional text and UUID request keys observed live HTTP 401 responses: Compare returned `{"error":"Use a Clocked account API key."}` in 1.481014 seconds; Grounding returned the same body in 0.950096 seconds. Neither returned model/credit/cost values. These are transport observations, not playground or Necra integration tests.
+- `npm.cmd run check`: the first run passed typecheck, lint, and 8 unit files/36 tests, then failed only because Biome required formatting in the new provider note and contract type aliases. `npm.cmd run format` changed those two files. The final full run passed typecheck, lint over 93 files, 8 unit files/36 tests, format check, and the Next.js 16.4.3 production build.
+- Contract tests validated Clocked's two complete official recorded text responses as explicitly labeled test-only fixtures, enforced documented text request boundaries, and verified Unicode code-point slicing/conversion for an astral character. Fixtures are never runtime fallbacks or represented as Necra responses.
 
 ## T004 verification actually executed on 2026-11-03
 
@@ -196,9 +213,9 @@ An early `npm.cmd run format` attempt failed because Biome's Tailwind directive 
 - Object storage, file extraction/OCR, background execution, observability, hosting/database vendor, regions, and retention/deletion policy remain undecided. T005 deliberately needs none of those providers for pasted text.
 - Email verification, password reset, MFA, invitations, OAuth/SSO, administrator provisioning UI, and distributed authentication rate limiting are not implemented. Public signup remains disabled by default.
 - `PRIVATE_STORAGE_*` remains an inert boundary placeholder, not a provider commitment.
-- Clocked's playground has produced real Compare and Verify responses, but Necra has no adapter, credentials, live request, runtime response schema, or end-to-end result. Its behavior remains unverified pending T006 and T008.
+- Clocked's playground has produced real Compare and Verify responses. T006 separately established documented text schemas and credential-free 401 transport observations, but Necra still has no HTTP adapter, configured credential, authenticated success, observed credit use, or end-to-end result. Working integration remains unverified pending T008.
 - T005 supports only pasted Unicode text, limited to 256 KiB per version and 300 KiB per JSON request. PDF, DOCX, images, OCR, file upload, object storage, malware scanning, downloads, and user deletion remain unsupported; the initial decision vocabulary remains undecided.
-- Git has the truthful T004 baseline commit `1d24d0b`. T005 changes remain uncommitted; no remote or publication action was performed.
+- Git has the truthful T004 baseline commit `1d24d0b` and audited T005 commit `72ccd27`. T006 changes remain uncommitted; no remote or publication action was performed.
 - Database constraints do not authorize reads by themselves. T003 server queries now enforce active membership/role/`can_decide`; T010 must repeat that check inside the future decision transaction.
 - Evidence references enforce correct version association and offset shape. T005 now preserves exact text, but the future citation-write service must still verify quote/offset equality before insertion.
 - T005 calculates SHA-256 server-side over exact, non-normalized UTF-8 content. The hash establishes content identity/integrity only, not the truth of the source. Uploaded original-byte preservation remains deferred because uploads are unsupported.
@@ -209,14 +226,22 @@ An early `npm.cmd run format` attempt failed because Biome's Tailwind directive 
 
 ## Current blockers
 
-- None for T001–T005.
-- T006 requires access to current official Clocked documentation. Later live verification also requires authorized credentials and non-sensitive test evidence.
+- None for T001–T006.
+- T008 authenticated live verification requires an authorized `CLOCKED_API_KEY` and fictional non-sensitive test evidence. Sensitive production use additionally requires resolution of processing region, subprocessors, contractual terms/DPA, deletion guarantees, access controls, incident handling, and operational-log retention.
 
 ## Next task
 
-T006 — Research and specify the Clocked contract. Do not implement or simulate Clocked calls while completing that research task.
+T007 — Implement Agreement Reality Check creation and durable processing states over exact authorized input versions. Do not begin the Clocked HTTP adapter until T007 establishes persisted idempotent attempts.
 
 ## Activity log
+
+### 2026-11-05 — T006 completed
+
+- Audited and committed the completed T005 work as local commit `72ccd27` after checking staged paths, ignored generated output, credential markers, environment files, and accidental document/archive/database artifacts. Nothing was pushed or published.
+- Reviewed nine official Clocked pages and recorded the documented text-mode Compare and Verify/Grounding contracts, authentication, idempotency, errors, timeouts, retries, limits, usage headers, offset semantics, and data handling without inventing undocumented behavior.
+- Added strict internal contract schemas, test-only captures of Clocked's explicitly recorded documentation responses, and code-point-to-UTF-16 helpers. No HTTP adapter or credential access was added.
+- Observed only live unauthenticated 401 behavior because no API key was available. Preserved the distinction between official recorded examples, credential-free transport observations, playground history, and a future authenticated Necra call.
+- Result: every T006 acceptance criterion passed. T006 is `Complete`; T007 is the exact next task, and T008 remains gated on T007 plus authorized fictional live-test credentials.
 
 ### 2026-11-05 — T005 completed
 

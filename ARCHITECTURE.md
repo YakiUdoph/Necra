@@ -2,7 +2,7 @@
 
 ## Status
 
-The T001 application foundation uses the choices recorded in `docs/decisions/0001-development-foundation.md`. T002 established the PostgreSQL/Drizzle persistence foundation in `docs/decisions/0002-postgresql-drizzle-persistence.md`. T003 established Better Auth and project authorization in `docs/decisions/0003-better-auth-and-project-authorization.md`. T005 establishes text-first evidence ingestion in `docs/decisions/0004-text-evidence-ingestion.md`. Other product infrastructure remains proposed until its owning task verifies it. External details explicitly marked **Unverified** must not be implemented by assumption.
+The T001 application foundation uses the choices recorded in `docs/decisions/0001-development-foundation.md`. T002 established the PostgreSQL/Drizzle persistence foundation in `docs/decisions/0002-postgresql-drizzle-persistence.md`. T003 established Better Auth and project authorization in `docs/decisions/0003-better-auth-and-project-authorization.md`. T005 establishes text-first evidence ingestion in `docs/decisions/0004-text-evidence-ingestion.md`. T006 records Clocked's documented text contracts and Necra mapping in `docs/providers/clocked-contract.md`; it does not implement or claim a working integration. Other product infrastructure remains proposed until its owning task verifies it. External details explicitly marked **Unverified** must not be implemented by assumption.
 
 ## Proposed stack
 
@@ -118,20 +118,22 @@ Future citation offsets are zero-based, half-open JavaScript/Unicode UTF-16 code
 
 ## Clocked integration
 
-Create a narrow server-only adapter after reviewing official Clocked documentation. Domain code should depend on an internal capability interface, not provider payloads. The supplied documented base URL is `https://clocked.rezolve.ai/clocked`, with relevant `POST /compare` and `POST /grounding` paths; request/response schemas and authorization behavior remain unverified and are not implemented in T001.
+T006 reviewed Clocked's official documentation on 2026-11-05. The complete source list, documented text schemas, status/error handling, limits, usage headers, privacy risks, live unauthenticated observations, and remaining unknowns are recorded in `docs/providers/clocked-contract.md`. `src/server/integrations/clocked/contract.ts` defines strict text-only request/response schemas and Unicode offset conversion helpers; it performs no network call and contains no credential.
 
-Required implementation sequence:
+Documented transport contract:
 
-1. Locate and archive links to the applicable official documentation and record document/version dates.
-2. Verify base URL, authentication, Compare and Verify endpoint behavior, schemas, limits, errors, timeouts, data handling, and idempotency guidance.
-3. Define internal request/response types without erasing uncertainty or evidence locators.
-4. Add recorded, redacted contract fixtures sourced in compliance with provider terms; fixtures remain test-only.
-5. Validate all live responses at runtime and retain failures as failures.
-6. Run an authorized test against the real service in a non-production environment, recording date, request correlation, redacted result, and observed limitations.
+- `POST https://clocked.rezolve.ai/clocked/compare` compares 2–20 text documents.
+- `POST https://clocked.rezolve.ai/clocked/grounding` verifies an answer against 1–20 text documents.
+- Both require `Authorization: Bearer <account API key>`, `Content-Type: application/json`, and a UUID `Idempotency-Key`.
+- Retry an unknown outcome with the same key and identical payload. Use bounded backoff only for eligible `429`/`5xx` failures; do not blindly retry `409`, and stop automatic retry when `retryAsNew: true` is returned.
+- The gateway permits up to 110 seconds; the published JavaScript SDK uses a 120-second per-attempt timeout. A client timeout does not establish cancellation.
+- Successful usage is reported in `X-Clocked-Model-Ms`, `X-Clocked-Credits`, `X-Clocked-Cost-Usd`, and `X-Clocked-Cost-Basis` headers. No authenticated values have been observed for Necra.
 
-Current truth: the Clocked playground has produced real Compare and Verify responses. Necra's own adapter, credentials, requests, response validation, and end-to-end integration do not exist and are unverified.
+Necra sends only exact, already-authorized T005 text and attempt-local document aliases after T007 snapshots exact input version IDs. Clocked text offsets are Unicode code-point indexes; Necra stores UTF-16 code-unit indexes. T008 must verify every returned alias, quote, and code-point range against the exact submitted text, convert both offsets, verify the UTF-16 slice again, and quarantine any mismatch before persistence.
 
-Apart from the supplied base URL and endpoint paths, Clocked authentication, exact schemas, Compare/Grounding semantics, rate limits, retry/idempotency behavior, SDK availability, costs, service-level guarantees, and data-retention terms are all **Unverified**. Do not invent them.
+Grounding `supported`, `contradicted`, `not_stated`, and `not_a_claim` remain provider judgments. `not_stated` is not false or contradictory; `supported` is not approval. Compare relationships likewise remain possible evidence relationships, never decisions. Provider output, human review, and explicit authorization stay separate.
+
+Current truth: the Clocked playground has produced real Compare and Verify responses, and T006 made credential-free fictional POSTs that confirmed both live paths return documented-style `401` errors without an API key. No `CLOCKED_API_KEY` was available, so Necra still has no HTTP adapter, authenticated request, live success response, observed credit use, or end-to-end integration. Successful response bodies are documented as temporarily retained for idempotent replay with scheduled cleanup after 24 hours, not a hard deletion guarantee. Processing region, contractual terms, deletion SLA, and operational-log retention must be resolved before sensitive production evidence is sent.
 
 ## Error handling
 

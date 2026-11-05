@@ -65,7 +65,8 @@ A task is `Complete` only after every acceptance criterion passes and its verifi
 - **Dependencies:** T001; access to official Clocked documentation.
 - **Acceptance criteria:** Provider note cites official sources/access dates and documents verified authentication, endpoints, Compare/Verify schemas and semantics, errors, timeouts, limits, idempotency/retry guidance, and data terms; unknowns stay marked; internal types preserve citations and uncertainty; playground evidence is described separately from Necra behavior.
 - **Verification method:** Peer/manual comparison against official documentation; schema examples validate as test-only contract fixtures; unresolved fields have no guessed defaults.
-- **Completion status:** Not started.
+- **Completion status:** Complete.
+- **Latest verification:** Completed on 2026-11-05. Nine official Clocked documentation/security/pricing pages were manually reviewed; strict text-only request/response schemas validated both official recorded response fixtures; Unicode code-point-to-UTF-16 conversion was tested; the full local quality/build gate passed. Credential-free fictional POSTs confirmed both live paths return HTTP 401 without a key. No authenticated success, credit use, or Necra integration is claimed.
 
 ### T007 — Implement Agreement Reality Check creation and processing states
 

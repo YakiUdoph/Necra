@@ -2,7 +2,7 @@
 
 Necra helps project partners establish what was agreed, what changed, and what still needs explicit approval.
 
-This repository contains the verified foundation through T005. Authenticated users can create a private project, record pasted-text agreements and later instructions, retrieve the persisted sources, and append immutable versions. Clocked calls, Agreement Reality Check processing, explicit decisions, and Decision Replay remain unimplemented.
+This repository contains the verified application foundation through T005 and the documented Clocked contract from T006. Authenticated users can create a private project, record pasted-text agreements and later instructions, retrieve the persisted sources, and append immutable versions. Clocked calls, Agreement Reality Check processing, explicit decisions, and Decision Replay remain unimplemented.
 
 ## How to test Necra
 
@@ -61,6 +61,8 @@ npm.cmd run test:e2e
 
 `npm.cmd run check` runs typecheck, lint, unit tests, formatting, and the production build. Database and browser suites are separate because they require a disposable PostgreSQL administrative connection.
 
+The unit suite validates Clocked's text-only request/response schemas against response examples explicitly recorded in the official documentation. These fixtures are contract references, not live Necra responses or runtime fallbacks. An authenticated Clocked test requires a deliberately configured server-only key and belongs to T008; T006 made no authenticated inference call.
+
 ## Database migrations and tests
 
 T002 uses Drizzle ORM with version-controlled PostgreSQL SQL migrations. Do not use production data for local or automated tests.
@@ -101,7 +103,7 @@ Tailwind CSS uses its CSS-first configuration in `src/app/styles.css`, with Post
 - Decision Replay: planned, not implemented.
 - Evidence ingestion: exact pasted agreement/instruction text, optional known provenance, server-generated immutable versions, server-calculated SHA-256 hashes, and persisted history are implemented. File formats and extraction are unsupported.
 - Project setup: an authenticated user can create a new private workspace/project and becomes its owner without receiving decision authority automatically.
-- Clocked playground: real Compare and Grounding endpoints are documented for later research; Necra has not called or verified them.
+- Clocked contract: the official Compare, Verify/Grounding, authentication, response-offset, limits, retry, usage, and data-handling documentation was reviewed on 2026-11-05. Strict text-contract schemas and test-only official recorded fixtures exist, but Necra has no HTTP adapter and has made no authenticated successful call. Credential-free fictional POSTs only confirmed that both live paths reject missing API keys with HTTP 401.
 - PostgreSQL schema/query tooling: implemented and tested locally; no hosted database is selected or connected.
 - Authentication and project authorization: implemented with Better Auth and real PostgreSQL sessions; email verification, password reset, MFA, invitations, and a hosted deployment remain unconfigured.
 - Private object storage: not selected or connected; text-only originals are private PostgreSQL records.
