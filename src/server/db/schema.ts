@@ -46,6 +46,7 @@ export const changeRequestStatus = pgEnum("change_request_status", [
 export const analysisStatus = pgEnum("analysis_status", [
   "pending",
   "running",
+  "reconciliation_required",
   "failed",
   "completed",
   "evidence_missing",
@@ -481,22 +482,51 @@ export const analysisRuns = pgTable(
     projectId: uuid("project_id").notNull(),
     workspaceId: uuid("workspace_id").notNull(),
     changeRequestId: uuid("change_request_id").notNull(),
+    agreementDocumentId: uuid("agreement_document_id").notNull(),
     agreementVersionId: uuid("agreement_version_id").notNull(),
+    agreementContentHash: varchar("agreement_content_hash", { length: 64 }).notNull(),
+    instructionDocumentId: uuid("instruction_document_id").notNull(),
     instructionVersionId: uuid("instruction_version_id").notNull(),
+    instructionContentHash: varchar("instruction_content_hash", { length: 64 }).notNull(),
     status: analysisStatus("status").default("pending").notNull(),
     idempotencyKey: text("idempotency_key").notNull(),
     provider: text("provider"),
     adapterVersion: text("adapter_version"),
+    providerIdempotencyKey: uuid("provider_idempotency_key").notNull(),
+    providerRequestHash: varchar("provider_request_hash", { length: 64 }).notNull(),
+    lifecycleRevision: integer("lifecycle_revision").default(0).notNull(),
     attemptNumber: integer("attempt_number").default(1).notNull(),
     createdByUserId: uuid("created_by_user_id").notNull(),
     createdAt,
+    queuedAt: timestamp("queued_at", { withTimezone: true, mode: "date" })
+      .defaultNow()
+      .notNull(),
+    processingStartedAt: timestamp("processing_started_at", {
+      withTimezone: true,
+      mode: "date",
+    }),
+    lastAttemptAt: timestamp("last_attempt_at", { withTimezone: true, mode: "date" }),
     completedAt: timestamp("completed_at", { withTimezone: true, mode: "date" }),
+    failedAt: timestamp("failed_at", { withTimezone: true, mode: "date" }),
+    reconciliationRequiredAt: timestamp("reconciliation_required_at", {
+      withTimezone: true,
+      mode: "date",
+    }),
+    failureCode: text("failure_code"),
+    validatedResultAt: timestamp("validated_result_at", {
+      withTimezone: true,
+      mode: "date",
+    }),
+    providerResponseHash: varchar("provider_response_hash", { length: 64 }),
   },
   (table) => [
     unique("analysis_runs_scope_unique").on(table.id, table.projectId, table.workspaceId),
     uniqueIndex("analysis_runs_idempotency_unique").on(
       table.projectId,
       table.idempotencyKey,
+    ),
+    uniqueIndex("analysis_runs_provider_idempotency_unique").on(
+      table.providerIdempotencyKey,
     ),
     foreignKey({
       columns: [
@@ -554,7 +584,19 @@ export const analysisRuns = pgTable(
       "analysis_runs_versions_distinct",
       sql`${table.agreementVersionId} <> ${table.instructionVersionId}`,
     ),
-    check("analysis_runs_attempt_positive", sql`${table.attemptNumber} > 0`),
+    check("analysis_runs_attempt_bounded", sql`${table.attemptNumber} between 1 and 4`),
+    check(
+      "analysis_runs_lifecycle_revision_nonnegative",
+      sql`${table.lifecycleRevision} >= 0`,
+    ),
+    check(
+      "analysis_runs_snapshot_hashes_valid",
+      sql`${table.agreementContentHash} ~ '^[0-9a-f]{64}$' and ${table.instructionContentHash} ~ '^[0-9a-f]{64}$' and ${table.providerRequestHash} ~ '^[0-9a-f]{64}$'`,
+    ),
+    check(
+      "analysis_runs_completed_result_validated",
+      sql`${table.status} <> 'completed' or (${table.validatedResultAt} is not null and ${table.providerResponseHash} ~ '^[0-9a-f]{64}$' and ${table.provider} is not null and ${table.adapterVersion} is not null and ${table.completedAt} is not null)`,
+    ),
     check(
       "analysis_runs_idempotency_nonempty",
       sql`length(trim(${table.idempotencyKey})) > 0`,

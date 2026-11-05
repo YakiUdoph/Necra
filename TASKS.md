@@ -74,7 +74,8 @@ A task is `Complete` only after every acceptance criterion passes and its verifi
 - **Dependencies:** T002, T003, T005.
 - **Acceptance criteria:** Inputs must be accessible and ready; confirmation shows exact versions; duplicates are controlled; pending/running/failed/completed states are durable; no state implies findings or approval before validated results; retries are safe and bounded.
 - **Verification method:** State-machine unit tests, transaction/job integration tests including crashes and retries, tenant/role denial tests, and browser creation/status tests.
-- **Completion status:** Not started.
+- **Completion status:** Complete.
+- **Latest verification:** Completed on 2026-11-05. Exact ready agreement/instruction versions are authorized and snapshotted with their document IDs, SHA-256 hashes, actor, workspace/project, a stable provider UUID, and a deterministic Grounding payload hash. PostgreSQL enforces immutable inputs, bounded attempts, legal optimistic-lock transitions, reconciliation for unknown outcomes, and validated-result requirements before completion. The final unit suite passed 9 files/39 tests, the real PostgreSQL suite passed 4 files/19 tests, and authenticated Chromium passed the create/reload/denial/accessibility workflow. No Clocked request or finding was created.
 
 ### T008 — Implement and verify the Clocked adapter
 

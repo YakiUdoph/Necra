@@ -184,15 +184,20 @@ by plan and may change; account usage records are authoritative.
 
 ## Necra request and result mapping
 
-For one Agreement Reality Check, T007 must first persist a check that snapshots the exact
-agreement and instruction `document_versions.id` values. After server authorization and
-content-integrity validation, T008 may create provider aliases local to that attempt:
+For one Agreement Reality Check, T007 persists a check that snapshots the exact agreement
+and instruction document/version IDs and trusted content hashes. After server authorization
+and content-integrity validation, it builds but does not send this future Grounding payload:
 
-- `agreement` -> exact selected agreement version and `content_text`;
-- `instruction` -> exact selected later-instruction version and `content_text`.
+- `agreement-version:<version UUID>` -> the exact selected agreement `content_text` in
+  `documents[0]`;
+- exact selected later-instruction `content_text` -> `answer`;
+- `evidence` -> `"all"`.
 
-Aliases and input version IDs must be persisted together; returned aliases may not select
-a different record. The provider receives text, not Necra user/workspace/project IDs.
+The input IDs/hashes, deterministic payload hash, and one provider idempotency UUID are
+persisted together. T008 must reconstruct and verify the payload hash before sending and
+reuse both key and logical payload after an unknown outcome. Returned aliases may not
+select a different record. The provider receives evidence text and the deterministic
+version alias, not Necra user/workspace/project IDs. T007 makes no network request.
 
 Planned semantic mapping:
 

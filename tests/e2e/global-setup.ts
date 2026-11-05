@@ -21,6 +21,7 @@ export default async function globalSetup() {
     await applyMigration(client, "0000_lovely_marvel_apes.sql");
     await applyMigration(client, "0001_omniscient_black_widow.sql");
     await applyMigration(client, "0002_dapper_masked_marvel.sql");
+    await applyMigration(client, "0003_fancy_kingpin.sql");
   } finally {
     client.release();
     await pool.end();

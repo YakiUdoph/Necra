@@ -2,7 +2,7 @@
 
 Necra helps project partners establish what was agreed, what changed, and what still needs explicit approval.
 
-This repository contains the verified application foundation through T005 and the documented Clocked contract from T006. Authenticated users can create a private project, record pasted-text agreements and later instructions, retrieve the persisted sources, and append immutable versions. Clocked calls, Agreement Reality Check processing, explicit decisions, and Decision Replay remain unimplemented.
+This repository contains the verified application foundation through T007. Authenticated project owners and collaborators can create an Agreement Reality Check from exact saved agreement and instruction versions, then retrieve its durable created state after reload. Clocked calls, automated findings, explicit decisions, and Decision Replay remain unimplemented.
 
 ## How to test Necra
 
@@ -10,6 +10,7 @@ This repository contains the verified application foundation through T005 and th
 2. Apply migrations with `npm.cmd run db:migrate`.
 3. Set `AUTH_ALLOW_SIGN_UP=true` only for intentional local self-service testing, then run `npm.cmd run dev`.
 4. Create an account, create a workspace/project, open the project, and add exact agreement and instruction text. Create a revision and reload the page to verify that every version remains visible.
+5. Select the exact agreement and instruction versions in Agreement Reality Check, confirm their version numbers and hash prefixes, create the record, and reload. The persisted state must say that analysis was created and Clocked processing is not connected; it must not show findings or approval.
 
 Pasted text is the only supported evidence format. Each version is limited to 256 KiB of UTF-8 content. PDF, DOCX, images, OCR, file upload, malware scanning, and user deletion are not available. Use only evidence you are authorized to record.
 
@@ -99,7 +100,7 @@ Tailwind CSS uses its CSS-first configuration in `src/app/styles.css`, with Post
 
 ## Current product status
 
-- Agreement Reality Check: planned, not implemented.
+- Agreement Reality Check creation: implemented for exact ready versions with server authorization, idempotency, immutable snapshots, durable processing states, and reloadable status. Clocked processing and findings are not implemented.
 - Decision Replay: planned, not implemented.
 - Evidence ingestion: exact pasted agreement/instruction text, optional known provenance, server-generated immutable versions, server-calculated SHA-256 hashes, and persisted history are implemented. File formats and extraction are unsupported.
 - Project setup: an authenticated user can create a new private workspace/project and becomes its owner without receiving decision authority automatically.

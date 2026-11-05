@@ -13,6 +13,9 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
   expect(
     (await page.request.get(`/api/projects/${randomUUID()}/evidence`)).status(),
   ).toBe(401);
+  expect((await page.request.get(`/api/projects/${randomUUID()}/checks`)).status()).toBe(
+    401,
+  );
 
   const invalidApiContext = await browser.newContext({
     extraHTTPHeaders: { cookie: "better-auth.session_token=invalid" },
@@ -93,6 +96,25 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
     instructionSection.getByRole("heading", { name: "TEST ONLY Dashboard request" }),
   ).toBeVisible();
 
+  const realityCheckSection = page.locator("#reality-check");
+  await expect(realityCheckSection.getByLabel("Agreement version")).toHaveValue(/.+/);
+  await expect(realityCheckSection.getByLabel("Instruction version")).toHaveValue(/.+/);
+  await realityCheckSection.getByRole("button", { name: "Create Reality Check" }).click();
+  await expect(
+    realityCheckSection.getByText(
+      "Analysis created. Clocked processing is not yet connected.",
+    ),
+  ).toBeVisible({ timeout: 20_000 });
+  await expect(
+    realityCheckSection.getByText("No human approval recorded."),
+  ).toBeVisible();
+  await page.reload();
+  await expect(
+    realityCheckSection.getByText(
+      "Analysis created. Clocked processing is not yet connected.",
+    ),
+  ).toBeVisible();
+
   const pool = new Pool({ connectionString: getApplicationUrl(), max: 1 });
   const owner = await pool.query<{ id: string }>(
     `SELECT id FROM users WHERE email = 'browser-owner@example.test'`,
@@ -168,6 +190,13 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
       })
     ).status(),
   ).toBe(404);
+  expect(
+    (
+      await page.request.get(`/api/projects/${otherProjectId}/checks`, {
+        headers: { "x-user-id": otherUserId },
+      })
+    ).status(),
+  ).toBe(404);
   const forgedEvidence = await page.request.post(`/api/projects/${projectId}/evidence`, {
     headers: { origin: "https://attacker.test", "x-user-id": otherUserId },
     data: {
@@ -179,6 +208,15 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
     },
   });
   expect(forgedEvidence.status()).toBe(403);
+  const forgedCheck = await page.request.post(`/api/projects/${projectId}/checks`, {
+    headers: { origin: "https://attacker.test", "x-user-id": otherUserId },
+    data: {
+      agreementVersionId: randomUUID(),
+      instructionVersionId: randomUUID(),
+      idempotencyKey: randomUUID(),
+    },
+  });
+  expect(forgedCheck.status()).toBe(403);
   const forgedMutation = await page.request.patch(
     `/api/projects/${projectId}/members/${ownerId}`,
     {
@@ -195,6 +233,9 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
   );
   expect((await page.request.get(`/api/projects/${projectId}`)).status()).toBe(404);
   expect((await page.request.get(`/api/projects/${projectId}/evidence`)).status()).toBe(
+    404,
+  );
+  expect((await page.request.get(`/api/projects/${projectId}/checks`)).status()).toBe(
     404,
   );
   await pool.query(

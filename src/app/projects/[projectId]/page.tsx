@@ -1,7 +1,8 @@
 import { notFound, redirect } from "next/navigation";
 
 import { AppShell } from "@/components/product/app-shell";
-import { ComparisonEmpty } from "@/components/product/comparison-empty";
+import { RealityCheckForm } from "@/components/analysis/reality-check-form";
+import { RealityCheckList } from "@/components/analysis/reality-check-list";
 import { EvidenceForm } from "@/components/evidence/evidence-form";
 import { EvidenceList } from "@/components/evidence/evidence-list";
 import {
@@ -13,6 +14,7 @@ import {
 import { getAuthorizedProject } from "@/server/authorization/project-access";
 import { getVerifiedSession } from "@/server/authorization/session";
 import { listEvidenceSources } from "@/server/evidence/evidence-service";
+import { listAnalyses } from "@/server/analysis/analysis-service";
 
 export const dynamic = "force-dynamic";
 
@@ -31,9 +33,28 @@ export default async function ProjectPage({
     notFound();
   }
   const evidence = await listEvidenceSources(projectId);
+  const checks = await listAnalyses(projectId);
   const agreements = evidence.filter((source) => source.kind === "agreement");
   const instructions = evidence.filter((source) => source.kind === "instruction");
   const canWrite = project.role === "owner" || project.role === "collaborator";
+  const agreementVersions = agreements.flatMap((source) =>
+    source.versions.map((version) => ({
+      id: version.id,
+      documentId: source.id,
+      title: source.title,
+      versionNumber: version.versionNumber,
+      contentHash: version.contentHash,
+    })),
+  );
+  const instructionVersions = instructions.flatMap((source) =>
+    source.versions.map((version) => ({
+      id: version.id,
+      documentId: source.id,
+      title: source.title,
+      versionNumber: version.versionNumber,
+      contentHash: version.contentHash,
+    })),
+  );
 
   return (
     <AppShell
@@ -144,9 +165,23 @@ export default async function ProjectPage({
               <p className="workflow-kicker">Evidence-based comparison</p>
               <h2 id="reality-check-title">Agreement Reality Check</h2>
             </div>
-            <StatusLozenge tone="planned">Planned</StatusLozenge>
+            <StatusLozenge tone="active">Creation enabled</StatusLozenge>
           </div>
-          <ComparisonEmpty />
+          <RealityCheckList checks={checks} />
+          {canWrite && agreementVersions.length > 0 && instructionVersions.length > 0 ? (
+            <RealityCheckForm
+              agreements={agreementVersions}
+              instructions={instructionVersions}
+              projectId={projectId}
+            />
+          ) : (
+            <EmptyState title="Ready evidence versions are required">
+              <p>
+                Save at least one agreement and one later instruction before creating a
+                Reality Check.
+              </p>
+            </EmptyState>
+          )}
         </section>
 
         <section

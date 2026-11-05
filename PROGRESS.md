@@ -2,15 +2,15 @@
 
 ## Current state
 
-Phase 0 governance and T001–T006 are complete. The repository now contains a strict TypeScript Next.js application, an accessible responsive product shell, reusable interface primitives, real PostgreSQL-backed authentication, default-deny project authorization, text-first evidence ingestion with immutable versions, and a reviewed Clocked text-contract specification. Clocked is not integrated.
+Phase 0 governance and T001–T007 are complete. The repository now contains a strict TypeScript Next.js application, an accessible responsive product shell, real PostgreSQL-backed authentication, default-deny project authorization, immutable text evidence, a reviewed Clocked contract, and authorized durable Agreement Reality Check creation. Clocked is not integrated.
 
-Authenticated users can deliberately create a private workspace/project, but signup alone grants no access to an existing workspace. Exact pasted agreement and later-instruction text can be saved, retrieved, and revised without overwriting history. File ingestion/extraction, Clocked calls, Agreement Reality Check processing, findings, the explicit decision workflow, and Decision Replay remain unimplemented. Evidence creation never creates an approval.
+Authenticated users can deliberately create a private workspace/project, but signup alone grants no access to an existing workspace. Exact pasted agreement and later-instruction text can be saved, retrieved, and revised without overwriting history. Owners/collaborators can confirm exact ready versions and create an idempotent check that remains visible after reload. File ingestion/extraction, Clocked calls, automated findings, the explicit decision workflow, and Decision Replay remain unimplemented. Evidence and check creation never create approval.
 
 ## Implemented functionality
 
 - Next.js App Router shell that explains Necra without presenting future features as operational.
 - Accessible semantic navigation, skip link, visible focus treatment, responsive layouts, reduced-motion handling, and 44px minimum interactive targets.
-- Static descriptions of Agreement Reality Check and Decision Replay, both labeled `Planned` and explicitly described as unimplemented.
+- Agreement Reality Check version selection, exact hash/version confirmation, durable created-status list, and honest Clocked-not-connected notice; Decision Replay remains planned.
 - Route-level loading and recoverable error states.
 - `GET /api/health`, returning only `{"status":"ok","service":"necra-web"}` with `Cache-Control: no-store`; it does not diagnose or claim external service connectivity.
 - Server-only Zod validation boundaries for required authentication settings and optional private storage/Clocked settings.
@@ -33,6 +33,9 @@ Authenticated users can deliberately create a private workspace/project, but sig
 - Text-only agreement and later-instruction ingestion with strict JSON/Unicode/size validation, optional known provenance, exact non-normalized content, server-calculated SHA-256, server-generated identifiers/version numbers/timestamps, project-scoped retry keys, and audit metadata that excludes source content.
 - PostgreSQL-private source storage, transaction/advisory-lock concurrency control, immutable source/version triggers, authorized reads/writes, expandable exact-content history, and revisions that always append a new version.
 - Reviewed Clocked Compare and Verify/Grounding text contracts with strict Zod request/response schemas, official recorded-response contract fixtures, Unicode code-point/UTF-16 offset conversion helpers, and a provider note that separates documented behavior, live unauthenticated observations, and unresolved privacy/operational terms.
+- Authorized Reality Check creation from exact ready agreement/instruction versions with strict input rejection, project-scoped idempotency, concurrency serialization, automatic change-request linkage, human-origin audit metadata, and non-disclosing tenant/role denial.
+- Forward migration 0003 with immutable document/version/hash snapshots, stable provider idempotency UUID and Grounding payload hash, queued/processing/failure/reconciliation timestamps, four-attempt bound, optimistic lifecycle revisions, legal database transitions, and a completion guard requiring validated real provider metadata.
+- Server-only worker transition service for start, unknown outcome, safe failure, and bounded retry. No browser route processes work, no Clocked request is sent, and no fake finding/result exists.
 
 ## Development stack verified on 2026-10-27
 
@@ -104,6 +107,25 @@ The initial partial scaffold selected ESLint 10 and `eslint-config-next` 16.4.3.
 - Internal contract: `src/server/integrations/clocked/contract.ts`, containing text-only request/response schemas and offset conversion helpers but no HTTP client or credential access.
 - Test-only official documentation captures: `tests/fixtures/clocked/` and `tests/unit/clocked-contract.test.ts`.
 - Status documentation: `README.md`, `TASKS.md`, and `PROGRESS.md`.
+
+## Files created or modified for T007
+
+- Analysis domain/API: `src/server/analysis/` and `src/app/api/projects/[projectId]/checks/route.ts`.
+- Interface: `src/components/analysis/` and the authorized project page.
+- Persistence: `src/server/db/schema.ts`, forward migration `0003_fancy_kingpin.sql`, and its Drizzle metadata.
+- Verification: analysis state/mapping unit tests, real PostgreSQL creation/authorization/concurrency/lifecycle tests, and the expanded authenticated Chromium workflow.
+- Documentation: `README.md`, `ARCHITECTURE.md`, `docs/providers/clocked-contract.md`, `TASKS.md`, and `PROGRESS.md`.
+
+## T007 verification actually executed on 2026-11-05
+
+- The first integration command without `TEST_DATABASE_ADMIN_URL` failed before running tests and was not counted. The first configured PostgreSQL run then exposed a non-portable migration backfill dependency on `pgcrypto.digest`; no application test ran in affected suites. The backfill was changed to use built-in PostgreSQL functions only.
+- The clean real PostgreSQL rerun passed 4 files/19 tests. Coverage includes exact snapshot/hash persistence, sequential and concurrent idempotency, conflicting-key rejection, missing/cross-project/wrong-kind/inactive/read-only denial, unsupported input, audit linkage, immutable inputs, legal lifecycle transitions, unknown-outcome reconciliation, stale-worker protection, bounded retry metadata, and refusal to complete without validated provider metadata.
+- `npm.cmd run test:e2e` passed 1 installed-Chromium test in 1.3 minutes against a disposable database. It created exact evidence versions, selected and confirmed them, created a Reality Check, observed the honest Clocked-not-connected/no-approval status after reload, and repeated unauthenticated, cross-project, forged-origin, revoked-membership, accessibility, keyboard, and responsive checks.
+- Final audit rerun: `npm.cmd run check` passed strict typecheck, Biome lint/format over 103 files, 9 unit files/39 tests, and the Next.js 16.4.3 production build. The sandboxed `npm.cmd run db:check` hit the known Windows `uv_os_get_passwd ... ENOMEM`; its approved unrestricted rerun passed with `Everything's fine`.
+- Final audit database setup attempts without `TEST_DATABASE_ADMIN_URL`, through unstable WSL localhost forwarding, and without a persistent WSL process failed or skipped tests and were not counted. With WSL kept active and a short-lived test-only role, `npm.cmd run test:integration` passed all 4 files/19 tests in 33.49 seconds; the role was removed afterward.
+- The first final-audit browser run failed during the pre-authentication axe scan because navigation destroyed its execution context and was not counted. A fresh disposable-database rerun passed the single installed-Chromium workflow in 1.5 minutes; the test role was removed afterward.
+- Tracked private-key/cloud-token pattern scanning found no matches. `.next/static` contained no configured secret values, database/storage/Clocked markers, or browser-test credentials; Better Auth vendor code still contains literal `BETTER_AUTH_SECRET` and `AUTH_SECRET` identifiers, not environment values. `git diff --check` reported only informational LF-to-CRLF working-tree warnings.
+- No Clocked credential was read and no provider request was sent. No fake response or finding was persisted.
 
 ## T006 verification actually executed on 2026-11-05
 
@@ -210,30 +232,40 @@ An early `npm.cmd run format` attempt failed because Biome's Tailwind directive 
 ## Known issues and unverified assumptions
 
 - Automated axe coverage now exercises authentication and authorized project screens. A visual-regression baseline was not adopted, and manual screen-reader testing remains outstanding for the complete product workflows in later tasks.
-- Object storage, file extraction/OCR, background execution, observability, hosting/database vendor, regions, and retention/deletion policy remain undecided. T005 deliberately needs none of those providers for pasted text.
+- Object storage, file extraction/OCR, durable queue infrastructure, observability, hosting/database vendor, regions, and retention/deletion policy remain undecided. T005–T007 deliberately need none of those providers for persisted text and queued records.
 - Email verification, password reset, MFA, invitations, OAuth/SSO, administrator provisioning UI, and distributed authentication rate limiting are not implemented. Public signup remains disabled by default.
 - `PRIVATE_STORAGE_*` remains an inert boundary placeholder, not a provider commitment.
 - Clocked's playground has produced real Compare and Verify responses. T006 separately established documented text schemas and credential-free 401 transport observations, but Necra still has no HTTP adapter, configured credential, authenticated success, observed credit use, or end-to-end result. Working integration remains unverified pending T008.
 - T005 supports only pasted Unicode text, limited to 256 KiB per version and 300 KiB per JSON request. PDF, DOCX, images, OCR, file upload, object storage, malware scanning, downloads, and user deletion remain unsupported; the initial decision vocabulary remains undecided.
-- Git has the truthful T004 baseline commit `1d24d0b` and audited T005 commit `72ccd27`. T006 changes remain uncommitted; no remote or publication action was performed.
+- Git has the truthful T004 baseline commit `1d24d0b`, audited T005 commit `72ccd27`, and audited T006 commit `a173788`. T007 changes remain uncommitted; no remote or publication action was performed.
 - Database constraints do not authorize reads by themselves. T003 server queries now enforce active membership/role/`can_decide`; T010 must repeat that check inside the future decision transaction.
 - Evidence references enforce correct version association and offset shape. T005 now preserves exact text, but the future citation-write service must still verify quote/offset equality before insertion.
 - T005 calculates SHA-256 server-side over exact, non-normalized UTF-8 content. The hash establishes content identity/integrity only, not the truth of the source. Uploaded original-byte preservation remains deferred because uploads are unsupported.
 - Drizzle Kit's legacy dependency chain has four moderate npm audit findings. Better Auth's optional peer causes npm to include that toolchain in the production audit graph even though application runtime code does not import it. Do not expose Drizzle development tooling or Studio to untrusted networks; reassess on a compatible upstream fix.
 - PostgreSQL row-level security is not enabled; the application server and database operators remain privileged boundaries.
+- No durable worker/queue is selected. T007 persists guarded `pending` work and exposes server-only transition functions; T008 must attach server-side execution rather than treating the browser as a worker.
+- T007's deterministic Grounding request mapping validates against the official schema but has not been sent with credentials. Success shape, model, latency, credits, cost, and actual replay behavior remain unverified.
 - No hosted database or production authentication environment has been configured or verified.
 - One clean browser attempt encountered a transient Next.js development-stream error during sign-in; the immediately following fresh-database run passed. This remains a local test-flakiness risk rather than evidence of production readiness.
 
 ## Current blockers
 
-- None for T001–T006.
+- None for T001–T007.
 - T008 authenticated live verification requires an authorized `CLOCKED_API_KEY` and fictional non-sensitive test evidence. Sensitive production use additionally requires resolution of processing region, subprocessors, contractual terms/DPA, deletion guarantees, access controls, incident handling, and operational-log retention.
 
 ## Next task
 
-T007 — Implement Agreement Reality Check creation and durable processing states over exact authorized input versions. Do not begin the Clocked HTTP adapter until T007 establishes persisted idempotent attempts.
+T008 — Implement the server-only Clocked adapter against T006's contract and T007's immutable snapshots/idempotency metadata. Authenticated live verification remains gated on an authorized key and fictional non-sensitive evidence.
 
 ## Activity log
+
+### 2026-11-05 — T007 completed
+
+- Re-read the seven governance documents, provider note, contract code, schema, authorization/evidence services, tests, and T007 acceptance criteria; confirmed T007 was the first eligible task.
+- Audited and committed T006 locally as `a173788` after checking for credentials, confidential/accidental files, and generated artifacts. Nothing was pushed.
+- Implemented authorized exact-version selection, immutable document/version/hash snapshots, idempotent creation and change-request linkage, stable future provider key/payload hash, durable guarded lifecycle/reconciliation metadata, bounded server-worker retries, audit metadata, and honest persisted UI status.
+- Verified unit, migration consistency, real PostgreSQL transaction/concurrency/authorization behavior, and the authenticated Chromium create/reload workflow. No Clocked call, provider result, finding, or approval was fabricated.
+- Result: every T007 acceptance criterion passed. T007 is `Complete`; T008 is the exact next task.
 
 ### 2026-11-05 — T006 completed
 
