@@ -146,7 +146,11 @@ The first implemented product-shell reference uses the documented paper, ink, mi
 - Navigation follows the product workflow: Projects, Agreements, Changes, Agreement Reality Check, and Decisions & Replay. Unavailable destinations are non-interactive and explicitly say that a project must be chosen.
 - Page headers, status lozenges, notices, empty states, buttons, and text fields are reusable primitives. Statuses always contain text and a visible marker; form guidance and errors are programmatically associated with their controls.
 - The Agreement Reality Check foundation shows two empty source lanes and a distinct findings margin. It contains no sample quotation, finding, comparison response, or decision.
-- Project pages render only server-authorized project, workspace, role, and decision-authority values. Future evidence and decision actions remain absent rather than being represented by nonfunctional controls.
+- Project pages render only server-authorized project, workspace, role, and decision-authority values. T005 adds functional pasted-text agreement/instruction forms, exact stored content, provenance, hashes, and expandable immutable version history for authorized users. Comparison and decision actions remain absent rather than being represented by nonfunctional controls.
 - Public, authentication, project-list, project-detail, loading, and error views share the same tokens, focus treatment, minimum target sizes, and reduced-motion behavior.
 
 T004 automated browser checks cover WCAG-tagged axe scans and a keyboard path at desktop and 390px mobile widths. Public-shell overflow was additionally checked at 320, 390, 768, and 1280 CSS pixels. No visual-regression baseline was adopted in T004; the responsive screenshot was used for local inspection only.
+
+## T005 evidence interface
+
+The evidence workflow keeps the source-centered working-paper direction and accepts only pasted text. Agreements and later instructions use persistent labels, optional provenance fields, exact-text guidance, truthful validation/storage errors, and a single save action. Saved sources show known or unknown attribution, UTC timestamps, UTF-8 byte size, server-calculated SHA-256, exact content, and every immutable version. Revision controls state that earlier versions are not overwritten. Viewers receive the same authorized reading view without write controls. PDF, DOCX, images, OCR, uploads, automated comparisons, and decisions are not presented as available.

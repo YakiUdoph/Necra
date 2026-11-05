@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 
 import { authClient } from "@/lib/auth-client";
 import { Button, Notice, TextField } from "@/components/ui/primitives";
@@ -8,7 +8,10 @@ import { Button, Notice, TextField } from "@/components/ui/primitives";
 export function SignUpForm() {
   const [error, setError] = useState<string | null>(null);
   const [complete, setComplete] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
   const [pending, setPending] = useState(false);
+
+  useEffect(() => setHydrated(true), []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -40,7 +43,7 @@ export function SignUpForm() {
   }
 
   return (
-    <form aria-busy={pending} className="auth-form" onSubmit={submit}>
+    <form aria-busy={pending} className="auth-form" method="post" onSubmit={submit}>
       <TextField autoComplete="name" id="name" label="Name" name="name" required />
       <TextField
         autoComplete="email"
@@ -65,7 +68,7 @@ export function SignUpForm() {
           {error}
         </p>
       ) : null}
-      <Button disabled={pending} type="submit">
+      <Button disabled={!hydrated || pending} type="submit">
         {pending ? "Creating account…" : "Create account"}
       </Button>
     </form>

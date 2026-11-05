@@ -2,6 +2,8 @@ import { notFound, redirect } from "next/navigation";
 
 import { AppShell } from "@/components/product/app-shell";
 import { ComparisonEmpty } from "@/components/product/comparison-empty";
+import { EvidenceForm } from "@/components/evidence/evidence-form";
+import { EvidenceList } from "@/components/evidence/evidence-list";
 import {
   EmptyState,
   Notice,
@@ -10,6 +12,7 @@ import {
 } from "@/components/ui/primitives";
 import { getAuthorizedProject } from "@/server/authorization/project-access";
 import { getVerifiedSession } from "@/server/authorization/session";
+import { listEvidenceSources } from "@/server/evidence/evidence-service";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +30,10 @@ export default async function ProjectPage({
   if (!project) {
     notFound();
   }
+  const evidence = await listEvidenceSources(projectId);
+  const agreements = evidence.filter((source) => source.kind === "agreement");
+  const instructions = evidence.filter((source) => source.kind === "instruction");
+  const canWrite = project.role === "owner" || project.role === "collaborator";
 
   return (
     <AppShell
@@ -41,14 +48,14 @@ export default async function ProjectPage({
         <PageHeader
           description="Review what is available for this project without treating a request or automated finding as approval."
           eyebrow={`${project.workspaceName} · ${project.role} access`}
-          status={<StatusLozenge tone="info">Interface foundation</StatusLozenge>}
+          status={<StatusLozenge tone="active">Evidence enabled</StatusLozenge>}
           title={project.name}
         />
 
-        <Notice title="What works today">
+        <Notice title="Evidence storage is available">
           <p>
-            Your identity and access are verified on the server. Agreement evidence,
-            change requests, comparisons, reviews, and decisions are not available yet.
+            Pasted agreement and instruction text is stored as immutable PostgreSQL
+            versions. Comparisons, reviews, and decisions remain unavailable.
           </p>
         </Notice>
 
@@ -76,15 +83,20 @@ export default async function ProjectPage({
               <p className="workflow-kicker">Baseline evidence</p>
               <h2 id="agreement-title">Original agreement</h2>
             </div>
-            <StatusLozenge tone="planned">Not available yet</StatusLozenge>
+            <StatusLozenge tone="active">Available</StatusLozenge>
           </div>
-          <EmptyState title="No agreement can be added yet">
-            <p>
-              Evidence ingestion belongs to T005. Until private storage, provenance, and
-              immutable versioning are connected end to end, this interface will not offer
-              an upload control.
-            </p>
-          </EmptyState>
+          {agreements.length > 0 ? (
+            <EvidenceList
+              canWrite={canWrite}
+              projectId={projectId}
+              sources={agreements}
+            />
+          ) : (
+            <EmptyState title="No agreement has been recorded">
+              <p>Add the agreement you want to use as the baseline.</p>
+            </EmptyState>
+          )}
+          {canWrite ? <EvidenceForm kind="agreement" projectId={projectId} /> : null}
         </section>
 
         <section
@@ -100,14 +112,23 @@ export default async function ProjectPage({
               <p className="workflow-kicker">Later instructions</p>
               <h2 id="requests-title">Change requests</h2>
             </div>
-            <StatusLozenge tone="planned">Not available yet</StatusLozenge>
+            <StatusLozenge tone="active">Available</StatusLozenge>
           </div>
-          <EmptyState title="No request workflow is available">
-            <p>
-              A request is evidence, not approval. Necra will add this flow only after the
-              evidence storage and versioning boundary is implemented.
-            </p>
-          </EmptyState>
+          {instructions.length > 0 ? (
+            <EvidenceList
+              canWrite={canWrite}
+              projectId={projectId}
+              sources={instructions}
+            />
+          ) : (
+            <EmptyState title="No later instructions have been recorded">
+              <p>
+                Add the later request or instructions you want to preserve. A request is
+                evidence, not approval.
+              </p>
+            </EmptyState>
+          )}
+          {canWrite ? <EvidenceForm kind="instruction" projectId={projectId} /> : null}
         </section>
 
         <section

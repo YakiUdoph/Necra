@@ -1,20 +1,23 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/primitives";
 
 export function SignOutButton() {
   const router = useRouter();
+  const [hydrated, setHydrated] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState(false);
+
+  useEffect(() => setHydrated(true), []);
 
   return (
     <div>
       <Button
-        disabled={pending}
+        disabled={!hydrated || pending}
         onClick={async () => {
           setPending(true);
           setError(false);

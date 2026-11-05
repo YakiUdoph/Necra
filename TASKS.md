@@ -56,7 +56,8 @@ A task is `Complete` only after every acceptance criterion passes and its verifi
 - **Dependencies:** T002, T003, T004; decisions on storage, formats, limits, malware scanning, extraction, and retention.
 - **Acceptance criteria:** Private storage and server authorization are enforced; new content creates a new version; hashes and provenance are stored; extraction is clearly derived; unsupported/malformed/failed inputs have recovery paths; source versions referenced by checks cannot be changed.
 - **Verification method:** Unit tests for validation/hashing; integration tests for authorized storage, tenant isolation, version immutability, and extraction failure; browser upload/manual-entry flow; safe-file security checks.
-- **Completion status:** Not started.
+- **Completion status:** Complete.
+- **Latest verification:** Completed on 2026-11-05. The local quality/build gate, Drizzle migration consistency check, 14-test real PostgreSQL integration suite, and authenticated installed-Chrome workflow against a disposable PostgreSQL database passed. Only pasted text is supported; file upload/extraction security checks are not applicable and unsupported file capabilities remain visibly deferred.
 
 ### T006 — Research and specify the Clocked contract
 

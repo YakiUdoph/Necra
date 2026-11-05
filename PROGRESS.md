@@ -2,9 +2,9 @@
 
 ## Current state
 
-Phase 0 governance and T001–T004 are complete. The repository now contains a strict TypeScript Next.js application, a premium accessible responsive product shell, reusable interface primitives, real PostgreSQL-backed authentication, default-deny project authorization, local quality tooling, and version-controlled migrations with real database and browser tests.
+Phase 0 governance and T001–T005 are complete. The repository now contains a strict TypeScript Next.js application, an accessible responsive product shell, reusable interface primitives, real PostgreSQL-backed authentication, default-deny project authorization, text-first evidence ingestion with immutable versions, local quality tooling, and version-controlled migrations with real database and browser tests.
 
-Document ingestion, evidence processing, Clocked calls, Agreement Reality Check functionality, the approval workflow, and Decision Replay remain unimplemented. Authentication does not create projects, memberships, findings, or approvals.
+Authenticated users can deliberately create a private workspace/project, but signup alone grants no access to an existing workspace. Exact pasted agreement and later-instruction text can be saved, retrieved, and revised without overwriting history. File ingestion/extraction, Clocked calls, Agreement Reality Check processing, findings, the explicit decision workflow, and Decision Replay remain unimplemented. Evidence creation never creates an approval.
 
 ## Implemented functionality
 
@@ -24,11 +24,14 @@ Document ingestion, evidence processing, Clocked calls, Agreement Reality Check 
 - Production environment validation rejects a configured `BETTER_AUTH_URL` that does not use HTTPS.
 - Server-verified project lists/details and direct APIs that join active workspace and project membership, return non-disclosing not-found responses, and never accept the actor from the client.
 - Owner/collaborator/viewer policy mapped to the persisted manager/reviewer/participant roles, with explicit `can_decide`, audited role changes, and last-owner protection.
-- Accessible responsive sign-in, optional sign-up, sign-out, empty-project, and authorized project status views. Future evidence/approval features remain honestly labeled unimplemented.
+- Accessible responsive sign-in, optional sign-up, sign-out, project creation, authorized project, evidence-entry, and immutable-history views. Future comparison/approval features remain honestly labeled unimplemented.
 - Playwright coverage through installed Chrome for login, logout, expiry, invalid sessions, direct API denial, cross-project access, membership revocation, and spoof attempts.
 - Authenticated desktop and mobile product navigation organized around Projects, Agreements, Changes, Agreement Reality Check, and Decisions & Replay, with real server-authorized context and honest unavailable states.
 - Reusable page header, status, notice, empty-state, button, field, comparison-empty, loading, and error patterns with visible focus, text-plus-color status communication, 44px targets, and reduced-motion handling.
 - Automated axe coverage on authentication and authorized project screens plus responsive/keyboard browser checks. No production-facing fixture content or nonfunctional action controls were added.
+- Authenticated project creation that transactionally creates a private workspace, active owner memberships, the project, and a human-origin audit event without granting decision authority.
+- Text-only agreement and later-instruction ingestion with strict JSON/Unicode/size validation, optional known provenance, exact non-normalized content, server-calculated SHA-256, server-generated identifiers/version numbers/timestamps, project-scoped retry keys, and audit metadata that excludes source content.
+- PostgreSQL-private source storage, transaction/advisory-lock concurrency control, immutable source/version triggers, authorized reads/writes, expandable exact-content history, and revisions that always append a new version.
 
 ## Development stack verified on 2026-10-27
 
@@ -73,6 +76,26 @@ The initial partial scaffold selected ESLint 10 and `eslint-config-next` 16.4.3.
 - Authentication and state presentation: `src/components/auth/sign-in-form.tsx`, `src/components/auth/sign-up-form.tsx`, `src/components/auth/sign-out-button.tsx`, `src/app/sign-in/page.tsx`, `src/app/sign-up/page.tsx`, `src/app/loading.tsx`, and `src/app/error.tsx`.
 - Verification: `tests/unit/ui-primitives.test.tsx`, `tests/e2e/authentication.spec.ts`, `package.json`, and `package-lock.json`.
 - Documentation: `DESIGN.md`, `README.md`, `TASKS.md`, and `PROGRESS.md`.
+
+## Files created or modified for T005
+
+- Evidence and project services: `src/server/evidence/validation.ts`, `src/server/evidence/evidence-service.ts`, `src/server/http/bounded-json.ts`, and `src/server/projects/project-service.ts`.
+- Protected routes and interface: `src/app/api/projects/route.ts`, project-scoped evidence routes, project/evidence forms and history components, project pages, and evidence styles.
+- Persistence: T005 fields and constraints in `src/server/db/schema.ts`; migration `migrations/0002_dapper_masked_marvel.sql`, its Drizzle snapshot/journal entry, and a source-identity immutability trigger.
+- Verification: evidence/bounded-JSON unit tests, real PostgreSQL evidence integration tests, expanded authentication/authorization coverage, and the installed-Chrome disposable-database workflow.
+- Documentation: `docs/decisions/0004-text-evidence-ingestion.md`, `ARCHITECTURE.md`, `DESIGN.md`, `README.md`, `TASKS.md`, and `PROGRESS.md`.
+
+## T005 verification actually executed on 2026-11-05
+
+- `npm.cmd run check`: the final run passed strict typecheck, Biome lint over 87 files, 7 unit files/32 tests, formatting, and the Next.js 16.4.3 production build for all routes.
+- `npm.cmd run db:check`: the sandboxed run failed with the previously observed Windows `uv_os_get_passwd ... ENOMEM`; the approved unrestricted rerun passed with `Everything's fine`.
+- `npm.cmd run test:integration`: the first attempt found a stale test-only database/role, failed PostgreSQL authentication, and skipped all 13 then-defined tests. Only `necra_test_t005_e2e` and its test role were removed. A clean rerun passed 3 files/13 tests. After adding an explicit invalid-input/no-persistence assertion, the final real PostgreSQL run passed 3 files/14 tests in 11.63 seconds and removed its disposable databases/role.
+- PostgreSQL coverage includes migration apply from empty state; project-scoped agreement/instruction creation and retrieval; trusted exact-content hashes; provenance; idempotent retries and conflicting-key rejection; concurrent revision numbering; historical preservation; database-trigger immutability; invalid-input rejection with no inserted source; cross-project/viewer/revoked-membership denial; and safe database-unavailable failure.
+- `npm.cmd run test:e2e`: the first installed-Chrome attempt failed before signup when WSL shut down during browser startup and PostgreSQL became unreachable; it was not treated as a pass. The clean rerun kept the local test service active and passed 1 Chromium test in 1.1 minutes (51.9-second test body), then removed the disposable database and role.
+- Browser coverage includes real signup/sign-in, in-app private project creation, agreement and later-instruction entry, immutable revision creation, persisted history after reload, authenticated API reads, forged-origin and actor-spoof denial, cross-project denial, revoked-membership denial, session expiry, logout, invalid cookies, WCAG-tagged axe scans, keyboard operation, and 390px overflow review.
+- `.next/static` contained none of the test secret/password values or `DATABASE_URL`, `PRIVATE_STORAGE_SECRET_ACCESS_KEY`, and `CLOCKED_API_KEY` markers. `git diff --check` passed apart from informational LF-to-CRLF working-tree warnings.
+- `npm.cmd audit --omit=dev`: the sandboxed registry request failed. The approved registry run reported four moderate findings in Drizzle Kit's legacy `@esbuild-kit`/esbuild development chain and proposed an incompatible forced downgrade to Drizzle Kit 0.18.1; no forced fix was applied.
+- No PDF, DOCX, image, OCR, object-storage, download, archive, or malware-scanning path exists, so safe-file/extraction checks are not applicable to T005's pasted-text-only boundary.
 
 ## T004 verification actually executed on 2026-11-03
 
@@ -163,19 +186,22 @@ An early `npm.cmd run format` attempt failed because Biome's Tailwind directive 
 - Protected reads join tenant/resource membership in the query. Cross-project, suspended, and underprivileged records share a not-found response after authentication.
 - Better Auth origin/CSRF checks are explicitly enabled even in tests. Necra mutation APIs additionally require the exact configured origin and reject cross-site Fetch Metadata.
 - Membership role/status/decision-authority changes and their human audit event commit atomically. The last active owner cannot be removed.
+- Pasted-text evidence is private PostgreSQL data. Every read and write resolves the verified session, active workspace/project memberships, and project permission on the server; direct-object misses do not disclose protected existence.
+- Evidence requests reject unknown fields, unsupported formats, malformed JSON/UTF-8, null bytes, unpaired surrogates, whitespace-only content, and content over 256 KiB. The server ignores client hash/version authority by not accepting those fields.
+- Exact evidence text is absent from audit metadata and routine application logs. React renders stored text as escaped text, and no public evidence/download endpoint exists.
 
 ## Known issues and unverified assumptions
 
 - Automated axe coverage now exercises authentication and authorized project screens. A visual-regression baseline was not adopted, and manual screen-reader testing remains outstanding for the complete product workflows in later tasks.
-- Storage provider, extraction/OCR, background execution, observability, hosting/database vendor, regions, and retention/deletion policy remain undecided.
+- Object storage, file extraction/OCR, background execution, observability, hosting/database vendor, regions, and retention/deletion policy remain undecided. T005 deliberately needs none of those providers for pasted text.
 - Email verification, password reset, MFA, invitations, OAuth/SSO, administrator provisioning UI, and distributed authentication rate limiting are not implemented. Public signup remains disabled by default.
 - `PRIVATE_STORAGE_*` remains an inert boundary placeholder, not a provider commitment.
 - Clocked's playground has produced real Compare and Verify responses, but Necra has no adapter, credentials, live request, runtime response schema, or end-to-end result. Its behavior remains unverified pending T006 and T008.
-- Supported evidence formats, limits, malware scanning, and decision vocabulary still require their owning decisions.
-- The repository has no tracked baseline commit; all files currently appear untracked in Git. T001 did not create a commit.
+- T005 supports only pasted Unicode text, limited to 256 KiB per version and 300 KiB per JSON request. PDF, DOCX, images, OCR, file upload, object storage, malware scanning, downloads, and user deletion remain unsupported; the initial decision vocabulary remains undecided.
+- Git has the truthful T004 baseline commit `1d24d0b`. T005 changes remain uncommitted; no remote or publication action was performed.
 - Database constraints do not authorize reads by themselves. T003 server queries now enforce active membership/role/`can_decide`; T010 must repeat that check inside the future decision transaction.
-- Evidence references enforce correct version association and offset shape, but exact quote-to-content matching cannot be enforced until T005 persists and validates extracted content.
-- Document hash format is enforced, but trusted SHA-256 calculation and original-object preservation belong to T005.
+- Evidence references enforce correct version association and offset shape. T005 now preserves exact text, but the future citation-write service must still verify quote/offset equality before insertion.
+- T005 calculates SHA-256 server-side over exact, non-normalized UTF-8 content. The hash establishes content identity/integrity only, not the truth of the source. Uploaded original-byte preservation remains deferred because uploads are unsupported.
 - Drizzle Kit's legacy dependency chain has four moderate npm audit findings. Better Auth's optional peer causes npm to include that toolchain in the production audit graph even though application runtime code does not import it. Do not expose Drizzle development tooling or Studio to untrusted networks; reassess on a compatible upstream fix.
 - PostgreSQL row-level security is not enabled; the application server and database operators remain privileged boundaries.
 - No hosted database or production authentication environment has been configured or verified.
@@ -183,15 +209,21 @@ An early `npm.cmd run format` attempt failed because Biome's Tailwind directive 
 
 ## Current blockers
 
-- None for T001–T004.
-- Later Clocked work requires official documentation access; live verification also requires authorized credentials and non-sensitive test evidence.
-- T004 is complete. T005 remains blocked on explicit storage provider, supported-format/limit, malware-scanning, extraction, and retention decisions.
+- None for T001–T005.
+- T006 requires access to current official Clocked documentation. Later live verification also requires authorized credentials and non-sensitive test evidence.
 
 ## Next task
 
-T005 — Implement evidence ingestion and versioning, after its required storage, format, scanning, extraction, and retention decisions are made.
+T006 — Research and specify the Clocked contract. Do not implement or simulate Clocked calls while completing that research task.
 
 ## Activity log
+
+### 2026-11-05 — T005 completed
+
+- Confirmed T005 was the first eligible incomplete task and resolved its prerequisite decisions in ADR 0004 as a narrow pasted-text-only workflow: PostgreSQL-private originals, exact UTF-8 text, 256 KiB versions, no extraction, no file scanning, and restrictive no-delete retention pending a production policy.
+- Implemented deliberate private project creation, authenticated agreement/instruction ingestion, exact retrieval, trusted hashes, optional known provenance, project-scoped retry safety, transaction-serialized immutable revisions, audit metadata, and responsive accessible history/error states.
+- Verified unit/build quality, migration consistency, 14 real PostgreSQL integration tests, and the complete authenticated installed-Chrome persistence/reload and denial workflow. Failed setup/service attempts remain recorded in the T005 verification section.
+- Result: every applicable T005 acceptance criterion passed. T005 is `Complete`; unsupported file/extraction capabilities remain explicit, and T006 was not started.
 
 ### 2026-11-03 — T004 completed
 

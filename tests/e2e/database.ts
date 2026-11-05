@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 
 import { Pool, type PoolClient } from "pg";
 
-export const databaseName = "necra_test_t003_e2e";
+export const databaseName = "necra_test_t005_e2e";
 
 export function getAdminUrl() {
   const value = process.env.TEST_DATABASE_ADMIN_URL;

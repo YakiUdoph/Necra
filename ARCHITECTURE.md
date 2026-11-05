@@ -2,7 +2,7 @@
 
 ## Status
 
-The T001 application foundation uses the choices recorded in `docs/decisions/0001-development-foundation.md`. T002 established the PostgreSQL/Drizzle persistence foundation in `docs/decisions/0002-postgresql-drizzle-persistence.md`. T003 established Better Auth and project authorization in `docs/decisions/0003-better-auth-and-project-authorization.md`. Other product infrastructure remains proposed until its owning task verifies it. External details explicitly marked **Unverified** must not be implemented by assumption.
+The T001 application foundation uses the choices recorded in `docs/decisions/0001-development-foundation.md`. T002 established the PostgreSQL/Drizzle persistence foundation in `docs/decisions/0002-postgresql-drizzle-persistence.md`. T003 established Better Auth and project authorization in `docs/decisions/0003-better-auth-and-project-authorization.md`. T005 establishes text-first evidence ingestion in `docs/decisions/0004-text-evidence-ingestion.md`. Other product infrastructure remains proposed until its owning task verifies it. External details explicitly marked **Unverified** must not be implemented by assumption.
 
 ## Proposed stack
 
@@ -84,9 +84,9 @@ T002 migration `0000_lovely_marvel_apes.sql` implements the following records. E
 - **Decision:** append-only explicit outcome tied to a change request and agreement version, authenticated actor identity, authority snapshot, rationale, database/trusted-server time, idempotency key, and optional same-context predecessor. Unique constraints keep each history linear.
 - **AuditEvent:** append-only actor/origin, event type, target, UTC timestamp, request correlation ID, and non-sensitive structured metadata.
 
-Generated SQL adds triggers that reject update/delete operations on immutable versions, findings, evidence references, reviews, decisions, and audit events; protect analysis input columns; validate agreement/instruction source kinds; and keep citations on analyzed inputs. Restrictive deletion is intentional pending a retention policy. Raw source text and provider payloads must not be copied into general audit logs.
+Generated SQL adds triggers that reject update/delete operations on source identities/provenance, immutable versions, findings, evidence references, reviews, decisions, and audit events; protect analysis input columns; validate agreement/instruction source kinds; and keep citations on analyzed inputs. Restrictive deletion is intentional pending a retention policy. Raw source text and provider payloads must not be copied into general audit logs.
 
-These protections do not replace authorization, state-transition services, citation-to-content validation, or transactional decision-plus-audit writes. Database owners can bypass triggers, so the audit history is application-auditable rather than tamper-proof. Extracted content/passages, original object storage, provider raw payload storage, and retention/deletion workflows belong to later tasks and are not fabricated in T002.
+These protections do not replace authorization, state-transition services, citation-to-content validation, or transactional decision-plus-audit writes. Database owners can bypass triggers, so the audit history is application-auditable rather than tamper-proof. T005 stores exact pasted text in PostgreSQL as the original for that capture method. Uploaded objects, derived extraction, provider raw payload storage, and retention/deletion workflows remain deferred.
 
 ## Authentication and authorization
 
@@ -112,7 +112,9 @@ T003 maps `manager`/`reviewer`/`participant` to owner/collaborator/viewer. Both 
 - Keep machine/provider output, human review, and explicit decisions in separate records.
 - Use UTC internally and retain source-reported timestamps and timezone/precision separately when available.
 
-Malware scanning, accepted formats, maximum size, hash algorithm, OCR service, and retention/deletion rules are **Unverified** and must be decided before production ingestion.
+For T005, the only accepted format is pasted text up to 256 KiB of UTF-8 bytes. SHA-256 is calculated server-side over the exact, non-normalized UTF-8 content. Pasted text requires no malware scan or extraction. PDF, DOCX, images, OCR, object storage, file scanning, and downloads are unsupported. Retention/deletion remains restrictive and a production policy is still **Unverified**.
+
+Future citation offsets are zero-based, half-open JavaScript/Unicode UTF-16 code-unit indexes over exact stored `content_text`. Provider adapters must convert and verify other conventions before citations are persisted.
 
 ## Clocked integration
 

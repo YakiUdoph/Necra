@@ -15,6 +15,13 @@
       "when": 1793637648612,
       "tag": "0001_omniscient_black_widow",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793736113857,
+      "tag": "0002_dapper_masked_marvel",
+      "breakpoints": true
     }
   ]
 }

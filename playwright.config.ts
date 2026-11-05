@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+import { databaseName } from "./tests/e2e/database";
+
 const adminUrl = process.env.TEST_DATABASE_ADMIN_URL;
 if (!adminUrl) {
   throw new Error(
@@ -7,7 +9,7 @@ if (!adminUrl) {
   );
 }
 const applicationUrl = new URL(adminUrl);
-applicationUrl.pathname = "/necra_test_t003_e2e";
+applicationUrl.pathname = `/${databaseName}`;
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -15,7 +17,6 @@ export default defineConfig({
   workers: 1,
   timeout: 60_000,
   globalSetup: "./tests/e2e/global-setup.ts",
-  globalTeardown: "./tests/e2e/global-teardown.ts",
   use: {
     baseURL: "http://localhost:3000",
     trace: "retain-on-failure",
@@ -25,6 +26,7 @@ export default defineConfig({
   ],
   webServer: {
     command: "npm.cmd run dev",
+    gracefulShutdown: { signal: "SIGINT", timeout: 1_000 },
     url: "http://localhost:3000/api/health",
     reuseExistingServer: false,
     timeout: 120_000,

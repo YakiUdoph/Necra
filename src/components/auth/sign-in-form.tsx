@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 
 import { authClient } from "@/lib/auth-client";
 import { Button, TextField } from "@/components/ui/primitives";
@@ -9,7 +9,10 @@ import { Button, TextField } from "@/components/ui/primitives";
 export function SignInForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [hydrated, setHydrated] = useState(false);
   const [pending, setPending] = useState(false);
+
+  useEffect(() => setHydrated(true), []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -31,7 +34,7 @@ export function SignInForm() {
   }
 
   return (
-    <form aria-busy={pending} className="auth-form" onSubmit={submit}>
+    <form aria-busy={pending} className="auth-form" method="post" onSubmit={submit}>
       <TextField
         autoComplete="email"
         id="email"
@@ -53,7 +56,7 @@ export function SignInForm() {
           {error}
         </p>
       ) : null}
-      <Button disabled={pending} type="submit">
+      <Button disabled={!hydrated || pending} type="submit">
         {pending ? "Signing in…" : "Sign in"}
       </Button>
     </form>

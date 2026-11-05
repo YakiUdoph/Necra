@@ -288,6 +288,11 @@ export const sourceDocuments = pgTable(
     workspaceId: uuid("workspace_id").notNull(),
     kind: sourceKind("kind").notNull(),
     title: text("title").notNull(),
+    sourceAttribution: text("source_attribution"),
+    sourceObservedAt: timestamp("source_observed_at", {
+      withTimezone: true,
+      mode: "date",
+    }),
     createdByUserId: uuid("created_by_user_id").notNull(),
     createdAt,
   },
@@ -317,6 +322,10 @@ export const sourceDocuments = pgTable(
       .onUpdate("restrict"),
     index("source_documents_project_idx").on(table.projectId),
     check("source_documents_title_nonempty", sql`length(trim(${table.title})) > 0`),
+    check(
+      "source_documents_attribution_nonempty",
+      sql`${table.sourceAttribution} is null or length(trim(${table.sourceAttribution})) > 0`,
+    ),
   ],
 );
 
@@ -330,6 +339,9 @@ export const documentVersions = pgTable(
     versionNumber: integer("version_number").notNull(),
     contentHash: varchar("content_hash", { length: 64 }).notNull(),
     storageObjectKey: text("storage_object_key"),
+    contentText: text("content_text"),
+    captureMethod: text("capture_method"),
+    idempotencyKey: text("idempotency_key"),
     mediaType: text("media_type").notNull(),
     byteSize: integer("byte_size").notNull(),
     processingStatus: versionProcessingStatus("processing_status")
@@ -349,6 +361,9 @@ export const documentVersions = pgTable(
       table.sourceDocumentId,
       table.versionNumber,
     ),
+    uniqueIndex("document_versions_project_idempotency_unique")
+      .on(table.projectId, table.idempotencyKey)
+      .where(sql`${table.idempotencyKey} is not null`),
     foreignKey({
       columns: [table.sourceDocumentId, table.projectId, table.workspaceId],
       foreignColumns: [
@@ -381,6 +396,20 @@ export const documentVersions = pgTable(
     check(
       "document_versions_media_type_nonempty",
       sql`length(trim(${table.mediaType})) > 0`,
+    ),
+    check(
+      "document_versions_idempotency_nonempty",
+      sql`${table.idempotencyKey} is null or length(trim(${table.idempotencyKey})) > 0`,
+    ),
+    check(
+      "document_versions_pasted_text_consistent",
+      sql`${table.contentText} is null or (
+        ${table.captureMethod} = 'pasted_text' and
+        ${table.mediaType} = 'text/plain' and
+        ${table.processingStatus} = 'ready' and
+        ${table.storageObjectKey} is null and
+        ${table.byteSize} = octet_length(${table.contentText})
+      )`,
     ),
   ],
 );
@@ -861,6 +890,7 @@ export const auditEvents = pgTable(
 
 export type User = typeof users.$inferSelect;
 export type Project = typeof projects.$inferSelect;
+export type SourceDocument = typeof sourceDocuments.$inferSelect;
 export type DocumentVersion = typeof documentVersions.$inferSelect;
 export type ChangeRequest = typeof changeRequests.$inferSelect;
 export type AnalysisRun = typeof analysisRuns.$inferSelect;
