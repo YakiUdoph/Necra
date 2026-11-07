@@ -24,6 +24,31 @@ describe("documented Clocked text contracts", () => {
     ).not.toThrow();
   });
 
+  it("accepts the observed null aggregate and claim-kinds compatibility shape", () => {
+    const observedCompatibilityShape = {
+      ...structuredClone(groundingRecordedResponse),
+      grounded: null,
+      ungrounded: null,
+      claims: groundingRecordedResponse.claims.map((claim, index) =>
+        index === 0
+          ? {
+              ...claim,
+              kinds: {
+                acknowledgement: 0.25,
+                offer_or_question: 0.25,
+                pointer: 0.25,
+                meta: 0.25,
+              },
+            }
+          : claim,
+      ),
+    };
+
+    expect(() =>
+      clockedGroundingTextResponseSchema.parse(observedCompatibilityShape),
+    ).not.toThrow();
+  });
+
   it("enforces the documented text request boundaries", () => {
     expect(() =>
       clockedCompareTextRequestSchema.parse({

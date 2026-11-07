@@ -129,6 +129,10 @@ const clockedClaimVerdictSchema = z.enum([
   "not_a_claim",
 ]);
 
+// Official recorded responses use numeric aggregate scores. A 2026-11-06
+// authenticated fictional-text run returned null when no aggregate score was populated.
+const clockedGroundingAggregateSchema = probabilitySchema.nullable();
+
 const clockedGroundingClaimSchema = z
   .object({
     claim: z.string(),
@@ -140,6 +144,7 @@ const clockedGroundingClaimSchema = z
     not_stated: probabilitySchema,
     not_a_claim: probabilitySchema,
     verdict: clockedClaimVerdictSchema,
+    kinds: z.record(z.string(), probabilitySchema).optional(),
     sources: z.record(z.string(), probabilitySchema),
     source: z.string().nullable(),
     evidence: clockedSourcePassageSchema.optional(),
@@ -150,8 +155,8 @@ export const clockedGroundingTextResponseSchema = z
   .object({
     model: z.string().min(1),
     instructions_used: z.string().min(1),
-    grounded: probabilitySchema,
-    ungrounded: probabilitySchema,
+    grounded: clockedGroundingAggregateSchema,
+    ungrounded: clockedGroundingAggregateSchema,
     verdict: z.string().min(1),
     threshold: probabilitySchema,
     claims: z.array(clockedGroundingClaimSchema),

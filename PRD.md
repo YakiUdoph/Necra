@@ -2,9 +2,11 @@
 
 ## Product summary
 
-Necra gives both sides of client work a shared, evidence-backed way to understand the original agreement, identify how later instructions may change it, review the evidence, make an explicit decision, and retain an audit trail.
+Necra gives both sides of client work one place to answer: what did we agree to, what changed later, what evidence supports that interpretation, and who made the final decision?
 
-Necra is a decision-support and record-keeping product. Automated comparisons surface findings; authorized people decide what those findings mean for the engagement.
+It is a decision-support and record-keeping product, not an automatic contract authority. Automated comparisons can surface possible changes or missing evidence. Only an authorized person can decide what those findings mean for the engagement.
+
+The distinction matters because client messages are often informal. A new request may be important evidence, but it is not automatically an approved change. Necra preserves that boundary throughout the workflow.
 
 ## Signature experiences
 

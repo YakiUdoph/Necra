@@ -44,7 +44,7 @@ export async function POST(
     return Response.json(
       {
         check,
-        message: "Analysis created. Clocked processing is not yet connected.",
+        message: "Analysis created. It has not been sent to Clocked.",
       },
       { status: 201, headers: { "Cache-Control": "no-store" } },
     );

@@ -11,6 +11,21 @@ const adminUrl = process.env.TEST_DATABASE_ADMIN_URL;
 if (!adminUrl) {
   throw new Error("TEST_DATABASE_ADMIN_URL is required for browser tests.");
 }
+const parsedAdminUrl = new URL(adminUrl);
+if (
+  parsedAdminUrl.protocol !== "postgresql:" ||
+  !["127.0.0.1", "localhost", "[::1]", "::1"].includes(parsedAdminUrl.hostname) ||
+  parsedAdminUrl.port !== "5432" ||
+  parsedAdminUrl.pathname !== "/postgres" ||
+  !/^necra_[a-z0-9_]+_test$/.test(parsedAdminUrl.username) ||
+  parsedAdminUrl.password.length === 0 ||
+  parsedAdminUrl.search.length > 0 ||
+  parsedAdminUrl.hash.length > 0
+) {
+  throw new Error(
+    "Refusing unsafe TEST_DATABASE_ADMIN_URL: use a password-protected necra_*_test role on loopback PostgreSQL port 5432 and the postgres admin database.",
+  );
+}
 if (!/^necra_test_[a-z0-9_]+$/.test(databaseName)) {
   throw new Error("Refusing to manage an unsafe browser-test database name.");
 }

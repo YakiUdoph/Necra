@@ -1,7 +1,7 @@
 # Clocked API contract note
 
-- **Status:** Official text-mode contract reviewed for T006; no authenticated Necra call
-  has been made.
+- **Status:** Official text-mode contract reviewed for T006; T008 adapter and authenticated
+  fictional-evidence Compare/Grounding path verified on 2026-11-06.
 - **Accessed:** 2026-11-05.
 - **Scope:** `POST /clocked/compare` and `POST /clocked/grounding` over HTTPS.
 
@@ -36,10 +36,10 @@ Officially documented:
 - Keys use their owning account's credit and concurrency allowance. They must remain in
   a backend secret store and the Authorization header must never be logged.
 
-Necra requirement: a future adapter reads `CLOCKED_API_KEY` only in a server-only module,
-persists the request key with the exact analysis attempt, and never sends a document until
-the transaction has confirmed the actor's active project authorization and exact input
-version identifiers.
+Necra's T008 adapter reads `CLOCKED_API_KEY` only in a server-only module, persists the
+request key with the exact analysis attempt, and never sends a document until the
+transaction has confirmed the actor's active project authorization, exact input version
+identifiers, content hashes, payload hash, and explicit external-processing confirmation.
 
 ## Compare text contract
 
@@ -235,7 +235,28 @@ controls, incident handling, and diagnostic-log retention. Until then, live veri
 must use fictional non-sensitive text, and production-sensitive Clocked processing remains
 blocked.
 
-## Live observations on 2026-11-05
+## Authenticated live observations on 2026-11-06
+
+Necra's real server adapter and PostgreSQL persistence path used fictional non-sensitive
+text. Both operations returned model `clocked-1.0`. Grounding completed with one persisted
+claim, no evidence reference, no decision, 2 credits, 32.743456 model milliseconds, and
+reference cost USD `0.000398`; Compare completed with 2 credits, 25.311232 model
+milliseconds, and the same reference cost. Response hashes and the ephemeral analysis
+correlation identifier are recorded in `PROGRESS.md`, not repeated here.
+
+The authenticated Grounding response exposed a live compatibility difference from the
+official recorded fixture: `grounded` and `ungrounded` were `null` when no aggregate score
+was populated, and the claim included an optional `kinds` probability map. Necra accepts
+only numeric-or-null aggregates and validates every `kinds` value as a probability; it
+does not infer a new product meaning. Unknown fields remain rejected. Exact aliases,
+quotes, code-point offsets, converted UTF-16 offsets, and source slices remain mandatory
+whenever evidence is present.
+
+The full real-PostgreSQL suite and authenticated installed-Chrome processing route passed.
+This establishes the narrow tested integration path only. It does not establish accuracy,
+production-sensitive-data suitability, stable pricing/latency, or a deletion guarantee.
+
+## Unauthenticated live observations on 2026-11-05
 
 No API key was available, so no authenticated inference, response schema, latency, model,
 credit, or cost was observed through Necra.
@@ -253,14 +274,15 @@ success schemas were observed live.
 
 ## Explicitly unverified
 
-- Authenticated success responses and headers from Necra or a direct authorized request.
-- Real Compare/Grounding latency, accuracy, credit debit, cost, and account concurrency.
-- Exact provider behavior when a successful response adds undocumented fields.
+- Accuracy/calibration, sustained Compare/Grounding latency, account concurrency, and
+  stability across model or deployment changes beyond the single recorded fictional case.
+- Exact provider behavior for future undocumented fields; strict validation will continue
+  to reject unreviewed additions.
 - Token-count admission before a request is sent; Necra can enforce characters but needs
   a provider-compatible tokenizer or must handle a documented validation failure.
 - Contractual processing region, residency, subprocessors, DPA, deletion SLA,
   operational-log content/retention, support SLA, and incident commitments.
 - Whether any future Clocked model/deployment change preserves observed calibration.
 
-T006 does not implement an HTTP adapter, create a check, call Clocked with credentials, or
-describe Clocked as integrated. Those belong to T007 and T008.
+T006 itself did not implement an HTTP adapter or call Clocked with credentials. T007 and
+T008 subsequently implemented and verified the narrow path described above.

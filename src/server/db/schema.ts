@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import {
   boolean,
   check,
+  doublePrecision,
   foreignKey,
   index,
   integer,
@@ -56,6 +57,12 @@ export const findingCategory = pgEnum("finding_category", [
   "possible_conflict",
   "ambiguity",
   "missing_evidence",
+]);
+export const providerClaimVerdict = pgEnum("provider_claim_verdict", [
+  "supported",
+  "contradicted",
+  "not_stated",
+  "not_a_claim",
 ]);
 export const evidenceRelationship = pgEnum("evidence_relationship", [
   "supports",
@@ -521,6 +528,14 @@ export const analysisRuns = pgTable(
   },
   (table) => [
     unique("analysis_runs_scope_unique").on(table.id, table.projectId, table.workspaceId),
+    unique("analysis_runs_decision_context_unique").on(
+      table.id,
+      table.projectId,
+      table.workspaceId,
+      table.changeRequestId,
+      table.agreementVersionId,
+      table.instructionVersionId,
+    ),
     uniqueIndex("analysis_runs_idempotency_unique").on(
       table.projectId,
       table.idempotencyKey,
@@ -600,6 +615,137 @@ export const analysisRuns = pgTable(
     check(
       "analysis_runs_idempotency_nonempty",
       sql`length(trim(${table.idempotencyKey})) > 0`,
+    ),
+  ],
+);
+
+export const analysisProviderResults = pgTable(
+  "analysis_provider_results",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    analysisRunId: uuid("analysis_run_id").notNull(),
+    projectId: uuid("project_id").notNull(),
+    workspaceId: uuid("workspace_id").notNull(),
+    provider: text("provider").notNull(),
+    adapterVersion: text("adapter_version").notNull(),
+    model: text("model").notNull(),
+    responseHash: varchar("response_hash", { length: 64 }).notNull(),
+    rawResponse: jsonb("raw_response").$type<Record<string, unknown>>().notNull(),
+    transportMetadata: jsonb("transport_metadata")
+      .$type<Record<string, string | number>>()
+      .notNull(),
+    receivedAt: timestamp("received_at", { withTimezone: true, mode: "date" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    unique("analysis_provider_results_scope_unique").on(
+      table.id,
+      table.analysisRunId,
+      table.projectId,
+      table.workspaceId,
+    ),
+    unique("analysis_provider_results_one_per_run").on(table.analysisRunId),
+    foreignKey({
+      columns: [table.analysisRunId, table.projectId, table.workspaceId],
+      foreignColumns: [analysisRuns.id, analysisRuns.projectId, analysisRuns.workspaceId],
+      name: "analysis_provider_results_run_scope_fk",
+    })
+      .onDelete("restrict")
+      .onUpdate("restrict"),
+    check(
+      "analysis_provider_results_hash_valid",
+      sql`${table.responseHash} ~ '^[0-9a-f]{64}$'`,
+    ),
+    check(
+      "analysis_provider_results_provider_nonempty",
+      sql`length(trim(${table.provider})) > 0 and length(trim(${table.adapterVersion})) > 0 and length(trim(${table.model})) > 0`,
+    ),
+  ],
+);
+
+export const providerClaimResults = pgTable(
+  "provider_claim_results",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    providerResultId: uuid("provider_result_id").notNull(),
+    analysisRunId: uuid("analysis_run_id").notNull(),
+    projectId: uuid("project_id").notNull(),
+    workspaceId: uuid("workspace_id").notNull(),
+    claimIndex: integer("claim_index").notNull(),
+    claim: text("claim").notNull(),
+    kind: text("kind").notNull(),
+    counted: boolean("counted").notNull(),
+    weight: doublePrecision("weight").notNull(),
+    supported: doublePrecision("supported").notNull(),
+    contradicted: doublePrecision("contradicted").notNull(),
+    notStated: doublePrecision("not_stated").notNull(),
+    notAClaim: doublePrecision("not_a_claim").notNull(),
+    verdict: providerClaimVerdict("verdict").notNull(),
+    sourceAlias: text("source_alias"),
+    evidenceDocumentVersionId: uuid("evidence_document_version_id"),
+    evidenceQuote: text("evidence_quote"),
+    evidenceStartOffset: integer("evidence_start_offset"),
+    evidenceEndOffset: integer("evidence_end_offset"),
+    evidenceConfidence: doublePrecision("evidence_confidence"),
+    createdAt,
+  },
+  (table) => [
+    unique("provider_claim_results_scope_unique").on(
+      table.id,
+      table.analysisRunId,
+      table.projectId,
+      table.workspaceId,
+    ),
+    unique("provider_claim_results_index_unique").on(
+      table.analysisRunId,
+      table.claimIndex,
+    ),
+    foreignKey({
+      columns: [
+        table.providerResultId,
+        table.analysisRunId,
+        table.projectId,
+        table.workspaceId,
+      ],
+      foreignColumns: [
+        analysisProviderResults.id,
+        analysisProviderResults.analysisRunId,
+        analysisProviderResults.projectId,
+        analysisProviderResults.workspaceId,
+      ],
+      name: "provider_claim_results_provider_result_scope_fk",
+    })
+      .onDelete("restrict")
+      .onUpdate("restrict"),
+    foreignKey({
+      columns: [table.evidenceDocumentVersionId, table.projectId, table.workspaceId],
+      foreignColumns: [
+        documentVersions.id,
+        documentVersions.projectId,
+        documentVersions.workspaceId,
+      ],
+      name: "provider_claim_results_evidence_version_scope_fk",
+    })
+      .onDelete("restrict")
+      .onUpdate("restrict"),
+    index("provider_claim_results_analysis_idx").on(table.analysisRunId),
+    check("provider_claim_results_index_nonnegative", sql`${table.claimIndex} >= 0`),
+    check(
+      "provider_claim_results_probability_range",
+      sql`${table.weight} >= 0 and ${table.supported} between 0 and 1 and ${table.contradicted} between 0 and 1 and ${table.notStated} between 0 and 1 and ${table.notAClaim} between 0 and 1`,
+    ),
+    check(
+      "provider_claim_results_evidence_consistent",
+      sql`(
+        ${table.evidenceDocumentVersionId} is null and ${table.evidenceQuote} is null and
+        ${table.evidenceStartOffset} is null and ${table.evidenceEndOffset} is null and
+        ${table.evidenceConfidence} is null
+      ) or (
+        ${table.evidenceDocumentVersionId} is not null and length(${table.evidenceQuote}) > 0 and
+        ${table.evidenceStartOffset} >= 0 and ${table.evidenceEndOffset} > ${table.evidenceStartOffset} and
+        ${table.evidenceConfidence} between 0 and 1
+      )`,
     ),
   ],
 );
@@ -765,8 +911,10 @@ export const decisions = pgTable(
   "decisions",
   {
     id: uuid("id").defaultRandom().primaryKey(),
+    analysisRunId: uuid("analysis_run_id").notNull(),
     changeRequestId: uuid("change_request_id").notNull(),
     agreementVersionId: uuid("agreement_version_id").notNull(),
+    instructionVersionId: uuid("instruction_version_id").notNull(),
     projectId: uuid("project_id").notNull(),
     workspaceId: uuid("workspace_id").notNull(),
     actorUserId: uuid("actor_user_id").notNull(),
@@ -788,8 +936,10 @@ export const decisions = pgTable(
       table.id,
       table.projectId,
       table.workspaceId,
+      table.analysisRunId,
       table.changeRequestId,
       table.agreementVersionId,
+      table.instructionVersionId,
     ),
     uniqueIndex("decisions_idempotency_unique").on(table.projectId, table.idempotencyKey),
     uniqueIndex("decisions_one_successor_unique")
@@ -798,6 +948,27 @@ export const decisions = pgTable(
     uniqueIndex("decisions_one_root_unique")
       .on(table.changeRequestId)
       .where(sql`${table.supersedesDecisionId} is null`),
+    foreignKey({
+      columns: [
+        table.analysisRunId,
+        table.projectId,
+        table.workspaceId,
+        table.changeRequestId,
+        table.agreementVersionId,
+        table.instructionVersionId,
+      ],
+      foreignColumns: [
+        analysisRuns.id,
+        analysisRuns.projectId,
+        analysisRuns.workspaceId,
+        analysisRuns.changeRequestId,
+        analysisRuns.agreementVersionId,
+        analysisRuns.instructionVersionId,
+      ],
+      name: "decisions_analysis_context_fk",
+    })
+      .onDelete("restrict")
+      .onUpdate("restrict"),
     foreignKey({
       columns: [table.changeRequestId, table.projectId, table.workspaceId],
       foreignColumns: [
@@ -843,15 +1014,19 @@ export const decisions = pgTable(
         table.supersedesDecisionId,
         table.projectId,
         table.workspaceId,
+        table.analysisRunId,
         table.changeRequestId,
         table.agreementVersionId,
+        table.instructionVersionId,
       ],
       foreignColumns: [
         table.id,
         table.projectId,
         table.workspaceId,
+        table.analysisRunId,
         table.changeRequestId,
         table.agreementVersionId,
+        table.instructionVersionId,
       ],
       name: "decisions_supersedes_same_context_fk",
     })

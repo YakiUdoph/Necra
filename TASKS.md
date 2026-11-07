@@ -1,5 +1,7 @@
 # Necra Implementation Tasks
 
+This is the ordered delivery plan, not a feature wishlist. Each task has a concrete result, dependencies, acceptance criteria, and a verification method so that completion means more than code being present. `PROGRESS.md` records what was actually observed.
+
 ## Status vocabulary
 
 Allowed values: `Not started`, `In progress`, `Blocked`, `Complete`.
@@ -83,7 +85,8 @@ A task is `Complete` only after every acceptance criterion passes and its verifi
 - **Dependencies:** T006, T007; authorized credentials and non-sensitive test evidence.
 - **Acceptance criteria:** Secrets remain server-only; request/response runtime validation, timeouts, provider errors, bounded retries, and redaction work; raw results remain distinguishable from domain decisions; contract tests pass; at least one authorized Compare and, if required by the workflow, Verify call succeeds end to end and is recorded without sensitive payloads.
 - **Verification method:** Unit/error tests, official-contract fixture tests, secret scan, and dated redacted staging integration run with correlation identifiers and observed results.
-- **Completion status:** Not started.
+- **Completion status:** Complete.
+- **Latest verification:** Completed on 2026-11-06. A dedicated non-production WSL PostgreSQL role and loopback-only harness guard drove all 24 real-database integration tests, including authenticated live Grounding persistence and a live Compare call with fictional evidence. Grounding and Compare each returned `clocked-1.0`, 2 credits, and validated response hashes; the authenticated installed-Chrome workflow passed in 1.2 minutes. The full local gate passed 11 unit files/64 tests, strict types, lint, formatting, and production build; Drizzle migration consistency, secret scans, exact evidence checks, zero-decision checks, and disposable-database cleanup also passed. Redacted identifiers and observed usage are recorded in `PROGRESS.md`.
 
 ### T009 — Present Agreement Reality Check findings
 
@@ -91,7 +94,8 @@ A task is `Complete` only after every acceptance criterion passes and its verifi
 - **Dependencies:** T004, T005, T008.
 - **Acceptance criteria:** Findings distinguish change, conflict, ambiguity, and missing evidence; every supported claim navigates to exact stored passage/version; unsupported findings are labeled; provider/model output is never labeled a decision or verified human conclusion; mobile reading remains usable.
 - **Verification method:** Normalization/citation integrity tests, malformed/unsupported finding tests, browser comparison flow, keyboard/screen-reader review, and responsive/accessibility checks.
-- **Completion status:** Not started.
+- **Completion status:** Complete.
+- **Latest verification:** Completed on 2026-11-06. The authorized read projection renders only persisted Clocked claims, exact immutable input identities, verified quotations/UTF-16 offsets, and provider origin. Zero-reference claims show an explicit evidence-unavailable state without citations, scores, or falsehood claims. The full local gate passed 13 unit files/72 tests and a production build; real PostgreSQL passed 4 files/24 tests with one intentional live-only skip; the installed-Chrome workflow passed persisted evidence-present/evidence-absent rendering, reload, tenant denial, keyboard context inspection, axe scans, and 390px overflow.
 
 ### T010 — Implement human review and explicit decisions
 
@@ -99,7 +103,8 @@ A task is `Complete` only after every acceptance criterion passes and its verifi
 - **Dependencies:** T003, T007, T009; approved initial decision vocabulary.
 - **Acceptance criteria:** Reviews preserve original findings; decision dialog identifies exact check/versions and never defaults to approval; only authorized explicit server action creates a decision; actor/time/authority/outcome/rationale/supersession are recorded transactionally; invalid/duplicate actions fail safely.
 - **Verification method:** Domain/state tests; authorization and concurrency integration tests; prove messages/uploads/job completion cannot decide; complete browser decision flow with accessibility review.
-- **Completion status:** Not started.
+- **Completion status:** Complete.
+- **Latest verification:** Completed on 2026-11-06. The initial vocabulary is exactly approve/reject. A deliberate dialog binds the choice to one persisted Reality Check and its immutable agreement/instruction versions; the transaction rechecks active membership and `can_decide`, derives the actor from the verified session, appends review/decision/audit records, updates the request state, and preserves supersession history. The final local gate passed 14 unit files/77 tests and production build; Drizzle migration consistency passed; all 30 applicable real-PostgreSQL integration tests passed with the one live-only provider test skipped; and installed Chrome passed the authenticated record/reload/unauthorized-replacement workflow with WCAG-tagged axe and mobile checks. The Playwright wrapper lingered after its reported pass and required manual interruption plus verified disposable-database cleanup.
 
 ### T011 — Build Decision Replay from the auditable record
 
@@ -107,7 +112,8 @@ A task is `Complete` only after every acceptance criterion passes and its verifi
 - **Dependencies:** T005, T007, T009, T010.
 - **Acceptance criteria:** History is append-only through APIs, tenant-scoped, ordered deterministically, attributable, and linked to evidence; every replay entry maps to a persisted record; gaps are shown rather than generated or inferred; supersession is visible without erasing history; exports, if added, apply the same authorization and redaction.
 - **Verification method:** Audit integration tests, tamper/authorization tests, chronological browser flow, and timezone/accessibility review.
-- **Completion status:** Not started.
+- **Completion status:** Complete.
+- **Latest verification:** Completed on 2026-11-07. Decision Replay is a server-authorized, tenant-scoped read projection over persisted source versions, change requests, Reality Checks, provider results/findings, human reviews, decisions, and matching audit records. It orders equal timestamps deterministically, revalidates citations against exact stored text, labels human and external origin, exposes missing audit/evidence links without inventing events, and retains visible decision supersession. The full local gate passed 15 unit files/80 tests and the production build; Drizzle migration consistency passed; all 33 applicable real-PostgreSQL integration tests passed with one live-only provider test skipped; and installed Chrome passed the authenticated reload/chronology/keyboard/axe/mobile flow. The first browser attempt hit the recorded transient Next.js navigation failure before workflow entry; the clean rerun passed. The Playwright wrapper again lingered after its reported pass and required manual interruption followed by verified disposable-database cleanup.
 
 ### T012 — Harden, operate, and verify the initial release
 
@@ -115,4 +121,4 @@ A task is `Complete` only after every acceptance criterion passes and its verifi
 - **Dependencies:** T001–T011.
 - **Acceptance criteria:** PRD acceptance criteria pass, including complete Agreement Reality Check and persisted-record-only Decision Replay flows; CI gates are active; security/privacy review, dependency/secret scan, retention/deletion policy, monitoring, backups and restore test, migration procedure, runbook, and production smoke checklist exist; known defects are triaged; competitor research exists before any originality claim.
 - **Verification method:** Fresh-environment build; full automated suite; manual exploratory, keyboard, responsive, and failure-path review; authorized staging E2E; backup restoration exercise; documented release checklist with real results.
-- **Completion status:** Not started.
+- **Completion status:** In progress.

@@ -1,10 +1,10 @@
 # Necra Agent Instructions
 
-This file governs every coding and documentation session in this repository.
+This is the working agreement for anyone changing Necra. It keeps implementation, documentation, and status claims aligned with what has actually been built and tested.
 
 ## Mission
 
-Build Necra as a trustworthy agreement-change review product for freelancers, agencies, contractors, and their clients. The defining workflow is:
+Build Necra as an agreement-change review product that people can trust with consequential project records. The product is for freelancers, agencies, contractors, and their clients. Its defining workflow is:
 
 Original agreement → New instructions → Evidence-based comparison → Human review → Explicit decision → Auditable record
 
@@ -20,7 +20,7 @@ Before changing the repository, consult these documents in order:
 6. `TASKS.md` — ordered work and task status.
 7. `PROGRESS.md` — verified current state, defects, blockers, and next task.
 
-Re-read the relevant sections immediately before implementing a task. Inspect the existing code and tests; do not assume the documents perfectly describe the current repository.
+This order moves from authority and product intent to implementation status. Re-read the sections relevant to the task immediately before changing code. Then inspect the code and tests, because documentation can lag behind the working tree.
 
 ## Session workflow
 

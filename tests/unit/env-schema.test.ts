@@ -9,6 +9,10 @@ describe("parseServerEnvironment", () => {
     expect(result).toEqual({
       NODE_ENV: "test",
       CLOCKED_BASE_URL: "https://clocked.rezolve.ai/clocked",
+      CLOCKED_MAX_CONCURRENT_GLOBAL: 1,
+      CLOCKED_MAX_ATTEMPTS_GLOBAL_24H: 20,
+      CLOCKED_MAX_CONCURRENT_PER_WORKSPACE: 1,
+      CLOCKED_MAX_ATTEMPTS_PER_WORKSPACE_24H: 20,
       AUTH_ALLOW_SIGN_UP: false,
     });
   });
@@ -79,5 +83,14 @@ describe("parseServerEnvironment", () => {
         BETTER_AUTH_URL: "https://necra.example",
       }).BETTER_AUTH_URL,
     ).toBe("https://necra.example");
+  });
+
+  it("requires an HTTPS Clocked base URL in production", () => {
+    expect(() =>
+      parseServerEnvironment({
+        NODE_ENV: "production",
+        CLOCKED_BASE_URL: "http://clocked.example/clocked",
+      }),
+    ).toThrow("CLOCKED_BASE_URL must use HTTPS in production");
   });
 });

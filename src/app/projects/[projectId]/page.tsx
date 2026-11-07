@@ -5,6 +5,7 @@ import { RealityCheckForm } from "@/components/analysis/reality-check-form";
 import { RealityCheckList } from "@/components/analysis/reality-check-list";
 import { EvidenceForm } from "@/components/evidence/evidence-form";
 import { EvidenceList } from "@/components/evidence/evidence-list";
+import { DecisionReplay } from "@/components/replay/decision-replay";
 import {
   EmptyState,
   Notice,
@@ -15,6 +16,8 @@ import { getAuthorizedProject } from "@/server/authorization/project-access";
 import { getVerifiedSession } from "@/server/authorization/session";
 import { listEvidenceSources } from "@/server/evidence/evidence-service";
 import { listAnalyses } from "@/server/analysis/analysis-service";
+import { serverEnvironment } from "@/server/env";
+import { getDecisionReplay } from "@/server/replay/decision-replay-service";
 
 export const dynamic = "force-dynamic";
 
@@ -32,8 +35,11 @@ export default async function ProjectPage({
   if (!project) {
     notFound();
   }
-  const evidence = await listEvidenceSources(projectId);
-  const checks = await listAnalyses(projectId);
+  const [evidence, checks, replay] = await Promise.all([
+    listEvidenceSources(projectId),
+    listAnalyses(projectId),
+    getDecisionReplay(projectId),
+  ]);
   const agreements = evidence.filter((source) => source.kind === "agreement");
   const instructions = evidence.filter((source) => source.kind === "instruction");
   const canWrite = project.role === "owner" || project.role === "collaborator";
@@ -73,10 +79,12 @@ export default async function ProjectPage({
           title={project.name}
         />
 
-        <Notice title="Evidence storage is available">
+        <Notice title="Evidence-backed Reality Checks are available">
           <p>
             Pasted agreement and instruction text is stored as immutable PostgreSQL
-            versions. Comparisons, reviews, and decisions remain unavailable.
+            versions. Completed automated findings show only persisted provider results
+            and verified source passages. Explicit authorized decisions are recorded
+            separately from automated findings.
           </p>
         </Notice>
 
@@ -167,7 +175,11 @@ export default async function ProjectPage({
             </div>
             <StatusLozenge tone="active">Creation enabled</StatusLozenge>
           </div>
-          <RealityCheckList checks={checks} />
+          <RealityCheckList
+            canDecide={project.canDecide && canWrite}
+            checks={checks}
+            processingConfigured={Boolean(serverEnvironment.CLOCKED_API_KEY)}
+          />
           {canWrite && agreementVersions.length > 0 && instructionVersions.length > 0 ? (
             <RealityCheckForm
               agreements={agreementVersions}
@@ -197,15 +209,9 @@ export default async function ProjectPage({
               <p className="workflow-kicker">Human authority and history</p>
               <h2 id="decisions-title">Decisions & Decision Replay</h2>
             </div>
-            <StatusLozenge tone="planned">Planned</StatusLozenge>
+            <StatusLozenge tone="active">Decision records enabled</StatusLozenge>
           </div>
-          <EmptyState title="Decision history is not available yet">
-            <p>
-              Necra does not infer decisions from messages, silence, uploads, or automated
-              findings. T010 and T011 will add explicit decisions and a replay of genuine
-              persisted records.
-            </p>
-          </EmptyState>
+          <DecisionReplay replay={replay} />
         </section>
       </main>
     </AppShell>

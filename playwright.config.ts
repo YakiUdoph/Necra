@@ -1,21 +1,17 @@
 import { defineConfig, devices } from "@playwright/test";
 
-import { databaseName } from "./tests/e2e/database";
+import { databaseName, getAdminUrl } from "./tests/e2e/database";
 
-const adminUrl = process.env.TEST_DATABASE_ADMIN_URL;
-if (!adminUrl) {
-  throw new Error(
-    "TEST_DATABASE_ADMIN_URL is required for browser tests against a disposable PostgreSQL database.",
-  );
-}
+const adminUrl = getAdminUrl();
 const applicationUrl = new URL(adminUrl);
 applicationUrl.pathname = `/${databaseName}`;
+const clockedLiveTest = process.env.CLOCKED_LIVE_TEST === "true";
 
 export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: false,
   workers: 1,
-  timeout: 60_000,
+  timeout: clockedLiveTest ? 180_000 : 60_000,
   globalSetup: "./tests/e2e/global-setup.ts",
   use: {
     baseURL: "http://localhost:3000",
@@ -35,6 +31,7 @@ export default defineConfig({
       BETTER_AUTH_SECRET: "test-only-browser-secret-with-at-least-32-characters",
       BETTER_AUTH_URL: "http://localhost:3000",
       AUTH_ALLOW_SIGN_UP: "true",
+      CLOCKED_API_KEY: clockedLiveTest ? (process.env.CLOCKED_API_KEY ?? "") : "",
     },
   },
 });

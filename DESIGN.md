@@ -2,7 +2,9 @@
 
 ## Direction
 
-Necra should feel like a beautifully typeset working paper: calm, exact, premium, and collaborative. It is not a generic analytics dashboard and should not resemble an AI chat console. The core visual motif is the margin note—evidence, changes, and decisions sit beside the relevant source instead of floating in abstract cards.
+Necra should feel like a carefully typeset working paper: calm, exact, and collaborative. That direction supports the job users are doing—reading consequential source text and deciding what changed—without making the interface feel legalistic or machine-led.
+
+It is not a generic analytics dashboard or an AI chat console. The core visual motif is the margin note: evidence, changes, and decisions belong beside the relevant source rather than floating in abstract cards.
 
 Avoid neon gradients, glassmorphism, oversized metric tiles, decorative charts, robot/sparkle imagery, chat bubbles as the primary workflow, and dense grids of interchangeable cards.
 

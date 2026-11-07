@@ -9,16 +9,26 @@ import { requireVerifiedSession } from "../authorization/session";
 import { getDatabase, type Database } from "../db/client";
 import {
   analysisRuns,
+  analysisProviderResults,
   auditEvents,
   authAccounts,
   changeRequests,
+  decisions,
   documentVersions,
   projectMemberships,
   projects,
+  providerClaimResults,
+  reviewActions,
   sourceDocuments,
+  users,
   workspaceMemberships,
 } from "../db/schema";
 import { buildClockedGroundingRequest, hashClockedRequest } from "./clocked-mapping";
+import {
+  type FindingSourceVersion,
+  type NormalizedFinding,
+  normalizePersistedProviderClaim,
+} from "./finding-normalization";
 import { AnalysisValidationError, parseAnalysisCreation } from "./validation";
 import {
   MAX_ANALYSIS_ATTEMPTS,
@@ -55,6 +65,7 @@ export interface AnalysisRecord {
   id: string;
   projectId: string;
   workspaceId: string;
+  changeRequestId: string;
   agreementDocumentId: string;
   agreementVersionId: string;
   agreementContentHash: string;
@@ -82,6 +93,53 @@ export interface AnalysisRecord {
   completedAt: Date | null;
   failedAt: Date | null;
   reconciliationRequiredAt: Date | null;
+  providerOrigin: {
+    provider: string;
+    adapterVersion: string;
+    model: string;
+    validatedAt: Date;
+  } | null;
+  agreementSource: FindingSourceVersion;
+  instructionSource: FindingSourceVersion;
+  findings: NormalizedFinding[];
+  providerClaims: ProviderClaimRecord[];
+  reviewActions: HumanReviewRecord[];
+  decisions: HumanDecisionRecord[];
+}
+
+export interface HumanReviewRecord {
+  id: string;
+  action: "noted" | "confirmed" | "corrected" | "dismissed";
+  actorLabel: string;
+  createdAt: Date;
+}
+
+export interface HumanDecisionRecord {
+  id: string;
+  outcome: "approved" | "rejected" | "unresolved";
+  rationale: string | null;
+  actorLabel: string;
+  decidedAt: Date;
+  supersedesDecisionId: string | null;
+  isCurrent: boolean;
+  analysisRunId: string;
+  changeRequestId: string;
+  agreementVersionId: string;
+  instructionVersionId: string;
+}
+
+export interface ProviderClaimRecord {
+  claimIndex: number;
+  claim: string;
+  verdict: "supported" | "contradicted" | "not_stated" | "not_a_claim";
+  supported: number;
+  contradicted: number;
+  notStated: number;
+  notAClaim: number;
+  evidenceDocumentVersionId: string | null;
+  evidenceQuote: string | null;
+  evidenceStartOffset: number | null;
+  evidenceEndOffset: number | null;
 }
 
 export async function createAnalysis(projectId: string, input: unknown) {
@@ -297,10 +355,10 @@ export async function listAnalysesForActor(
   }
 }
 
-type Transaction = Parameters<Parameters<Database["transaction"]>[0]>[0];
+export type AnalysisTransaction = Parameters<Parameters<Database["transaction"]>[0]>[0];
 
-async function requireProjectActor(
-  transaction: Transaction,
+export async function requireProjectActor(
+  transaction: AnalysisTransaction,
   actorUserId: string,
   projectId: string,
   requireWrite: boolean,
@@ -349,8 +407,8 @@ async function requireProjectActor(
   return actor;
 }
 
-async function getReadyVersion(
-  transaction: Transaction,
+export async function getReadyVersion(
+  transaction: AnalysisTransaction,
   projectId: string,
   workspaceId: string,
   versionId: string,
@@ -397,7 +455,7 @@ async function getReadyVersion(
 }
 
 async function getAnalysisInScope(
-  transaction: Transaction,
+  transaction: AnalysisTransaction,
   projectId: string,
   analysisId: string,
 ): Promise<AnalysisRecord> {
@@ -421,10 +479,106 @@ async function getAnalysisInScope(
     run.instructionVersionId,
     "instruction",
   );
+  const claims = await transaction
+    .select({
+      claimIndex: providerClaimResults.claimIndex,
+      claim: providerClaimResults.claim,
+      verdict: providerClaimResults.verdict,
+      supported: providerClaimResults.supported,
+      contradicted: providerClaimResults.contradicted,
+      notStated: providerClaimResults.notStated,
+      notAClaim: providerClaimResults.notAClaim,
+      evidenceDocumentVersionId: providerClaimResults.evidenceDocumentVersionId,
+      evidenceQuote: providerClaimResults.evidenceQuote,
+      evidenceStartOffset: providerClaimResults.evidenceStartOffset,
+      evidenceEndOffset: providerClaimResults.evidenceEndOffset,
+    })
+    .from(providerClaimResults)
+    .where(eq(providerClaimResults.analysisRunId, run.id))
+    .orderBy(asc(providerClaimResults.claimIndex));
+  const [providerResult] = await transaction
+    .select({
+      provider: analysisProviderResults.provider,
+      adapterVersion: analysisProviderResults.adapterVersion,
+      model: analysisProviderResults.model,
+    })
+    .from(analysisProviderResults)
+    .where(
+      and(
+        eq(analysisProviderResults.analysisRunId, run.id),
+        eq(analysisProviderResults.projectId, run.projectId),
+        eq(analysisProviderResults.workspaceId, run.workspaceId),
+      ),
+    )
+    .limit(1);
+  const humanReviews = await transaction
+    .select({
+      id: reviewActions.id,
+      action: reviewActions.action,
+      actorName: users.name,
+      actorEmail: users.email,
+      createdAt: reviewActions.createdAt,
+    })
+    .from(reviewActions)
+    .innerJoin(users, eq(users.id, reviewActions.actorUserId))
+    .where(
+      and(
+        eq(reviewActions.analysisRunId, run.id),
+        eq(reviewActions.projectId, run.projectId),
+        eq(reviewActions.workspaceId, run.workspaceId),
+      ),
+    )
+    .orderBy(asc(reviewActions.createdAt), asc(reviewActions.id));
+  const humanDecisions = await transaction
+    .select({
+      id: decisions.id,
+      outcome: decisions.outcome,
+      rationale: decisions.rationale,
+      actorName: users.name,
+      actorEmail: users.email,
+      decidedAt: decisions.decidedAt,
+      supersedesDecisionId: decisions.supersedesDecisionId,
+      analysisRunId: decisions.analysisRunId,
+      changeRequestId: decisions.changeRequestId,
+      agreementVersionId: decisions.agreementVersionId,
+      instructionVersionId: decisions.instructionVersionId,
+    })
+    .from(decisions)
+    .innerJoin(users, eq(users.id, decisions.actorUserId))
+    .where(
+      and(
+        eq(decisions.analysisRunId, run.id),
+        eq(decisions.projectId, run.projectId),
+        eq(decisions.workspaceId, run.workspaceId),
+      ),
+    )
+    .orderBy(asc(decisions.decidedAt), asc(decisions.id));
+  const supersededDecisionIds = new Set(
+    humanDecisions.flatMap((decision) =>
+      decision.supersedesDecisionId ? [decision.supersedesDecisionId] : [],
+    ),
+  );
+  const agreementSource: FindingSourceVersion = {
+    documentId: run.agreementDocumentId,
+    versionId: run.agreementVersionId,
+    title: agreement.title,
+    versionNumber: agreement.versionNumber,
+    contentHash: run.agreementContentHash,
+    content: agreement.content,
+  };
+  const instructionSource: FindingSourceVersion = {
+    documentId: run.instructionDocumentId,
+    versionId: run.instructionVersionId,
+    title: instruction.title,
+    versionNumber: instruction.versionNumber,
+    contentHash: run.instructionContentHash,
+    content: instruction.content,
+  };
   return {
     id: run.id,
     projectId: run.projectId,
     workspaceId: run.workspaceId,
+    changeRequestId: run.changeRequestId,
     agreementDocumentId: run.agreementDocumentId,
     agreementVersionId: run.agreementVersionId,
     agreementContentHash: run.agreementContentHash,
@@ -446,6 +600,40 @@ async function getAnalysisInScope(
     completedAt: run.completedAt,
     failedAt: run.failedAt,
     reconciliationRequiredAt: run.reconciliationRequiredAt,
+    providerOrigin:
+      providerResult && run.validatedResultAt
+        ? {
+            provider: providerResult.provider,
+            adapterVersion: providerResult.adapterVersion,
+            model: providerResult.model,
+            validatedAt: run.validatedResultAt,
+          }
+        : null,
+    agreementSource,
+    instructionSource,
+    findings: claims.map((claim) =>
+      normalizePersistedProviderClaim(claim, agreementSource),
+    ),
+    providerClaims: claims,
+    reviewActions: humanReviews.map((review) => ({
+      id: review.id,
+      action: review.action,
+      actorLabel: review.actorName || review.actorEmail || "Authenticated member",
+      createdAt: review.createdAt,
+    })),
+    decisions: humanDecisions.map((decision) => ({
+      id: decision.id,
+      outcome: decision.outcome,
+      rationale: decision.rationale,
+      actorLabel: decision.actorName || decision.actorEmail || "Authenticated member",
+      decidedAt: decision.decidedAt,
+      supersedesDecisionId: decision.supersedesDecisionId,
+      isCurrent: !supersededDecisionIds.has(decision.id),
+      analysisRunId: decision.analysisRunId,
+      changeRequestId: decision.changeRequestId,
+      agreementVersionId: decision.agreementVersionId,
+      instructionVersionId: decision.instructionVersionId,
+    })),
   };
 }
 

@@ -5,13 +5,9 @@ import { resolve } from "node:path";
 import { Pool, type PoolClient } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-const adminDatabaseUrl = process.env.TEST_DATABASE_ADMIN_URL;
+import { getSafeTestDatabaseAdminUrl } from "../helpers/test-database";
 
-if (!adminDatabaseUrl) {
-  throw new Error(
-    "TEST_DATABASE_ADMIN_URL is required. Integration tests only run against a disposable PostgreSQL database.",
-  );
-}
+const adminDatabaseUrl = getSafeTestDatabaseAdminUrl();
 
 const databaseName = `necra_test_${randomUUID().replaceAll("-", "")}`;
 const adminPool = new Pool({ connectionString: adminDatabaseUrl, max: 1 });

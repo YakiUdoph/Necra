@@ -1,5 +1,7 @@
 # Necra Engineering Rules
 
+These rules turn Necra's product promises into reviewable engineering constraints. They are deliberately strict where a shortcut could change the meaning of evidence, grant access, imply approval, or hide a failure. When delivery pressure conflicts with these rules, preserve the safer behavior and record the blocker.
+
 ## Coding standards
 
 - Use strict TypeScript. Do not introduce `any`, unchecked casts, or non-null assertions without a documented, narrowly scoped reason.

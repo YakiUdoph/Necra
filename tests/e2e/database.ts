@@ -3,14 +3,12 @@ import { resolve } from "node:path";
 
 import { Pool, type PoolClient } from "pg";
 
+import { getSafeTestDatabaseAdminUrl } from "../helpers/test-database";
+
 export const databaseName = "necra_test_t005_e2e";
 
 export function getAdminUrl() {
-  const value = process.env.TEST_DATABASE_ADMIN_URL;
-  if (!value) {
-    throw new Error("TEST_DATABASE_ADMIN_URL is required");
-  }
-  return value;
+  return getSafeTestDatabaseAdminUrl();
 }
 
 export function getApplicationUrl() {
