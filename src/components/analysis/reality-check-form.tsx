@@ -98,7 +98,7 @@ export function RealityCheckForm({
         </select>
       </div>
       {agreement && instruction ? (
-        <fieldset className="notice">
+        <fieldset className="notice version-confirmation">
           <legend>Exact version confirmation</legend>
           <p>
             <strong>Agreement:</strong> {agreement.title}, version{" "}
