@@ -182,7 +182,7 @@ export async function transitionAnalysisForWorker(
         ),
       )
       .limit(1)
-      .for("update");
+      .for("update", { of: analysisRuns });
     if (!current) throw new AnalysisStaleTransitionError();
     const now = new Date();
     const nextStatus: AnalysisLifecycleStatus =
@@ -397,7 +397,7 @@ export async function requireProjectActor(
     )
     .where(eq(projects.id, projectId))
     .limit(1)
-    .for("update");
+    .for("update", { of: projectMemberships });
   if (
     !actor ||
     !hasProjectPermission(actor, requireWrite ? "project:write" : "project:read")
@@ -414,6 +414,9 @@ export async function getReadyVersion(
   versionId: string,
   requiredKind: "agreement" | "instruction",
 ) {
+  // Document versions and their source identity are database-trigger immutable.
+  // A row lock would add no application safety here and would require granting
+  // the runtime role UPDATE privileges on evidence tables it must never mutate.
   const [record] = await transaction
     .select({
       versionId: documentVersions.id,
@@ -441,8 +444,7 @@ export async function getReadyVersion(
         eq(documentVersions.workspaceId, workspaceId),
       ),
     )
-    .limit(1)
-    .for("share");
+    .limit(1);
   if (
     !record ||
     record.kind !== requiredKind ||

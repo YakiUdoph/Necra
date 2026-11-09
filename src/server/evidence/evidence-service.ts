@@ -408,7 +408,7 @@ async function requireProjectActor(
     )
     .where(eq(projects.id, projectId))
     .limit(1)
-    .for("update");
+    .for("update", { of: projectMemberships });
 
   if (
     !actor ||

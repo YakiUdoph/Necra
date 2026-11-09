@@ -209,7 +209,7 @@ async function claimAnalysis(
       .from(analysisRuns)
       .where(and(eq(analysisRuns.id, analysisId), eq(analysisRuns.projectId, projectId)))
       .limit(1)
-      .for("update");
+      .for("update", { of: analysisRuns });
     if (!run) throw new AnalysisNotFoundError();
     if (run.status === "completed") {
       throw new AnalysisProcessingConflictError("already_completed");
@@ -468,7 +468,7 @@ async function persistProviderResult(
         ),
       )
       .limit(1)
-      .for("update");
+      .for("update", { of: analysisRuns });
     if (!run) throw new AnalysisStaleTransitionError();
     const [storedResult] = await transaction
       .insert(analysisProviderResults)

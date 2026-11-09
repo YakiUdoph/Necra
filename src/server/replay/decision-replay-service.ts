@@ -188,7 +188,7 @@ export async function getDecisionReplayForActor(
       )
       .where(eq(projects.id, projectId))
       .limit(1)
-      .for("share");
+      .for("share", { of: projectMemberships });
     if (!authorization || !hasProjectPermission(authorization, "project:read")) {
       throw new ReplayNotFoundError();
     }

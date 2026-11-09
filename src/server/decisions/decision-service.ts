@@ -130,7 +130,7 @@ export async function createDecisionForActor(
         )
         .where(eq(projects.id, projectId))
         .limit(1)
-        .for("update");
+        .for("update", { of: projectMemberships });
 
       if (!actor || !hasProjectPermission(actor, "decision:create")) {
         throw new DecisionNotFoundError();
@@ -170,7 +170,7 @@ export async function createDecisionForActor(
           and(eq(analysisRuns.id, analysisId), eq(analysisRuns.projectId, projectId)),
         )
         .limit(1)
-        .for("update");
+        .for("update", { of: analysisRuns });
       if (run?.status !== "completed" || !run.providerResponseHash) {
         throw new DecisionNotFoundError();
       }

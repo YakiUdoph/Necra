@@ -66,7 +66,7 @@ export async function changeProjectMembershipForActor(
       )
       .where(eq(projects.id, projectId))
       .limit(1)
-      .for("update");
+      .for("update", { of: projectMemberships });
 
     if (!actor || !hasProjectPermission(actor, "membership:manage")) {
       throw new ResourceNotFoundError();
@@ -87,7 +87,7 @@ export async function changeProjectMembershipForActor(
         ),
       )
       .limit(1)
-      .for("update");
+      .for("update", { of: projectMemberships });
 
     if (!target) {
       throw new ResourceNotFoundError();
@@ -109,7 +109,7 @@ export async function changeProjectMembershipForActor(
             eq(projectMemberships.status, "active"),
           ),
         )
-        .for("update");
+        .for("update", { of: projectMemberships });
       if (owners.length === 1) {
         throw new LastOwnerError();
       }
