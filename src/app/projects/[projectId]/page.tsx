@@ -6,8 +6,8 @@ import { RealityCheckList } from "@/components/analysis/reality-check-list";
 import { EvidenceForm } from "@/components/evidence/evidence-form";
 import { EvidenceList } from "@/components/evidence/evidence-list";
 import { DecisionReplay } from "@/components/replay/decision-replay";
-import { DecisionReplay } from "@/components/replay/decision-replay";
 import { SelfDecisionAuthority } from "@/components/permissions/self-decision-authority";
+import {
   EmptyState,
   Notice,
   PageHeader,
