@@ -2317,3 +2317,13 @@ footer {
     padding: 18px;
   }
 }
+/* Keep exact-version confirmation readable at all viewport widths. */
+.notice.version-confirmation {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.notice.version-confirmation p {
+  max-width: 100%;
+}
