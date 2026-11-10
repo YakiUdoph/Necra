@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import "./atelier.css";
 
@@ -13,7 +14,7 @@ export default function HomePage() {
     <div className="atelier">
       <a className="atelier-skip" href="#main-content">Skip to content</a>
       <header className="atelier-header">
-        <Link className="atelier-wordmark" href="/" aria-label="Necra home">necra<span>.</span></Link>
+        <Link className="atelier-wordmark" href="/" aria-label="Necra home" style={{ display: "inline-flex", alignItems: "center", gap: "10px" }}><Image src="/necra-logo.png" alt="" aria-hidden="true" width={36} height={36} style={{ borderRadius: "9px", flexShrink: 0 }} />necra<span>.</span></Link>
         <nav className="atelier-nav" aria-label="Primary navigation">
           <a href="#method">The method</a>
           <a href="#workspace">Inside Necra</a>
