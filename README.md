@@ -1,15 +1,15 @@
-# NECRA
+# Necra
 
-Clear agreements. Accountable changes. Decisions you can trace.
+**Clear agreements. Accountable changes. Decisions you can trace.**
 
 Necra helps freelancers, agencies, contractors, and their clients manage a common source of project disputes: the work agreed at the start is not always the work requested later.
 
 Instead of relying on scattered messages or treating an automated assessment as a final answer, Necra preserves the original agreement, records later instructions, checks what the available evidence supports, and gives an authorized person a clear place to approve or reject a proposed change.
 
-Live application: https://necra.vercel.app/
-Source code: https://github.com/YakiUdoph/Necra
+**Live application:** https://necra.vercel.app/
+**Source code:** https://github.com/YakiUdoph/Necra
 
-«Project status — November 9, 2026: The core workflow has been manually tested on the production deployment. This includes reviewing stored agreement versions, inspecting a completed Clocked Reality Check, granting decision authority, recording a human decision, and viewing that decision in Decision Replay. These observations confirm the specific workflow tested, not every possible security, failure, or access scenario.»
+> **Project status — November 9, 2026:** The core workflow has been manually tested on the production deployment. This includes reviewing stored agreement versions, inspecting a completed Clocked Reality Check, granting decision authority, recording a human decision, and viewing that decision in Decision Replay. These observations confirm the specific workflow tested, not every possible security, failure, or access scenario.
 
 ---
 
@@ -35,7 +35,7 @@ Necra addresses this problem by connecting the original evidence, subsequent req
 
 Necra provides two connected capabilities.
 
-Agreement Reality Check
+### Agreement Reality Check
 
 Agreement Reality Check examines a selected original agreement version alongside later instructions.
 
@@ -47,7 +47,7 @@ When a finding lacks a verifiable source passage, Necra reports that limitation 
 
 Automated findings are presented for human review. They do not automatically approve or reject a request.
 
-Decision Replay
+### Decision Replay
 
 Decision Replay reconstructs the recorded history of an agreement and its subsequent changes.
 
@@ -119,7 +119,7 @@ Users can trace the relationship between the original agreement, later instructi
 
 A later decision can supersede an earlier one without deleting the previous record.
 
-Important: A decision recorded in Necra is a project record. It is not an electronic signature, a legal amendment, or proof that another party accepted revised contractual terms.
+**Important:** A decision recorded in Necra is a project record. It is not an electronic signature, a legal amendment, or proof that another party accepted revised contractual terms.
 
 ---
 
@@ -127,23 +127,24 @@ Important: A decision recorded in Necra is a project record. It is not an electr
 
 On November 9, 2026, Necra's core workflow was manually exercised on the production deployment.
 
-The test used a project named Website Redesign Test.
+The test used a project named **Website Redesign Test**.
 
 The project contained an original website redesign agreement and a later request for online-store functionality.
 
-Observed Results
+### Observed Results
 
-Functionality| Observed result
-Production application| Successfully deployed and accessible
-Authentication| Project owner accessed protected project records
-Agreement records| Original agreement and later instructions were available
-Agreement Reality Check| Completed using Clocked
-Automated findings| Two findings displayed
-Evidence disclosure| Missing verified quotations were explicitly identified
-Decision permissions| Owner explicitly granted decision authority
-Human decision| Rejection recorded with a rationale
-Decision persistence| Decision displayed with its associated records
-Decision Replay| Seven chronological records displayed
+| Functionality | Observed result |
+|---|---|
+| Production application | Successfully deployed and accessible |
+| Authentication | Project owner accessed protected project records |
+| Agreement records | Original agreement and later instructions were available |
+| Agreement Reality Check | Completed using Clocked |
+| Automated findings | Two findings displayed |
+| Evidence disclosure | Missing verified quotations were explicitly identified |
+| Decision permissions | Owner explicitly granted decision authority |
+| Human decision | Rejection recorded with a rationale |
+| Decision persistence | Decision displayed with its associated records |
+| Decision Replay | Seven chronological records displayed |
 
 The two Clocked findings concerned a possible scope conflict and the absence of established support for unchanged pricing.
 
@@ -165,11 +166,11 @@ These observations come from a manual production session. They do not replace au
 
 ## Clocked Integration
 
-Necra's production Agreement Reality Check uses the Clocked Grounding endpoint.
+Necra's production Agreement Reality Check uses the **Clocked Grounding endpoint**.
 
 The integration is implemented on the server.
 
-Processing Flow
+### Processing Flow
 
 1. Retrieve the selected immutable agreement and instruction versions.
 2. Verify their stored content hashes.
@@ -184,7 +185,7 @@ The integration includes request validation, response validation, timeout handli
 
 The application also distinguishes between a confirmed provider failure and a network outcome that requires reconciliation.
 
-Evidence Integrity
+### Evidence Integrity
 
 Necra does not accept a returned quotation merely because a provider supplied it.
 
@@ -194,7 +195,7 @@ A mismatch produces an evidence-integrity failure rather than a verified citatio
 
 When Clocked does not provide a verifiable passage, Necra preserves the evidence limitation.
 
-Compare Adapter
+### Compare Adapter
 
 The repository also contains a Clocked Compare adapter.
 
@@ -204,7 +205,7 @@ However, the current production Reality Check uses Grounding. The existence of t
 
 Additional endpoints will only be described as production features after their integration and behavior have been verified.
 
-For further details, see "docs/providers/clocked-contract.md".
+For further details, see `docs/providers/clocked-contract.md`.
 
 ---
 
@@ -220,23 +221,24 @@ Better Auth handles credential-based authentication and sessions.
 
 Protected server modules and route handlers enforce authorization and validate sensitive operations.
 
-Technology Stack
+### Technology Stack
 
-Layer| Technology
-Application framework| Next.js
-User interface| React
-Programming language| TypeScript
-Styling| Tailwind CSS
-Database| PostgreSQL
-Database toolkit| Drizzle ORM
-Authentication| Better Auth
-Validation| Zod
-Automated testing| Vitest
-Browser testing| Playwright
-Analysis provider| Clocked
-Deployment| Vercel
+| Layer | Technology |
+|---|---|
+| Application framework | Next.js |
+| User interface | React |
+| Programming language | TypeScript |
+| Styling | Tailwind CSS |
+| Database | PostgreSQL |
+| Database toolkit | Drizzle ORM |
+| Authentication | Better Auth |
+| Validation | Zod |
+| Automated testing | Vitest |
+| Browser testing | Playwright |
+| Analysis provider | Clocked |
+| Deployment | Vercel |
 
-Data Integrity
+### Data Integrity
 
 Necra preserves exact source versions instead of overwriting earlier evidence.
 
@@ -246,7 +248,7 @@ Database transactions, constraints, and application-level authorization checks p
 
 Human decisions are append-only records. A replacement decision supersedes an earlier decision rather than silently modifying it.
 
-Authorization
+### Authorization
 
 Necra uses workspace and project memberships to control access.
 
@@ -258,7 +260,7 @@ Project owners can explicitly manage their own decision authority through an aud
 
 The application does not rely solely on hiding buttons to enforce access restrictions.
 
-Provider Security
+### Provider Security
 
 Clocked requests originate from the server.
 
@@ -268,15 +270,15 @@ Provider responses are validated before their contents are used.
 
 The application includes controls for provider concurrency and request attempts.
 
-For detailed architecture decisions, see "ARCHITECTURE.md".
+For detailed architecture decisions, see `ARCHITECTURE.md`.
 
 ---
 
 ## How to Test Necra
 
-Option 1: Production Walkthrough
+### Option 1: Production Walkthrough
 
-Application: https://necra.vercel.app/
+**Application:** https://necra.vercel.app/
 
 The application is deployed, but protected project workflows require authentication.
 
@@ -301,59 +303,70 @@ With an authorized evaluation account and fictional project data:
 
 A completed Reality Check does not automatically approve a proposed change.
 
-Option 2: Local Development
+### Option 2: Local Development
 
-Requirements
+#### Requirements
 
-- Node.js ">=24.18.0 <25"
-- npm ">=11.16.0 <13"
+- Node.js `>=24.18.0 <25`
+- npm `>=11.16.0 <13`
 - PostgreSQL
 - Chrome for browser testing
 
 Use a disposable, non-production database and fictional agreement content.
 
-Install Dependencies
+#### Install Dependencies
 
+```powershell
 npm.cmd ci
+```
 
 Create a local environment file:
 
+```powershell
 Copy-Item .env.example .env.local
+```
 
-Configure the following values in ".env.local":
+Configure the following values in `.env.local`:
 
-Variable| Purpose
-"DATABASE_URL"| PostgreSQL connection string
-"BETTER_AUTH_SECRET"| Random server-side secret of at least 32 characters
-"BETTER_AUTH_URL"| Application origin
-"AUTH_ALLOW_SIGN_UP"| Enables registration in an isolated evaluation environment
-"CLOCKED_API_KEY"| Authorized Clocked credential for live processing
-"CLOCKED_BASE_URL"| Clocked service base URL
+| Variable | Purpose |
+|---|---|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `BETTER_AUTH_SECRET` | Random server-side secret of at least 32 characters |
+| `BETTER_AUTH_URL` | Application origin |
+| `AUTH_ALLOW_SIGN_UP` | Enables registration in an isolated evaluation environment |
+| `CLOCKED_API_KEY` | Authorized Clocked credential for live processing |
+| `CLOCKED_BASE_URL` | Clocked service base URL |
 
 For local development, use:
 
+```env
 BETTER_AUTH_URL=http://localhost:3000
 AUTH_ALLOW_SIGN_UP=true
+```
 
 Never commit credentials or environment files containing secrets.
 
-Apply Database Migrations
+#### Apply Database Migrations
 
 Set the connection string for the intended disposable database:
 
+```powershell
 $env:DATABASE_URL = "postgresql://USER:PASSWORD@HOST:5432/DATABASE"
 
 npm.cmd run db:migrate
 
 Remove-Item Env:DATABASE_URL
+```
 
-Start the Application
+#### Start the Application
 
+```powershell
 npm.cmd run dev
+```
 
 Open the local sign-up page:
 
-"http://localhost:3000/sign-up"
+`http://localhost:3000/sign-up`
 
 Create an account and follow the production walkthrough using fictional data.
 
@@ -365,9 +378,11 @@ Local registration is disabled unless explicitly enabled.
 
 Necra includes automated checks for application behavior, type safety, formatting, database integration, and browser workflows.
 
-Standard Quality Check
+### Standard Quality Check
 
+```powershell
 npm.cmd run check
+```
 
 This command runs:
 
@@ -379,43 +394,49 @@ This command runs:
 
 Additional commands:
 
+```powershell
 npm.cmd run typecheck
 npm.cmd run lint
 npm.cmd run test
 npm.cmd run format:check
 npm.cmd run build
 npm.cmd run db:check
+```
 
-Integration and Browser Tests
+### Integration and Browser Tests
 
 Integration and browser tests require a disposable PostgreSQL environment.
 
+```powershell
 $env:TEST_DATABASE_ADMIN_URL = "postgresql://necra_runner_test:PASSWORD@127.0.0.1:5432/postgres"
 
 npm.cmd run test:integration
 npm.cmd run test:e2e
 
 Remove-Item Env:TEST_DATABASE_ADMIN_URL
+```
 
 The test harness restricts the database targets it accepts.
 
 Never run these tests against production data.
 
-Live Clocked Verification
+### Live Clocked Verification
 
 Live Clocked tests are disabled by default.
 
 They require an authorized API key and explicit opt-in:
 
+```env
 CLOCKED_LIVE_TEST=true
+```
 
 Live requests may consume provider credits.
 
 The repository records earlier authenticated integration verification using fictional evidence.
 
-This README rewrite does not claim that the full automated test suite was rerun after the latest production changes.
+**This README rewrite does not claim that the full automated test suite was rerun after the latest production changes.**
 
-Refer to "PROGRESS.md" for the dated verification history.
+Refer to `PROGRESS.md` for the dated verification history.
 
 ---
 
@@ -423,19 +444,19 @@ Refer to "PROGRESS.md" for the dated verification history.
 
 Necra is designed around several important boundaries.
 
-### Authentication and authorization: Protected records require authenticated access and appropriate workspace and project permissions.
+**Authentication and authorization:** Protected records require authenticated access and appropriate workspace and project permissions.
 
-### Immutable evidence: Agreement and instruction revisions preserve earlier versions rather than replacing them.
+**Immutable evidence:** Agreement and instruction revisions preserve earlier versions rather than replacing them.
 
-### Verified quotations: Provider-supplied passages are checked against stored source text before being treated as verified evidence.
+**Verified quotations:** Provider-supplied passages are checked against stored source text before being treated as verified evidence.
 
-### Human authority: Automated findings cannot independently approve a proposed change.
+**Human authority:** Automated findings cannot independently approve a proposed change.
 
-### Append-only decisions: Later decisions supersede earlier records without deleting the original history.
+**Append-only decisions:** Later decisions supersede earlier records without deleting the original history.
 
-### Server-side credentials: Database credentials, authentication secrets, and Clocked credentials remain server-side.
+**Server-side credentials:** Database credentials, authentication secrets, and Clocked credentials remain server-side.
 
-### Mutation protection: Sensitive operations use authorization checks, origin protections, and validated inputs.
+**Mutation protection:** Sensitive operations use authorization checks, origin protections, and validated inputs.
 
 These are implemented design and code boundaries, not a claim of an independent security certification or completed external security audit.
 
@@ -443,18 +464,38 @@ PostgreSQL row-level security is not enabled. The application server and databas
 
 ---
 
+## Current Limitations
+
+Necra currently has the following limitations:
+
+- A dedicated, independently tested judge account has not been established.
+- Public registration is disabled by default.
+- Password reset, email verification, MFA, invitations, OAuth, and SSO are not implemented.
+- Evidence ingestion supports pasted Unicode text up to 256 KiB per version.
+- PDF, DOCX, image uploads, OCR, object storage, and malware scanning are not implemented.
+- Individual finding correction and dismissal controls are not available.
+- Some automated findings may lack verified source passages.
+- One change-request entry in the November 9 production replay had no matching stored audit event.
+- Production retention and deletion policies, independent backup-and-restore verification, and a complete operational runbook remain outstanding.
+- A fresh full automated-test result after the latest production UI changes has not been established in this documentation.
+
+These limitations are disclosed so evaluators can distinguish implemented functionality from future work.
+
+---
+
 ## Project Documentation
 
 Necra maintains seven project governance documents.
 
-Document| Purpose
-"PRD.md"| Product requirements, users, workflows, scope, and acceptance criteria
-"ARCHITECTURE.md"| System architecture, data model, trust boundaries, and integration decisions
-"DESIGN.md"| Visual design, interaction behavior, accessibility, and product language
-"RULES.md"| Engineering standards, security, evidence integrity, and testing requirements
-"TASKS.md"| Implementation tasks, dependencies, and acceptance criteria
-"PROGRESS.md"| Verified implementation history, test results, known issues, and current status
-"AGENTS.md"| Instructions and required reading order for contributors and coding agents
+| Document | Purpose |
+|---|---|
+| `PRD.md` | Product requirements, users, workflows, scope, and acceptance criteria |
+| `ARCHITECTURE.md` | System architecture, data model, trust boundaries, and integration decisions |
+| `DESIGN.md` | Visual design, interaction behavior, accessibility, and product language |
+| `RULES.md` | Engineering standards, security, evidence integrity, and testing requirements |
+| `TASKS.md` | Implementation tasks, dependencies, and acceptance criteria |
+| `PROGRESS.md` | Verified implementation history, test results, known issues, and current status |
+| `AGENTS.md` | Instructions and required reading order for contributors and coding agents |
 
 These documents should be consulted before changing the application.
 
@@ -464,7 +505,7 @@ Development history and verification results must remain accurate. Documentation
 
 ## Competition Submission
 
-Necra is being prepared for the Clocked Build Challenge.
+Necra is being prepared for the **Clocked Build Challenge**.
 
 Its demonstrated value is the connection between an original agreement, a later request, an automated evidence assessment, and an explicit human decision.
 
@@ -490,12 +531,12 @@ The production Reality Check uses Clocked Grounding. Category-specific claims ab
 
 Necra is built around three commitments.
 
-Preserve the evidence. Original agreements and later instructions should remain available in their recorded versions.
+**Preserve the evidence.** Original agreements and later instructions should remain available in their recorded versions.
 
-Keep findings separate from decisions. Automated analysis can inform a review, but it cannot replace explicit human authority.
+**Keep findings separate from decisions.** Automated analysis can inform a review, but it cannot replace explicit human authority.
 
-Make the history traceable. A decision should be connected to the evidence considered and the person who recorded it.
+**Make the history traceable.** A decision should be connected to the evidence considered and the person who recorded it.
 
 ---
 
-Necra — Clear agreements. Accountable changes. Decisions you can trace
+**Necra — Clear agreements. Accountable changes. Decisions you can trace.**

@@ -85,3 +85,84 @@ These rules turn Necra's product promises into reviewable engineering constraint
 - Shipping placeholder controls that imply unavailable functionality works.
 - Disabling tests, types, security checks, or accessibility checks merely to pass CI.
 - Marking planned work complete or claiming tests were run when they were not.
+
+## Production and competition submission rules — November 10, 2026
+
+The following requirements apply to all subsequent changes.
+
+### Preserve working functionality
+
+Do not replace a verified working implementation merely to simplify a demonstration.
+
+Before modifying authentication, authorization, persistence, provider integration, or decision handling, identify the affected invariants and relevant tests.
+
+Changes must preserve the ability to reconstruct the original agreement, subsequent instructions, automated findings, and authenticated decisions.
+
+### Maintain evidence integrity
+
+Never invent quotations, audit events, provider responses, approvals, customer activity, or successful operations.
+
+A Clocked finding without a verified passage must remain explicitly identified as lacking verified evidence.
+
+Do not silently convert a missing source passage into a contradiction.
+
+Provider confidence must not be described as independent proof.
+
+### Protect decision authority
+
+Decision authority must be explicitly granted.
+
+The application must enforce authorization on the server.
+
+An owner granting themselves decision authority must use the authorized membership-management workflow.
+
+A decision must not be recorded automatically after analysis completion.
+
+### Preserve historical records
+
+Do not overwrite earlier agreement versions or decisions.
+
+A replacement decision must preserve the earlier decision and its relationship to the new record.
+
+Missing audit associations must be investigated rather than concealed.
+
+### Testing requirements
+
+For each change:
+
+1. Identify the affected behavior.
+2. Review the existing tests.
+3. Add or update tests when behavior changes.
+4. Run the relevant verification commands.
+5. Record the actual results.
+6. Do not claim unexecuted tests passed.
+
+Documentation-only changes must be checked for broken links, incorrect commands, outdated claims, and contradictions with implementation.
+
+### Competition integrity
+
+Official competition requirements take precedence over internal preferences where applicable, subject to security and legal constraints.
+
+Do not claim unsupported category eligibility, endpoint breadth, originality, adoption, or judging scores.
+
+Submission materials must demonstrate genuine product behavior.
+
+Never fabricate successful transactions, customer approvals, testimonials, or evaluation metrics.
+
+### Documentation integrity
+
+Preserve the original development chronology.
+
+New documentation must describe when a capability was actually implemented or verified.
+
+Do not rewrite historical progress entries to imply that later decisions guided earlier implementation.
+
+Keep `README.md`, `TASKS.md`, and `PROGRESS.md` consistent with the repository and recorded verification evidence.
+
+### Release discipline
+
+A successful deployment does not automatically establish production readiness.
+
+Outstanding security, operational, and audit requirements must remain visible until verified.
+
+When a deadline prevents completing nonessential improvements, prioritize a functioning, truthful, reproducible submission over speculative feature additions.

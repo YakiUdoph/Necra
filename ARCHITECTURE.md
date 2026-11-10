@@ -167,3 +167,114 @@ Operations must be idempotent where required and retries must be bounded and per
 - Validate backup restoration, retention/deletion processes, and a production smoke test before claiming readiness.
 
 Hosting, database, storage, authentication, observability, email, domain, region/data residency, and disaster-recovery targets are **Unverified**. No external product service is connected in T001.
+
+## Deployed architecture — November 10, 2026
+
+This section describes the implementation verified through repository inspection and the November 9 production walkthrough. It supplements the original architecture decisions and does not rewrite their historical status.
+
+### Application deployment
+
+Necra is deployed at:
+
+https://necra.vercel.app/
+
+The application uses Next.js App Router, React, TypeScript, and Tailwind CSS.
+
+Protected operations execute through server-side application modules and route handlers.
+
+PostgreSQL provides durable storage for authentication, project memberships, source versions, analyses, decisions, and audit records.
+
+Drizzle ORM provides typed database access and migration management.
+
+Better Auth provides credential-based authentication and session handling.
+
+### Logical architecture
+
+```text
+Browser
+   |
+   v
+Next.js application
+   |
+   +-- Authentication and session validation
+   |
+   +-- Workspace and project authorization
+   |
+   +-- Agreement and instruction versioning
+   |
+   +-- Agreement Reality Check
+   |       |
+   |       +-- Input integrity verification
+   |       |
+   |       +-- Clocked Grounding API
+   |       |
+   |       +-- Response and evidence validation
+   |       |
+   |       +-- Persisted findings
+   |
+   +-- Human decision authorization
+   |
+   +-- Decision Replay
+   |
+   v
+PostgreSQL
+```
+
+This diagram represents logical responsibilities. It does not imply that each component runs as an independently deployed service.
+
+### Clocked integration
+
+The production analysis-processing service invokes `requestClockedGrounding()`.
+
+Before sending a request, the service retrieves the selected source versions and verifies their stored content hashes.
+
+The request is associated with a durable analysis record and an idempotency key.
+
+Clocked responses are validated using runtime schemas.
+
+When a provider response includes source evidence, Necra verifies that the quotation corresponds to the stored agreement text and expected source identifier.
+
+A response that fails evidence-integrity validation is not accepted as a successful verified result.
+
+The repository also implements `requestClockedCompare()`. That adapter is separate from the currently observed production Reality Check workflow.
+
+### Decision authorization
+
+Decision creation requires an authenticated session, active project membership, and explicit decision authority.
+
+Project ownership and decision authority are separate concepts.
+
+An owner can explicitly grant or revoke their own decision authority through the existing membership-management endpoint.
+
+Permission changes must remain subject to server-side authorization and must not rely solely on client-side controls.
+
+### Persistence and audit history
+
+Agreement and instruction versions preserve historical content.
+
+Analysis records bind processing to selected source versions.
+
+Human decisions are stored separately from provider findings.
+
+Decision Replay displays the chronological relationship between persisted source records, requests, analyses, reviews, decisions, and associated audit events.
+
+The November 9 production walkthrough identified one change-request record without a matching audit event.
+
+The interface disclosed the missing association.
+
+The underlying cause has not yet been established and must be investigated before claiming complete audit coverage.
+
+### Operational boundaries
+
+The deployment demonstrates a working production-hosted application, but hosting alone does not establish comprehensive operational readiness.
+
+The following remain subject to verification:
+
+- Independent production smoke testing after the latest changes.
+- Backup restoration.
+- Monitoring and incident response.
+- Retention and deletion procedures.
+- Complete deployment and recovery documentation.
+- Independent judge access.
+
+These items remain part of T012 rather than being treated as completed architecture requirements.
