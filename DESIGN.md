@@ -156,3 +156,88 @@ T004 automated browser checks cover WCAG-tagged axe scans and a keyboard path at
 ## T005 evidence interface
 
 The evidence workflow keeps the source-centered working-paper direction and accepts only pasted text. Agreements and later instructions use persistent labels, optional provenance fields, exact-text guidance, truthful validation/storage errors, and a single save action. Saved sources show known or unknown attribution, UTC timestamps, UTF-8 byte size, server-calculated SHA-256, exact content, and every immutable version. Revision controls state that earlier versions are not overwritten. Viewers receive the same authorized reading view without write controls. PDF, DOCX, images, OCR, uploads, automated comparisons, and decisions are not presented as available.
+
+## Implemented product experience — November 10, 2026
+
+### Design objective
+
+Necra should help people understand consequential project changes without requiring legal or technical expertise.
+
+The interface must make three things immediately understandable:
+
+1. What was originally agreed?
+2. What changed or remains uncertain?
+3. Who made the final decision?
+
+The product should feel like a carefully organized working document rather than a generic analytics dashboard.
+
+### Evidence presentation
+
+Original agreements and later instructions must remain visually distinct.
+
+Source versions should display their identifying information without overwhelming the primary reading experience.
+
+Automated findings must be distinguishable from authenticated human decisions.
+
+A finding without verified supporting evidence must not appear visually equivalent to a verified quotation.
+
+Use direct language such as:
+
+- "Evidence unavailable"
+- "Review required"
+- "Decision authority required"
+- "Approved"
+- "Rejected"
+
+Avoid language implying that automated analysis has independently established contractual liability or approval.
+
+### Decision authority
+
+The production interface includes a control allowing project owners to explicitly grant or revoke their own decision authority.
+
+The control must communicate the current permission state.
+
+Permission changes must be confirmed by the server before the interface presents them as successful.
+
+The decision interface must remain unavailable to users without the required authority.
+
+Approval and rejection must be deliberate actions. Neither should be silently selected by default.
+
+### Decision Replay
+
+Decision Replay should present events chronologically and identify their origins.
+
+Users should be able to distinguish:
+
+- Human-created source records.
+- External provider results.
+- Human review confirmations.
+- Explicit human decisions.
+- Audit records.
+
+Missing evidence or audit associations must be disclosed without creating substitute records.
+
+### Responsive behavior
+
+The interface must remain usable on desktop and mobile screens.
+
+Long agreement text, version identifiers, and technical metadata must not obscure primary actions or cause unintended horizontal overflow.
+
+Keyboard navigation, visible focus states, semantic labels, and readable status messages remain required.
+
+Previously recorded automated accessibility results apply only to the versions and screens tested at that time.
+
+The latest production changes require fresh verification before comprehensive accessibility compliance can be claimed.
+
+### Design acceptance criteria
+
+A design change is acceptable when:
+
+- The user can identify the next meaningful action.
+- The interface preserves the distinction between evidence, findings, and decisions.
+- Permission restrictions are understandable.
+- Errors provide truthful recovery guidance.
+- Important information remains accessible on narrow screens.
+- The change does not introduce misleading claims or fabricated activity.
+
+Visual polish must improve comprehension rather than conceal missing functionality.
