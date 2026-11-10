@@ -1,4 +1,5 @@
 import Link from "next/link";
+import "./evidence-workspace.css";
 import type { ReactNode } from "react";
 
 import { SignOutButton } from "@/components/auth/sign-out-button";
@@ -11,10 +12,12 @@ interface ShellProject {
 }
 
 const projectSections = [
-  { href: "#agreement", label: "Agreements" },
-  { href: "#requests", label: "Changes" },
-  { href: "#reality-check", label: "Agreement Reality Check" },
-  { href: "#decisions", label: "Decisions & Replay" },
+  { href: "", label: "Overview" },
+  { href: "/agreements", label: "Agreements" },
+  { href: "/changes", label: "Changes" },
+  { href: "/reality-check", label: "Reality Check" },
+  { href: "/decisions", label: "Decisions" },
+  { href: "/replay", label: "Replay" },
 ] as const;
 
 export function AppShell({
@@ -85,7 +88,7 @@ function ProductNavigation({ project }: { project?: ShellProject }) {
       </Link>
       {projectSections.map((item, index) =>
         project ? (
-          <a
+          <Link
             className="nav-item"
             href={`/projects/${project.id}${item.href}`}
             key={item.label}
@@ -94,7 +97,7 @@ function ProductNavigation({ project }: { project?: ShellProject }) {
               {String(index + 2).padStart(2, "0")}
             </span>
             {item.label}
-          </a>
+          </Link>
         ) : (
           <span
             aria-disabled="true"

@@ -78,7 +78,7 @@ export function RealityCheckForm({
         >
           {agreements.map((option) => (
             <option key={option.id} value={option.id}>
-              {option.title} — version {option.versionNumber}
+              {option.title} - version {option.versionNumber}
             </option>
           ))}
         </select>
@@ -92,21 +92,21 @@ export function RealityCheckForm({
         >
           {instructions.map((option) => (
             <option key={option.id} value={option.id}>
-              {option.title} — version {option.versionNumber}
+              {option.title} - version {option.versionNumber}
             </option>
           ))}
         </select>
       </div>
       {agreement && instruction ? (
-        <fieldset className="notice">
+        <fieldset className="notice version-confirmation">
           <legend>Exact version confirmation</legend>
           <p>
             <strong>Agreement:</strong> {agreement.title}, version{" "}
-            {agreement.versionNumber}, hash {agreement.contentHash.slice(0, 12)}…
+            {agreement.versionNumber}, hash {agreement.contentHash.slice(0, 12)}...
           </p>
           <p>
             <strong>Instruction:</strong> {instruction.title}, version{" "}
-            {instruction.versionNumber}, hash {instruction.contentHash.slice(0, 12)}…
+            {instruction.versionNumber}, hash {instruction.contentHash.slice(0, 12)}...
           </p>
         </fieldset>
       ) : null}
@@ -125,7 +125,7 @@ export function RealityCheckForm({
         </p>
       ) : null}
       <Button disabled={!hydrated || pending || !agreement || !instruction} type="submit">
-        {pending ? "Creating…" : "Create Reality Check"}
+        {pending ? "Creating..." : "Create Reality Check"}
       </Button>
     </form>
   );

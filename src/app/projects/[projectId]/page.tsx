@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import Link from "next/link";
 
 import { AppShell } from "@/components/product/app-shell";
 import { RealityCheckForm } from "@/components/analysis/reality-check-form";
@@ -23,8 +24,10 @@ export const dynamic = "force-dynamic";
 
 export default async function ProjectPage({
   params,
+  view = "overview",
 }: {
   params: Promise<{ projectId: string }>;
+  view?: "overview" | "agreements" | "changes" | "reality-check" | "decisions" | "replay";
 }) {
   const session = await getVerifiedSession();
   if (!session) {
@@ -74,9 +77,9 @@ export default async function ProjectPage({
       <main className="product-page" id="main-content">
         <PageHeader
           description="Review what is available for this project without treating a request or automated finding as approval."
-          eyebrow={`${project.workspaceName} · ${project.role} access`}
+          eyebrow={`${project.workspaceName} Â· ${project.role} access`}
           status={<StatusLozenge tone="active">Evidence enabled</StatusLozenge>}
-          title={project.name}
+          title={view === "overview" ? project.name : ({ agreements: "Agreements", changes: "Changes", "reality-check": "Reality Check", decisions: "Decisions", replay: "Decision Replay" } as Record<string, string>)[view] ?? project.name}
         />
 
         <Notice title="Evidence-backed Reality Checks are available">
@@ -99,6 +102,7 @@ export default async function ProjectPage({
           </div>
         </dl>
 
+{view === "agreements" ? (
         <section
           className="workflow-section"
           id="agreement"
@@ -127,7 +131,9 @@ export default async function ProjectPage({
           )}
           {canWrite ? <EvidenceForm kind="agreement" projectId={projectId} /> : null}
         </section>
+        ) : null}
 
+{view === "changes" ? (
         <section
           className="workflow-section"
           id="requests"
@@ -159,7 +165,9 @@ export default async function ProjectPage({
           )}
           {canWrite ? <EvidenceForm kind="instruction" projectId={projectId} /> : null}
         </section>
+        ) : null}
 
+{view === "reality-check" ? (
         <section
           className="workflow-section workflow-section-wide"
           id="reality-check"
@@ -195,7 +203,9 @@ export default async function ProjectPage({
             </EmptyState>
           )}
         </section>
+        ) : null}
 
+{view === "replay" ? (
         <section
           className="workflow-section"
           id="decisions"
@@ -213,6 +223,86 @@ export default async function ProjectPage({
           </div>
           <DecisionReplay replay={replay} />
         </section>
+        ) : null}
+        {view === "overview" ? (
+          <section
+            className="workflow-section necra-overview necra-casefile"
+            aria-labelledby="overview-title"
+          >
+            <div className="necra-overview-heading">
+              <div>
+                <p className="workflow-kicker">Project workspace</p>
+                <h2 id="overview-title">Choose where to work</h2>
+              </div>
+              <p>
+                Follow the evidence from the original agreement through later
+                requests, Reality Checks, human decisions, and recorded history.
+              </p>
+            </div>
+
+            <nav
+              aria-label="Project sections"
+              className="necra-overview-grid necra-casefile-flow"
+            >
+              <Link
+                className="necra-overview-card"
+                href={`/projects/${projectId}/agreements`}
+              >
+                <span className="necra-card-number">01 / SOURCE</span>
+                <strong>Agreements</strong>
+                <span>Preserve the original scope and its exact versions.</span>
+                <span className="necra-card-action">Open agreements &rarr;</span>
+              </Link>
+
+              <Link
+                className="necra-overview-card"
+                href={`/projects/${projectId}/changes`}
+              >
+                <span className="necra-card-number">02 / REQUEST</span>
+                <strong>Changes</strong>
+                <span>Record later instructions without assuming approval.</span>
+                <span className="necra-card-action">Review changes &rarr;</span>
+              </Link>
+
+              <Link
+                className="necra-overview-card"
+                href={`/projects/${projectId}/reality-check`}
+              >
+                <span className="necra-card-number">03 / COMPARE</span>
+                <strong>Reality Check</strong>
+                <span>Examine evidence-backed findings and source versions.</span>
+                <span className="necra-card-action">Open Reality Check &rarr;</span>
+              </Link>
+
+              <Link
+                className="necra-overview-card"
+                href={`/projects/${projectId}/decisions`}
+              >
+                <span className="necra-card-number">04 / AUTHORITY</span>
+                <strong>Decisions</strong>
+                <span>Review findings and record authorized human outcomes.</span>
+                <span className="necra-card-action">Review decisions &rarr;</span>
+              </Link>
+
+              <Link
+                className="necra-overview-card"
+                href={`/projects/${projectId}/replay`}
+              >
+                <span className="necra-card-number">05 / HISTORY</span>
+                <strong>Decision Replay</strong>
+                <span>Trace the recorded sequence of evidence and decisions.</span>
+                <span className="necra-card-action">View history &rarr;</span>
+              </Link>
+            </nav>
+          </section>
+        ) : null}
+        {view === "decisions" ? (
+          <section className="workflow-section workflow-section-wide" aria-labelledby="decision-page-title">
+            <div className="workflow-heading"><div><p className="workflow-kicker">Authorized human outcomes</p><h2 id="decision-page-title">Decisions</h2></div></div>
+            <Notice title="Decisions require human authority"><p>Review completed Reality Checks below. Only explicitly authorized members can record decisions.</p></Notice>
+            <RealityCheckList canDecide={project.canDecide && canWrite} checks={checks} processingConfigured={Boolean(serverEnvironment.CLOCKED_API_KEY)} />
+          </section>
+        ) : null}
       </main>
     </AppShell>
   );

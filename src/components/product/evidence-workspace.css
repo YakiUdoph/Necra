@@ -1,0 +1,62 @@
+/* Evidence Atelier — authenticated workspace presentation.
+   Existing authorization, forms, persistence and workflows remain unchanged. */
+.workspace-frame{--atelier-ink:#101019;--atelier-aubergine:#29243f;--atelier-lavender:#b8a7ff;--atelier-coral:#e6a7a1;--atelier-paper:#f2ede6;--atelier-line:#d6cdc7;--atelier-muted:#746b7c;background:var(--atelier-paper);min-height:100vh;color:#24202d}
+.workspace-frame .app-rail{background:var(--atelier-ink);color:var(--atelier-paper);border-right:1px solid #40364e;box-shadow:10px 0 45px #10101912}
+.workspace-frame .shell-identity{border-color:#40364e}
+.workspace-frame .wordmark{color:var(--atelier-paper);font-family:Georgia,'Times New Roman',serif;font-size:clamp(1.7rem,2vw,2.2rem);font-weight:700;letter-spacing:-.075em}
+.workspace-frame .wordmark span{color:var(--atelier-coral)}
+.workspace-frame .project-context{border-color:#40364e}
+.workspace-frame .context-label,.workspace-frame .nav-index{color:var(--atelier-lavender);letter-spacing:.12em}
+.workspace-frame .context-name{color:var(--atelier-paper);font-family:Georgia,'Times New Roman',serif;font-weight:400}
+.workspace-frame .context-project{color:#bbb2c6}
+.workspace-frame .product-nav{gap:4px}
+.workspace-frame .nav-item{color:#d0c9db;border-radius:0;border-left:2px solid transparent;transition:background .15s ease,color .15s ease,border-color .15s ease}
+.workspace-frame .nav-item:hover{background:#29243f;color:#fff}
+.workspace-frame .nav-item-active,.workspace-frame .nav-item[aria-current='page']{background:#29243f;color:#f2ede6;border-left-color:var(--atelier-lavender)}
+.workspace-frame .nav-item-disabled{color:#827b8c;opacity:.85}
+.workspace-frame .nav-item-disabled:hover{background:transparent;color:#827b8c}
+.workspace-frame .nav-item-disabled small{color:#827b8c}
+.workspace-frame .account-control{background:#1c1927;border-top:1px solid #40364e;color:#cfc7d7}
+.workspace-frame .account-control p{color:#bfb7ca;overflow-wrap:anywhere}
+.workspace-frame .workspace-canvas{background:var(--atelier-paper);min-width:0}
+.workspace-frame .product-page{max-width:1500px;margin:0 auto;padding:clamp(28px,4vw,72px);color:#25202d}
+.workspace-frame .product-page h1,.workspace-frame .product-page h2,.workspace-frame .product-page h3{font-family:Georgia,'Times New Roman',serif;letter-spacing:-.045em;font-weight:400;color:#24202d}
+.workspace-frame .product-page h1{font-size:clamp(3.3rem,6vw,6.6rem);line-height:.98}
+.workspace-frame .product-page h2{font-size:clamp(1.9rem,3.4vw,3.6rem);line-height:1.08}
+.workspace-frame .product-page .page-header{border-bottom:1px solid #bcb1b9;padding-bottom:clamp(25px,4vw,55px);margin-bottom:clamp(28px,4vw,54px)}
+.workspace-frame .product-page .page-eyebrow,.workspace-frame .workflow-kicker,.workspace-frame .section-count{color:#765c88;letter-spacing:.14em;text-transform:uppercase;font-size:.75rem;font-weight:700}
+.workspace-frame .product-page .section-bar{border-bottom:1px solid #bcb1b9;padding-bottom:20px}
+.workspace-frame .atelier-project-list{border-top:0}
+.workspace-frame .atelier-project-list li{display:flex;align-items:center;gap:18px;border-bottom:1px solid #d1c5c9;padding:12px 0}
+.workspace-frame .atelier-project-list .project-link{display:grid;grid-template-columns:minmax(0,2fr) minmax(120px,1fr) auto;gap:24px;align-items:center;flex:1;min-width:0;padding:24px 10px;text-decoration:none;transition:background .15s ease}
+.workspace-frame .atelier-project-list .project-link:hover{background:#e8dfec}
+.workspace-frame .atelier-project-list .project-name{font-family:Georgia,'Times New Roman',serif;font-size:clamp(1.3rem,2vw,2rem);color:#29243f;letter-spacing:-.025em}
+.workspace-frame .atelier-project-list .project-open{color:#6b4e8e;font-weight:700}
+.workspace-frame .project-create-section{background:#fffaf4;border:1px solid #d8cbd2;border-radius:0;padding:clamp(22px,3vw,42px);box-shadow:12px 12px 0 #29243f0d}
+.workspace-frame .project-create-section h2{margin-top:0}
+.workspace-frame .authority-summary{background:#29243f;color:#f2ede6;border:1px solid #50445e;padding:20px 28px;display:flex;gap:clamp(20px,5vw,80px);flex-wrap:wrap}
+.workspace-frame .authority-summary dt{color:#c2b2df;letter-spacing:.12em;text-transform:uppercase;font-size:.72rem}
+.workspace-frame .authority-summary dd{color:#fff;font-family:Georgia,'Times New Roman',serif;font-size:1.2rem;margin:8px 0 0}
+.workspace-frame .workflow-section{background:#fffaf4;border:1px solid #d9cdd2;border-radius:0;padding:clamp(24px,3.5vw,54px);box-shadow:14px 14px 0 #29243f0b}
+.workspace-frame .workflow-heading{border-bottom:1px solid #d1c5c9;padding-bottom:22px;margin-bottom:30px}
+.workspace-frame .workflow-step{background:#29243f;color:#b8a7ff;border-radius:0;font-family:Georgia,'Times New Roman',serif;font-size:1.8rem}
+.workspace-frame .necra-casefile{background:transparent;border:0;box-shadow:none;padding:0}
+.workspace-frame .necra-overview-heading{border-top:1px solid #9e929f;border-bottom:1px solid #9e929f;padding:30px 0;margin-bottom:38px;display:flex;align-items:end;justify-content:space-between;gap:24px}
+.workspace-frame .necra-overview-heading h2{font-size:clamp(2.4rem,4vw,4.6rem);max-width:650px}
+.workspace-frame .necra-overview-heading>p{max-width:360px;color:#6f6474;line-height:1.6}
+.workspace-frame .necra-casefile-flow{display:flex;flex-direction:column;gap:0;position:relative;padding-left:38px}
+.workspace-frame .necra-casefile-flow::before{content:'';position:absolute;top:36px;bottom:36px;left:12px;width:1px;background:#8f7a9d}
+.workspace-frame .necra-casefile-flow .necra-overview-card{position:relative;display:grid;grid-template-columns:145px minmax(180px,1fr) minmax(170px,1fr) auto;align-items:center;gap:22px;min-height:122px;padding:24px 28px;background:#fffaf4;border:0;border-bottom:1px solid #d3c5ce;border-radius:0;box-shadow:none;color:#29243f;text-decoration:none;transition:background .16s ease,transform .16s ease}
+.workspace-frame .necra-casefile-flow .necra-overview-card::before{content:'';position:absolute;left:-33px;top:50%;width:15px;height:15px;border:2px solid #8d74a8;border-radius:50%;background:var(--atelier-paper);transform:translateY(-50%)}
+.workspace-frame .necra-casefile-flow .necra-overview-card:hover{background:#eee4f1;transform:translateX(5px)}
+.workspace-frame .necra-casefile-flow .necra-card-number{font-size:.7rem;letter-spacing:.12em;font-weight:700;color:#755b87}
+.workspace-frame .necra-casefile-flow .necra-overview-card strong{font-family:Georgia,'Times New Roman',serif;font-size:clamp(1.5rem,2.5vw,2.5rem);font-weight:400;letter-spacing:-.04em}
+.workspace-frame .necra-casefile-flow .necra-overview-card>span:nth-of-type(2){color:#716879;line-height:1.55}
+.workspace-frame .necra-casefile-flow .necra-card-action{font-weight:700;color:#70518d;white-space:nowrap;font-size:.82rem}
+.workspace-frame .mobile-bar{background:#101019;color:#f2ede6;border-bottom:1px solid #40364e}
+.workspace-frame .mobile-menu-panel{background:#101019;color:#f2ede6}
+.workspace-frame .product-page input,.workspace-frame .product-page textarea,.workspace-frame .product-page select{border-color:#bdb1bd;border-radius:3px}
+.workspace-frame .product-page input:focus-visible,.workspace-frame .product-page textarea:focus-visible,.workspace-frame .product-page select:focus-visible,.workspace-frame a:focus-visible{outline:3px solid #a18adf;outline-offset:3px}
+@media(max-width:1050px){.workspace-frame .necra-casefile-flow .necra-overview-card{grid-template-columns:110px minmax(0,1fr);gap:12px 20px}.workspace-frame .necra-casefile-flow .necra-overview-card>span:nth-of-type(2){grid-column:2}.workspace-frame .necra-casefile-flow .necra-card-action{grid-column:2}.workspace-frame .atelier-project-list .project-link{grid-template-columns:minmax(0,1fr) auto}.workspace-frame .atelier-project-list .project-workspace{grid-column:1}}
+@media(max-width:680px){.workspace-frame .product-page{padding:24px 18px}.workspace-frame .necra-overview-heading{display:block}.workspace-frame .necra-casefile-flow{padding-left:25px}.workspace-frame .necra-casefile-flow::before{left:6px}.workspace-frame .necra-casefile-flow .necra-overview-card{display:flex;flex-direction:column;align-items:flex-start;min-height:0;padding:22px 18px;gap:10px}.workspace-frame .necra-casefile-flow .necra-overview-card::before{left:-25px;width:12px;height:12px}.workspace-frame .atelier-project-list li{align-items:flex-start;flex-wrap:wrap}.workspace-frame .atelier-project-list .project-link{display:flex;flex-direction:column;align-items:flex-start;gap:8px}.workspace-frame .authority-summary{padding:18px}}
+@media(prefers-reduced-motion:reduce){.workspace-frame .necra-casefile-flow .necra-overview-card,.workspace-frame .nav-item,.workspace-frame .atelier-project-list .project-link{transition:none}}

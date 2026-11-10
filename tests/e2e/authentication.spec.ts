@@ -61,6 +61,7 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
     throw new Error("Browser-created project ID was unavailable");
   }
 
+  await page.goto(`/projects/${projectId}/agreements`);
   const agreementSection = page.locator("#agreement");
   await agreementSection.getByLabel("Document title").fill("TEST ONLY Signed SOW");
   await agreementSection.getByLabel("Source attribution").fill("Client email");
@@ -73,6 +74,7 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
   ).toBeVisible({ timeout: 20_000 });
   await expect(agreementSection.getByText("Version 1")).toBeVisible();
 
+  await page.goto(`/projects/${projectId}/changes`);
   const instructionSection = page.locator("#requests");
   await instructionSection
     .getByLabel("Document title")
@@ -85,6 +87,7 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
     instructionSection.getByRole("heading", { name: "TEST ONLY Dashboard request" }),
   ).toBeVisible({ timeout: 20_000 });
 
+  await page.goto(`/projects/${projectId}/agreements`);
   await agreementSection.getByText("Create a revision").click();
   await agreementSection
     .getByLabel("Exact revised text")
@@ -94,10 +97,12 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
   await page.reload();
   await expect(agreementSection.getByText("Version 1")).toBeVisible();
   await expect(agreementSection.getByText("Version 2")).toBeVisible();
+  await page.goto(`/projects/${projectId}/changes`);
   await expect(
     instructionSection.getByRole("heading", { name: "TEST ONLY Dashboard request" }),
   ).toBeVisible();
 
+  await page.goto(`/projects/${projectId}/reality-check`);
   const realityCheckSection = page.locator("#reality-check");
   await expect(realityCheckSection.getByLabel("Agreement version")).toHaveValue(/.+/);
   await expect(realityCheckSection.getByLabel("Instruction version")).toHaveValue(/.+/);
@@ -265,8 +270,10 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
     [projectId, ownerId],
   );
   await page.reload();
+  await page.goto(`/projects/${projectId}/decisions`);
+  const decisionsSection = page.getByRole("main");
   await expect(
-    realityCheckSection.getByRole("heading", {
+    decisionsSection.getByRole("heading", {
       name: "What an authorized person decided",
     }),
   ).toBeVisible();
@@ -292,15 +299,14 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
   await decisionDialog
     .getByRole("button", { name: "Confirm and record decision" })
     .click();
-  await expect(realityCheckSection.getByText("Proposed change approved")).toBeVisible({
+  await expect(decisionsSection.getByText("Proposed change approved")).toBeVisible({
     timeout: 20_000,
   });
-  await expect(realityCheckSection.getByText("TEST ONLY Browser Owner")).toBeVisible();
+  await expect(decisionsSection.getByText("TEST ONLY Browser Owner")).toBeVisible();
   await page.reload();
-  await expect(realityCheckSection.getByText("Proposed change approved")).toBeVisible();
-  const replaySection = page.locator("section").filter({
-    has: page.getByRole("heading", { name: "Decisions & Decision Replay" }),
-  });
+  await expect(decisionsSection.getByText("Proposed change approved")).toBeVisible();
+  await page.goto(`/projects/${projectId}/replay`);
+  const replaySection = page.locator("#decisions");
   await expect(
     replaySection.getByText("Replay is a factual record, not a generated narrative"),
   ).toBeVisible();

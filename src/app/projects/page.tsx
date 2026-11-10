@@ -43,7 +43,7 @@ export default async function ProjectsPage() {
                   {projects.length === 1 ? "1 project" : `${projects.length} projects`}
                 </span>
               </div>
-              <ul className="project-list">
+              <ul className="project-list atelier-project-list">
                 {projects.map((project) => (
                   <li key={project.id}>
                     <a className="project-link" href={`/projects/${project.id}`}>
