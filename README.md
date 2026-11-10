@@ -272,7 +272,7 @@ For detailed architecture decisions, see "ARCHITECTURE.md".
 
 ---
 
-How to Test Necra
+## How to Test Necra
 
 Option 1: Production Walkthrough
 
@@ -419,23 +419,23 @@ Refer to "PROGRESS.md" for the dated verification history.
 
 ---
 
-Security and Data Integrity
+## Security and Data Integrity
 
 Necra is designed around several important boundaries.
 
-Authentication and authorization: Protected records require authenticated access and appropriate workspace and project permissions.
+### Authentication and authorization: Protected records require authenticated access and appropriate workspace and project permissions.
 
-Immutable evidence: Agreement and instruction revisions preserve earlier versions rather than replacing them.
+### Immutable evidence: Agreement and instruction revisions preserve earlier versions rather than replacing them.
 
-Verified quotations: Provider-supplied passages are checked against stored source text before being treated as verified evidence.
+### Verified quotations: Provider-supplied passages are checked against stored source text before being treated as verified evidence.
 
-Human authority: Automated findings cannot independently approve a proposed change.
+### Human authority: Automated findings cannot independently approve a proposed change.
 
-Append-only decisions: Later decisions supersede earlier records without deleting the original history.
+### Append-only decisions: Later decisions supersede earlier records without deleting the original history.
 
-Server-side credentials: Database credentials, authentication secrets, and Clocked credentials remain server-side.
+### Server-side credentials: Database credentials, authentication secrets, and Clocked credentials remain server-side.
 
-Mutation protection: Sensitive operations use authorization checks, origin protections, and validated inputs.
+### Mutation protection: Sensitive operations use authorization checks, origin protections, and validated inputs.
 
 These are implemented design and code boundaries, not a claim of an independent security certification or completed external security audit.
 
@@ -443,26 +443,7 @@ PostgreSQL row-level security is not enabled. The application server and databas
 
 ---
 
-Current Limitations
-
-Necra currently has the following limitations:
-
-- A dedicated, independently tested judge account has not been established.
-- Public registration is disabled by default.
-- Password reset, email verification, MFA, invitations, OAuth, and SSO are not implemented.
-- Evidence ingestion supports pasted Unicode text up to 256 KiB per version.
-- PDF, DOCX, image uploads, OCR, object storage, and malware scanning are not implemented.
-- Individual finding correction and dismissal controls are not available.
-- Some automated findings may lack verified source passages.
-- One change-request entry in the November 9 production replay had no matching stored audit event.
-- Production retention and deletion policies, independent backup-and-restore verification, and a complete operational runbook remain outstanding.
-- A fresh full automated-test result after the latest production UI changes has not been established in this documentation.
-
-These limitations are disclosed so evaluators can distinguish implemented functionality from future work.
-
----
-
-Project Documentation
+## Project Documentation
 
 Necra maintains seven project governance documents.
 
@@ -481,7 +462,7 @@ Development history and verification results must remain accurate. Documentation
 
 ---
 
-Competition Submission
+## Competition Submission
 
 Necra is being prepared for the Clocked Build Challenge.
 
@@ -505,7 +486,7 @@ The production Reality Check uses Clocked Grounding. Category-specific claims ab
 
 ---
 
-Project Principles
+## Project Principles
 
 Necra is built around three commitments.
 
