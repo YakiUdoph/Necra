@@ -123,3 +123,103 @@ A task is `Complete` only after every acceptance criterion passes and its verifi
 - **Verification method:** Fresh-environment build; full automated suite; manual exploratory, keyboard, responsive, and failure-path review; authorized staging E2E; backup restoration exercise; documented release checklist with real results.
 - **Completion status:** In progress.
 - **Latest verification:** On 2026-11-07, the reviewed T008–T012 checkpoint was committed as `bc56504` and published without force to the previously empty `YakiUdoph/Necra` GitHub repository. The final local gate passed strict typecheck, lint, 15 unit files/80 tests, formatting, production build, migration consistency, staged/history secret-pattern review, and artifact/path review. This publication does not satisfy the remaining deployment, backup/restore, production smoke, or live deployed acceptance criteria.
+
+## Submission readiness work — November 10, 2026
+
+The following tasks extend the existing T012 release-hardening work.
+
+They do not replace earlier tasks or retroactively alter completed development history.
+
+### T013 — Correct public documentation
+
+**Status:** In progress.
+
+**Objective:** Ensure that public documentation accurately explains Necra's purpose, deployed architecture, implemented capabilities, testing procedures, and limitations.
+
+**Acceptance criteria:**
+
+- README begins with a clear product introduction.
+- The main workflow is understandable without specialist terminology.
+- Production deployment information is accurate.
+- Clocked Grounding and Compare capabilities are distinguished correctly.
+- Judge-access limitations are disclosed.
+- Existing governance requirements remain intact.
+- Documentation contains no fabricated verification results.
+
+**Verification:** Review the final Markdown rendering, links, commands, and consistency with the repository.
+
+### T014 — Investigate change-request audit coverage
+
+**Status:** Not started.
+
+**Objective:** Determine why the November 9 production Decision Replay displayed a change request without a matching audit event.
+
+**Acceptance criteria:**
+
+- Identify the relevant persistence and audit-event creation paths.
+- Determine whether the missing association reflects an implementation defect, historical record condition, or projection issue.
+- Add regression coverage for the confirmed cause.
+- Preserve existing historical records.
+- Do not generate fictional audit events to conceal the gap.
+
+**Verification:** Relevant automated tests and an authorized end-to-end workflow.
+
+### T015 — Verify production permissions and decision workflow
+
+**Status:** Not started.
+
+**Objective:** Revalidate the owner self-grant permission control and authenticated decision workflow after the latest production changes.
+
+**Acceptance criteria:**
+
+- Unauthorized users cannot grant themselves decision authority.
+- Authorized owner permission changes persist.
+- Decision controls reflect server-confirmed permissions.
+- Unauthorized decision creation is rejected.
+- Valid decisions persist across reloads.
+- Earlier decisions remain available when superseded.
+
+**Verification:** Authorization tests, integration tests, and browser verification.
+
+### T016 — Establish judge evaluation access
+
+**Status:** Not started.
+
+**Objective:** Provide judges with a secure and reproducible way to evaluate the protected application workflow.
+
+**Acceptance criteria:**
+
+- Access method complies with competition requirements.
+- Evaluation data is fictional and non-sensitive.
+- No credentials are committed to the repository.
+- The complete workflow can be reproduced.
+- Evaluation instructions are clear.
+- Access is tested independently before submission.
+
+**Verification:** Follow the published instructions using the intended evaluation access method.
+
+### T017 — Final submission verification
+
+**Status:** Not started.
+
+**Objective:** Confirm that the submitted project accurately represents the working application and satisfies the official competition requirements.
+
+**Acceptance criteria:**
+
+- Official rules and deadline verified.
+- Actual Clocked endpoint usage documented.
+- Repository and deployment accessible as required.
+- No exposed credentials or confidential records.
+- Demonstration uses authentic application behavior.
+- Known limitations disclosed.
+- Submission completed and confirmation retained.
+
+**Verification:** Final submission review against the organizer's official requirements and recorded confirmation.
+
+### Scheduling note
+
+T013–T017 are submission-readiness tasks, not evidence that their acceptance criteria have passed.
+
+T012 remains in progress until its outstanding release-hardening requirements are satisfied.
+
+Competition submission may occur with disclosed nonblocking limitations where the official rules permit it, but this does not justify an unsupported production-readiness claim.
