@@ -152,3 +152,66 @@ An authorized participant can view a chronological history of persisted source c
 - Clocked behavior is covered by contract tests based on official documentation and at least one authorized end-to-end test against its real service before the integration is described as working.
 - Core workflow tests pass in CI; accessibility checks cover core screens; no production bundle or routine log contains credentials.
 - Deployment runbook, backup/restore check, retention policy, monitoring, and production smoke test exist before any production-readiness claim.
+
+  ## Production implementation update — November 10, 2026
+
+### Current product experience
+
+Necra's core product workflow is now available through a deployed web application.
+
+The application allows authenticated users to preserve an original agreement, record subsequent instructions, examine automated findings, and record an explicit human decision.
+
+The central product distinction remains unchanged: **a request is not an approval, and an automated finding is not a human decision.**
+
+### Implemented capabilities
+
+The following capabilities have been implemented and observed through the recorded development and production verification process:
+
+- Workspace and project creation with authenticated access.
+- Pasted-text agreements and subsequent instructions.
+- Immutable source versions with timestamps and SHA-256 hashes.
+- Agreement Reality Checks associated with selected evidence versions.
+- Server-side Clocked Grounding processing.
+- Persisted automated findings with evidence-integrity validation.
+- Explicit human approval or rejection by an authorized project member.
+- Owner-controlled granting and revocation of decision authority.
+- Decision records associated with the relevant source versions.
+- Decision Replay displaying persisted project history.
+
+The November 9 production walkthrough confirmed the main agreement-to-decision workflow. It did not establish that every acceptance criterion in this PRD has passed in production.
+
+### Evidence and decision requirements
+
+Necra must continue to enforce the following requirements:
+
+1. Automated findings must never be presented as contractual decisions.
+2. Source quotations must match authentic stored evidence before being described as verified.
+3. Missing evidence must be disclosed without being interpreted automatically as a contradiction.
+4. Decisions must require deliberate action by an authenticated, authorized person.
+5. A recorded decision must remain associated with the evidence considered.
+6. Earlier evidence versions and decisions must not be silently overwritten.
+7. Missing audit links must be displayed honestly rather than reconstructed as fictional events.
+
+### Outstanding release requirements
+
+The following work remains necessary before claiming comprehensive production readiness:
+
+- Independent judge-access verification.
+- Investigation of the missing change-request audit association observed in production.
+- Fresh automated regression testing after the latest production changes.
+- Operational monitoring and documented recovery procedures.
+- Backup-and-restore verification.
+- Production data-retention and deletion procedures.
+- Completion of the remaining T012 acceptance criteria.
+
+These requirements remain open until their verification is recorded in `PROGRESS.md`.
+
+### Competition positioning
+
+Necra is being prepared for the Clocked Build Challenge.
+
+Its primary demonstrated use case is evidence-backed review of changes to an existing agreement.
+
+Competition claims must reflect the actual implementation. In particular, the production Reality Check uses Clocked Grounding; the existence of additional provider adapters does not establish that those endpoints are available as completed user-facing workflows.
+
+The application should be evaluated on practical usefulness, evidence integrity, implementation quality, understandable interaction design, and reproducible behavior—not invented adoption figures or unsupported performance claims.
