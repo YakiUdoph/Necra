@@ -467,3 +467,113 @@ T012 — Harden, operate, and verify the initial release — is the exact next p
 - Created and consistency-reviewed the seven governance and specification documents.
 - Product tests run: none; the documents were governance deliverables, not application functionality.
 - Result: T000 acceptance criteria passed and T000 is `Complete`.
+
+## Latest production verification — November 9, 2026
+
+**Environment:** Production deployment  
+**Application:** https://necra.vercel.app/  
+**Verification type:** Manual authenticated browser walkthrough  
+**Automated tests executed during this walkthrough:** None confirmed
+
+### Verified observations
+
+The project owner accessed the deployed application and opened an existing project containing an original website redesign agreement and subsequent online-store instructions.
+
+The source records were available in the project interface.
+
+A completed Agreement Reality Check displayed two findings produced through Clocked.
+
+The findings concerned a possible conflict between the original scope and the requested online-store functionality, and missing evidence supporting unchanged pricing.
+
+Neither finding contained a verified source passage.
+
+Necra disclosed the absence of verified evidence rather than generating supporting quotations.
+
+### Decision authority
+
+The project owner initially lacked explicit decision authority.
+
+A new owner-facing permission control was added to the application.
+
+The control uses the existing project membership-management endpoint to request a change to the owner's `canDecide` permission.
+
+After the corrected application code was deployed, the production interface displayed:
+
+`Decision Authority: Explicitly Granted`
+
+The control also offered the ability to revoke that authority.
+
+This confirms the observed authorized owner workflow. It does not establish that every unauthorized permission-change scenario has been retested.
+
+### Human decision
+
+With decision authority enabled, the owner opened the decision interface.
+
+The owner selected rejection and recorded a rationale explaining that the additional online-store functionality was not authorized under the current agreement without separate review and explicit agreement.
+
+The application displayed the persisted rejection with the decision-maker, timestamp, decision identifier, rationale, and associated evidence versions.
+
+The decision was displayed separately from the two automated findings.
+
+### Decision Replay
+
+The production Decision Replay displayed seven chronological records:
+
+1. Original agreement version.
+2. Later instruction version.
+3. Change request.
+4. Agreement Reality Check creation.
+5. Clocked provider result.
+6. Human review confirmation.
+7. Human rejection decision.
+
+The provider result and human decision remained distinguishable.
+
+The replay showed the associated source versions and available audit relationships.
+
+### Outstanding audit issue
+
+The change-request entry displayed:
+
+"No matching audit event is stored for this record."
+
+The application disclosed this gap rather than inventing an audit association.
+
+The cause remains unverified.
+
+Investigation and regression testing are required before claiming complete audit-event coverage.
+
+### Deployment observations
+
+A deployment containing a duplicate-import error failed.
+
+The import issue was corrected.
+
+The subsequent deployment associated with commit `04fbfb4` displayed a Ready status in Vercel.
+
+The owner subsequently completed the production decision workflow.
+
+This observation does not replace a fresh automated build, integration-test, or end-to-end test result.
+
+### Current limitations
+
+The following remain unverified or incomplete:
+
+- Dedicated judge access.
+- Fresh automated regression results after the latest production changes.
+- Complete audit-event coverage for change requests.
+- Independent production security review.
+- Backup-and-restore verification.
+- Production retention and deletion procedures.
+- Final competition submission confirmation.
+
+### Next actions
+
+1. Correct the public README and governance-document status descriptions.
+2. Investigate the missing audit-event association.
+3. Revalidate permission changes and decision creation.
+4. Establish secure judge access.
+5. Verify the final competition requirements.
+6. Submit the verified application and supporting materials.
+
+This entry records observed behavior and known limitations. It does not retroactively change earlier task completion dates or test results.
