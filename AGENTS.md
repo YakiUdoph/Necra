@@ -63,3 +63,66 @@ If implementation and documentation differ, do not silently normalize either one
 - Use official Clocked documentation before implementing calls. Do not guess endpoints, payloads, schemas, authentication, rate limits, or guarantees.
 - The Clocked playground has produced real Compare and Verify responses. Necra itself has not integrated with or verified Clocked yet; preserve that distinction until end-to-end tests prove otherwise.
 - Do not claim originality without documented competitor research or production readiness without documented verification.
+
+## Current implementation guidance — November 10, 2026
+
+Necra has progressed beyond its initial implementation phase.
+
+Future contributors must inspect the current repository and verification history before making changes.
+
+The production application has demonstrated an agreement-to-decision workflow, including Clocked Grounding, explicit decision authority, authenticated human rejection, and persisted Decision Replay.
+
+These observations must not be expanded into unsupported claims about complete production readiness.
+
+### Required preparation
+
+Before implementation:
+
+1. Read all seven governance documents in the established order.
+2. Review the relevant application code.
+3. Inspect existing tests.
+4. Identify the current incomplete task.
+5. Confirm that proposed changes preserve the product's evidence and authorization boundaries.
+6. Check the official competition requirements where relevant.
+
+The Serial Hackathon Winner Playbook remains the governing competition strategy alongside these documents, subject to official competition rules and security constraints.
+
+Do not reduce or replace its requirements.
+
+### Current priorities
+
+Prioritize:
+
+- Accurate public documentation.
+- Evidence-integrity correctness.
+- Investigation of the missing change-request audit association.
+- Authorization regression testing.
+- Reproducible judge access.
+- Reliable deployment and submission.
+
+Do not add speculative features merely to increase apparent scope.
+
+### Documentation and verification
+
+Keep implementation, tests, and documentation synchronized.
+
+Record only tests that were actually executed.
+
+Distinguish historical verification from current production verification.
+
+Never rewrite earlier progress records to imply that later decisions guided previous development.
+
+Do not fabricate endpoint coverage, source evidence, audit records, user activity, security certifications, or competition results.
+
+### Completion requirements
+
+Before marking a new task complete:
+
+- Confirm its acceptance criteria.
+- Execute the relevant tests.
+- Review authorization and evidence-integrity implications.
+- Record observed results and limitations.
+- Update `TASKS.md` and `PROGRESS.md`.
+- Verify that public documentation remains accurate.
+
+A working deployment is evidence of deployed functionality, not proof that every security, reliability, or operational requirement has passed.
