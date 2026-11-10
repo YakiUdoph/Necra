@@ -7,6 +7,7 @@ import { RealityCheckList } from "@/components/analysis/reality-check-list";
 import { EvidenceForm } from "@/components/evidence/evidence-form";
 import { EvidenceList } from "@/components/evidence/evidence-list";
 import { DecisionReplay } from "@/components/replay/decision-replay";
+import { SelfDecisionAuthority } from "@/components/permissions/self-decision-authority";
 import {
   EmptyState,
   Notice,
@@ -101,6 +102,14 @@ export default async function ProjectPage({
             <dd>{project.canDecide ? "Explicitly granted" : "Not granted"}</dd>
           </div>
         </dl>
+        {project.role === "owner" ? (
+  <SelfDecisionAuthority
+    projectId={projectId}
+    userId={session.user.id}
+    canDecide={project.canDecide}
+  />
+) : null}
+
 
 {view === "agreements" ? (
         <section

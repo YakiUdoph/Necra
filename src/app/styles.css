@@ -3085,3 +3085,14 @@ footer {
 @media(prefers-reduced-motion:reduce){.workspace-frame .workflow-section .evidence-form button[type=submit]{transition:none}}
 
 /* END NEC RA EVIDENCE ATELIER V2 */
+
+/* Keep exact-version confirmation readable at all viewport widths. */
+.notice.version-confirmation {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.workspace-frame .notice.version-confirmation p {
+  max-width: 100%;
+}
