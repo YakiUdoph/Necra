@@ -28,7 +28,6 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
 
   await page.goto("/sign-up");
   await expect(page.getByRole("heading", { name: "Create an account" })).toBeVisible();
-  await page.waitForLoadState("networkidle");
   await page.keyboard.press("Tab");
   await expect(page.getByRole("link", { name: "Skip to content" })).toBeFocused();
   const signUpAccessibility = await new AxeBuilder({ page })
@@ -67,7 +66,7 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
   await agreementSection.getByLabel("Source attribution").fill("Client email");
   await agreementSection
     .getByLabel("Exact source text")
-    .fill("Original scope: research and design.\nFee: €4,000.");
+    .fill("Original scope: research and design.\nFee: Ã¢â€šÂ¬4,000.");
   await agreementSection.getByRole("button", { name: "Save agreement" }).click();
   await expect(
     agreementSection.getByRole("heading", { name: "TEST ONLY Signed SOW" }),
@@ -91,7 +90,7 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
   await agreementSection.getByText("Create a revision").click();
   await agreementSection
     .getByLabel("Exact revised text")
-    .fill("Original scope: research, design, and build.\nFee: €5,000.");
+    .fill("Original scope: research, design, and build.\nFee: Ã¢â€šÂ¬5,000.");
   await agreementSection.getByRole("button", { name: "Create new version" }).click();
   await expect(agreementSection.getByText("Version 2")).toBeVisible({ timeout: 20_000 });
   await page.reload();
@@ -277,7 +276,7 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
       name: "What an authorized person decided",
     }),
   ).toBeVisible();
-  await realityCheckSection
+  await decisionsSection
     .getByRole("button", { name: "Record the human decision" })
     .click();
   const decisionDialog = page.getByRole("dialog", {
@@ -409,7 +408,6 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
     page.getByRole("heading", { name: "TEST ONLY Browser Project", level: 1 }),
   ).toBeVisible();
   await expect(page.getByText("Pasted agreement and instruction text")).toBeVisible();
-  await page.waitForLoadState("networkidle");
   const projectAccessibility = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
     .analyze();
@@ -417,7 +415,6 @@ test("real login, scoped access, expiry, and logout", async ({ browser, page }) 
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(`/projects/${projectId}`);
-  await page.waitForLoadState("networkidle");
   const menuSummary = page.locator(".mobile-menu summary");
   await expect(menuSummary).toBeVisible();
   await menuSummary.press("Enter");

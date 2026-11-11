@@ -18,6 +18,13 @@ import { getAuthorizedProject } from "@/server/authorization/project-access";
 import { getVerifiedSession } from "@/server/authorization/session";
 import { listEvidenceSources } from "@/server/evidence/evidence-service";
 import { listAnalyses } from "@/server/analysis/analysis-service";
+import {
+  listCompareForActor,
+  validateCompareEvidence,
+} from "@/server/analysis/compare-service";
+import { clockedCompareTextResponseSchema } from "@/server/integrations/clocked/contract";
+import type { CompareDisplay } from "@/components/analysis/compare-panel";
+import { getDatabase } from "@/server/db/client";
 import { serverEnvironment } from "@/server/env";
 import { getDecisionReplay } from "@/server/replay/decision-replay-service";
 
@@ -39,11 +46,55 @@ export default async function ProjectPage({
   if (!project) {
     notFound();
   }
-  const [evidence, checks, replay] = await Promise.all([
+  const [evidence, checks, replay, compareRecords] = await Promise.all([
     listEvidenceSources(projectId),
     listAnalyses(projectId),
     getDecisionReplay(projectId),
+    listCompareForActor(getDatabase(), session.user.id, projectId),
   ]);
+  const comparisons: Record<string, CompareDisplay> = {};
+  for (const record of compareRecords) {
+    const check = checks.find((c) => c.id === record.analysisRunId);
+    if (!check) continue;
+    const parsed = clockedCompareTextResponseSchema.safeParse(record.rawResponse);
+    let valid = false;
+    if (record.status === "completed" && parsed.success) {
+      try {
+        validateCompareEvidence(parsed.data, {
+          [`agreement-version:${check.agreementVersionId}`]:
+            check.agreementSource.content,
+          [`instruction-version:${check.instructionVersionId}`]:
+            check.instructionSource.content,
+        });
+        valid =
+          record.agreementVersionId === check.agreementVersionId &&
+          record.instructionVersionId === check.instructionVersionId;
+      } catch {
+        valid = false;
+      }
+    }
+    comparisons[record.analysisRunId] = {
+      status: record.status,
+      model: record.model,
+      failureCode: record.failureCode,
+      valid,
+      pairs:
+        valid && parsed.success
+          ? parsed.data.pairs.map((pair) => ({
+              relation: pair.relation,
+              related: pair.related,
+              duplicates: pair.duplicates.map((f) => ({
+                a: { quote: f.a.quote },
+                b: { quote: f.b.quote },
+              })),
+              conflicts: pair.conflicts.map((f) => ({
+                a: { quote: f.a.quote },
+                b: { quote: f.b.quote },
+              })),
+            }))
+          : [],
+    };
+  }
   const agreements = evidence.filter((source) => source.kind === "agreement");
   const instructions = evidence.filter((source) => source.kind === "instruction");
   const canWrite = project.role === "owner" || project.role === "collaborator";
@@ -80,7 +131,19 @@ export default async function ProjectPage({
           description="Review what is available for this project without treating a request or automated finding as approval."
           eyebrow={`${project.workspaceName} Â· ${project.role} access`}
           status={<StatusLozenge tone="active">Evidence enabled</StatusLozenge>}
-          title={view === "overview" ? project.name : ({ agreements: "Agreements", changes: "Changes", "reality-check": "Reality Check", decisions: "Decisions", replay: "Decision Replay" } as Record<string, string>)[view] ?? project.name}
+          title={
+            view === "overview"
+              ? project.name
+              : ((
+                  {
+                    agreements: "Agreements",
+                    changes: "Changes",
+                    "reality-check": "Reality Check",
+                    decisions: "Decisions",
+                    replay: "Decision Replay",
+                  } as Record<string, string>
+                )[view] ?? project.name)
+          }
         />
 
         <Notice title="Evidence-backed Reality Checks are available">
@@ -103,135 +166,138 @@ export default async function ProjectPage({
           </div>
         </dl>
         {project.role === "owner" ? (
-  <SelfDecisionAuthority
-    projectId={projectId}
-    userId={session.user.id}
-    canDecide={project.canDecide}
-  />
-) : null}
-
-
-{view === "agreements" ? (
-        <section
-          className="workflow-section"
-          id="agreement"
-          aria-labelledby="agreement-title"
-        >
-          <div className="workflow-heading">
-            <span className="workflow-step" aria-hidden="true">
-              01
-            </span>
-            <div>
-              <p className="workflow-kicker">Baseline evidence</p>
-              <h2 id="agreement-title">Original agreement</h2>
-            </div>
-            <StatusLozenge tone="active">Available</StatusLozenge>
-          </div>
-          {agreements.length > 0 ? (
-            <EvidenceList
-              canWrite={canWrite}
-              projectId={projectId}
-              sources={agreements}
-            />
-          ) : (
-            <EmptyState title="No agreement has been recorded">
-              <p>Add the agreement you want to use as the baseline.</p>
-            </EmptyState>
-          )}
-          {canWrite ? <EvidenceForm kind="agreement" projectId={projectId} /> : null}
-        </section>
-        ) : null}
-
-{view === "changes" ? (
-        <section
-          className="workflow-section"
-          id="requests"
-          aria-labelledby="requests-title"
-        >
-          <div className="workflow-heading">
-            <span className="workflow-step" aria-hidden="true">
-              02
-            </span>
-            <div>
-              <p className="workflow-kicker">Later instructions</p>
-              <h2 id="requests-title">Change requests</h2>
-            </div>
-            <StatusLozenge tone="active">Available</StatusLozenge>
-          </div>
-          {instructions.length > 0 ? (
-            <EvidenceList
-              canWrite={canWrite}
-              projectId={projectId}
-              sources={instructions}
-            />
-          ) : (
-            <EmptyState title="No later instructions have been recorded">
-              <p>
-                Add the later request or instructions you want to preserve. A request is
-                evidence, not approval.
-              </p>
-            </EmptyState>
-          )}
-          {canWrite ? <EvidenceForm kind="instruction" projectId={projectId} /> : null}
-        </section>
-        ) : null}
-
-{view === "reality-check" ? (
-        <section
-          className="workflow-section workflow-section-wide"
-          id="reality-check"
-          aria-labelledby="reality-check-title"
-        >
-          <div className="workflow-heading">
-            <span className="workflow-step" aria-hidden="true">
-              03
-            </span>
-            <div>
-              <p className="workflow-kicker">Evidence-based comparison</p>
-              <h2 id="reality-check-title">Agreement Reality Check</h2>
-            </div>
-            <StatusLozenge tone="active">Creation enabled</StatusLozenge>
-          </div>
-          <RealityCheckList
-            canDecide={project.canDecide && canWrite}
-            checks={checks}
-            processingConfigured={Boolean(serverEnvironment.CLOCKED_API_KEY)}
+          <SelfDecisionAuthority
+            projectId={projectId}
+            userId={session.user.id}
+            canDecide={project.canDecide}
           />
-          {canWrite && agreementVersions.length > 0 && instructionVersions.length > 0 ? (
-            <RealityCheckForm
-              agreements={agreementVersions}
-              instructions={instructionVersions}
-              projectId={projectId}
-            />
-          ) : (
-            <EmptyState title="Ready evidence versions are required">
-              <p>
-                Save at least one agreement and one later instruction before creating a
-                Reality Check.
-              </p>
-            </EmptyState>
-          )}
-        </section>
         ) : null}
 
-{view === "replay" ? (
-        <section
-          className="workflow-section"
-          id="decisions"
-          aria-labelledby="decisions-title"
-        >
-          <div className="workflow-heading">
-            <span className="workflow-step" aria-hidden="true">
-              04
-            </span>
-            <div>
-              <p className="workflow-kicker">Human authority and history</p>
-              <h2 id="decisions-title">Decisions & Decision Replay</h2>
+        {view === "agreements" ? (
+          <section
+            className="workflow-section"
+            id="agreement"
+            aria-labelledby="agreement-title"
+          >
+            <div className="workflow-heading">
+              <span className="workflow-step" aria-hidden="true">
+                01
+              </span>
+              <div>
+                <p className="workflow-kicker">Baseline evidence</p>
+                <h2 id="agreement-title">Original agreement</h2>
+              </div>
+              <StatusLozenge tone="active">Available</StatusLozenge>
             </div>
-            <StatusLozenge tone="active">Decision records enabled</StatusLozenge>
-          </div>
-          <DecisionReplay replay={replay} />
-        </section>
+            {agreements.length > 0 ? (
+              <EvidenceList
+                canWrite={canWrite}
+                projectId={projectId}
+                sources={agreements}
+              />
+            ) : (
+              <EmptyState title="No agreement has been recorded">
+                <p>Add the agreement you want to use as the baseline.</p>
+              </EmptyState>
+            )}
+            {canWrite ? <EvidenceForm kind="agreement" projectId={projectId} /> : null}
+          </section>
+        ) : null}
+
+        {view === "changes" ? (
+          <section
+            className="workflow-section"
+            id="requests"
+            aria-labelledby="requests-title"
+          >
+            <div className="workflow-heading">
+              <span className="workflow-step" aria-hidden="true">
+                02
+              </span>
+              <div>
+                <p className="workflow-kicker">Later instructions</p>
+                <h2 id="requests-title">Change requests</h2>
+              </div>
+              <StatusLozenge tone="active">Available</StatusLozenge>
+            </div>
+            {instructions.length > 0 ? (
+              <EvidenceList
+                canWrite={canWrite}
+                projectId={projectId}
+                sources={instructions}
+              />
+            ) : (
+              <EmptyState title="No later instructions have been recorded">
+                <p>
+                  Add the later request or instructions you want to preserve. A request is
+                  evidence, not approval.
+                </p>
+              </EmptyState>
+            )}
+            {canWrite ? <EvidenceForm kind="instruction" projectId={projectId} /> : null}
+          </section>
+        ) : null}
+
+        {view === "reality-check" ? (
+          <section
+            className="workflow-section workflow-section-wide"
+            id="reality-check"
+            aria-labelledby="reality-check-title"
+          >
+            <div className="workflow-heading">
+              <span className="workflow-step" aria-hidden="true">
+                03
+              </span>
+              <div>
+                <p className="workflow-kicker">Evidence-based comparison</p>
+                <h2 id="reality-check-title">Agreement Reality Check</h2>
+              </div>
+              <StatusLozenge tone="active">Creation enabled</StatusLozenge>
+            </div>
+            <RealityCheckList
+              canDecide={project.canDecide && canWrite}
+              canWrite={canWrite}
+              comparisons={comparisons}
+              checks={checks}
+              processingConfigured={Boolean(serverEnvironment.CLOCKED_API_KEY)}
+            />
+            {canWrite &&
+            agreementVersions.length > 0 &&
+            instructionVersions.length > 0 ? (
+              <RealityCheckForm
+                agreements={agreementVersions}
+                instructions={instructionVersions}
+                projectId={projectId}
+              />
+            ) : (
+              <EmptyState title="Ready evidence versions are required">
+                <p>
+                  Save at least one agreement and one later instruction before creating a
+                  Reality Check.
+                </p>
+              </EmptyState>
+            )}
+          </section>
+        ) : null}
+
+        {view === "replay" ? (
+          <section
+            className="workflow-section"
+            id="decisions"
+            aria-labelledby="decisions-title"
+          >
+            <div className="workflow-heading">
+              <span className="workflow-step" aria-hidden="true">
+                04
+              </span>
+              <div>
+                <p className="workflow-kicker">Human authority and history</p>
+                <h2 id="decisions-title">Decisions & Decision Replay</h2>
+              </div>
+              <StatusLozenge tone="active">Decision records enabled</StatusLozenge>
+            </div>
+            <DecisionReplay replay={replay} />
+          </section>
         ) : null}
         {view === "overview" ? (
           <section
@@ -244,8 +310,8 @@ export default async function ProjectPage({
                 <h2 id="overview-title">Choose where to work</h2>
               </div>
               <p>
-                Follow the evidence from the original agreement through later
-                requests, Reality Checks, human decisions, and recorded history.
+                Follow the evidence from the original agreement through later requests,
+                Reality Checks, human decisions, and recorded history.
               </p>
             </div>
 
@@ -306,10 +372,29 @@ export default async function ProjectPage({
           </section>
         ) : null}
         {view === "decisions" ? (
-          <section className="workflow-section workflow-section-wide" aria-labelledby="decision-page-title">
-            <div className="workflow-heading"><div><p className="workflow-kicker">Authorized human outcomes</p><h2 id="decision-page-title">Decisions</h2></div></div>
-            <Notice title="Decisions require human authority"><p>Review completed Reality Checks below. Only explicitly authorized members can record decisions.</p></Notice>
-            <RealityCheckList canDecide={project.canDecide && canWrite} checks={checks} processingConfigured={Boolean(serverEnvironment.CLOCKED_API_KEY)} />
+          <section
+            className="workflow-section workflow-section-wide"
+            aria-labelledby="decision-page-title"
+          >
+            <div className="workflow-heading">
+              <div>
+                <p className="workflow-kicker">Authorized human outcomes</p>
+                <h2 id="decision-page-title">Decisions</h2>
+              </div>
+            </div>
+            <Notice title="Decisions require human authority">
+              <p>
+                Review completed Reality Checks below. Only explicitly authorized members
+                can record decisions.
+              </p>
+            </Notice>
+            <RealityCheckList
+              canDecide={project.canDecide && canWrite}
+              canWrite={canWrite}
+              comparisons={comparisons}
+              checks={checks}
+              processingConfigured={Boolean(serverEnvironment.CLOCKED_API_KEY)}
+            />
           </section>
         ) : null}
       </main>

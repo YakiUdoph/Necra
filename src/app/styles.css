@@ -2347,9 +2347,6 @@ footer {
   line-height: 1.6;
 }
 
-
-
-
 /* Necra premium refinement - page rhythm */
 @media (min-width: 769px) {
   .product-page {
@@ -2512,7 +2509,6 @@ footer {
   }
 }
 
-
 /* Necra landing redesign - Step 2I */
 .necra-landing {
   --landing-ink: #17211f;
@@ -2523,8 +2519,6 @@ footer {
   background: #f6f4ed;
   color: var(--landing-ink);
 }
-
-
 
 .necra-landing .necra-landing-header {
   display: flex;
@@ -2574,7 +2568,9 @@ footer {
   color: #fff;
   font-weight: 700;
   text-decoration: none;
-  transition: background 180ms ease, transform 180ms ease;
+  transition:
+    background 180ms ease,
+    transform 180ms ease;
 }
 
 .necra-landing .necra-landing-header-cta:hover,
@@ -2779,15 +2775,11 @@ footer {
   color: #fff;
 }
 
-
-
 .necra-landing .necra-landing-principle p {
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(1.15rem, 2vw, 1.65rem);
 }
-
-
 
 .necra-landing .necra-landing-section {
   width: min(1440px, calc(100% - 80px));
@@ -2831,8 +2823,6 @@ footer {
   border-radius: 12px;
   background: #fffdf9;
 }
-
-
 
 .necra-landing .necra-landing-step h3 {
   margin: 38px 0 12px;
@@ -2908,8 +2898,6 @@ footer {
   padding: 30px max(40px, calc((100vw - 1440px) / 2));
   border-top: 1px solid var(--landing-line);
 }
-
-
 
 .necra-landing .necra-landing-footer p {
   margin: 0;
@@ -3025,64 +3013,345 @@ footer {
 }
 
 /* BEGIN NEC RA EVIDENCE ATELIER V2 */
-/* NEC RA Evidence Atelier v2 Ã¢â‚¬â€ authenticated presentation only. */
-.workspace-frame{--atelier-ink:#101019;--atelier-violet:#29243f;--atelier-lavender:#b8a7ff;--atelier-coral:#e6a7a1;--atelier-paper:#f2ede6}
+/* NEC RA Evidence Atelier v2 ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â authenticated presentation only. */
+.workspace-frame {
+  --atelier-ink: #101019;
+  --atelier-violet: #29243f;
+  --atelier-lavender: #b8a7ff;
+  --atelier-coral: #e6a7a1;
+  --atelier-paper: #f2ede6;
+}
 /* Permission panel: restore readable, honest access states. */
-.workspace-frame .authority-summary{display:flex;flex-wrap:wrap;gap:16px;padding:20px 24px;background:#29243f;border:1px solid #48415d;border-radius:12px;margin:20px 0 32px}
-.workspace-frame .authority-summary>div{flex:1 1 190px;min-width:0;background:#201c30;border:1px solid #635a7c;border-radius:9px;padding:17px 20px;color:#f2ede6;box-shadow:none}
-.workspace-frame .authority-summary dt{color:#cbbdff;font-size:12px;letter-spacing:.11em;text-transform:uppercase;font-weight:700;margin:0 0 9px}
-.workspace-frame .authority-summary dd{color:#fff;font-size:clamp(18px,2vw,25px);font-weight:650;line-height:1.25;margin:0}
+.workspace-frame .authority-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 20px 24px;
+  background: #29243f;
+  border: 1px solid #48415d;
+  border-radius: 12px;
+  margin: 20px 0 32px;
+}
+.workspace-frame .authority-summary > div {
+  flex: 1 1 190px;
+  min-width: 0;
+  background: #201c30;
+  border: 1px solid #635a7c;
+  border-radius: 9px;
+  padding: 17px 20px;
+  color: #f2ede6;
+  box-shadow: none;
+}
+.workspace-frame .authority-summary dt {
+  color: #cbbdff;
+  font-size: 12px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin: 0 0 9px;
+}
+.workspace-frame .authority-summary dd {
+  color: #fff;
+  font-size: clamp(18px, 2vw, 25px);
+  font-weight: 650;
+  line-height: 1.25;
+  margin: 0;
+}
 /* Make operational notices secondary to the real project content. */
-.workspace-frame .product-page>.notice{border:1px solid #d9d0c6;border-left:3px solid #8f7ac7;background:#faf7f1;border-radius:9px;padding:17px 22px;margin:18px 0;color:#3a3346}
-.workspace-frame .product-page>.notice h2,.workspace-frame .product-page>.notice h3,.workspace-frame .product-page>.notice h4{font-size:clamp(17px,2vw,23px);line-height:1.25;margin:0 0 6px}
-.workspace-frame .product-page>.notice p{font-size:14px;line-height:1.65;margin:0}
+.workspace-frame .product-page > .notice {
+  border: 1px solid #d9d0c6;
+  border-left: 3px solid #8f7ac7;
+  background: #faf7f1;
+  border-radius: 9px;
+  padding: 17px 22px;
+  margin: 18px 0;
+  color: #3a3346;
+}
+.workspace-frame .product-page > .notice h2,
+.workspace-frame .product-page > .notice h3,
+.workspace-frame .product-page > .notice h4 {
+  font-size: clamp(17px, 2vw, 23px);
+  line-height: 1.25;
+  margin: 0 0 6px;
+}
+.workspace-frame .product-page > .notice p {
+  font-size: 14px;
+  line-height: 1.65;
+  margin: 0;
+}
 /* Reality Check: authentic records become an investigative dossier. */
-.workspace-frame .reality-check-list{display:grid;gap:24px}
-.workspace-frame .reality-check-card{background:#faf7f1;border:1px solid #d8cec4;border-radius:14px;box-shadow:12px 12px 0 #29243f0c;padding:clamp(20px,3vw,38px);overflow-wrap:anywhere}
-.workspace-frame .reality-check-card>.evidence-card-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding-bottom:24px;margin-bottom:26px;border-bottom:1px solid #d7ccc6}
-.workspace-frame .reality-check-card>.evidence-card-heading h3{font-family:Georgia,'Times New Roman',serif;font-size:clamp(28px,3vw,45px);line-height:1.13;letter-spacing:-.035em;color:#241e32;margin:7px 0 0}
-.workspace-frame .analysis-inputs{margin:0 0 28px}
-.workspace-frame .analysis-section-heading{margin-bottom:20px}
-.workspace-frame .product-page .analysis-section-heading h4,.workspace-frame .product-page .analysis-findings-heading h4{font-family:Georgia,'Times New Roman',serif;color:#241e32;font-size:clamp(24px,2.5vw,34px);line-height:1.2;margin:5px 0 10px}
-.workspace-frame .analysis-source-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.workspace-frame .analysis-source-card{position:relative;min-width:0;background:#f2ede6;border:1px solid #d8cbc2;border-radius:4px;padding:25px 22px 20px;box-shadow:5px 5px 0 #29243f0b}
-.workspace-frame .analysis-source-card:first-child{border-top:4px solid #a993e4}
-.workspace-frame .analysis-source-card:last-child{border-top:4px solid #e6a7a1}
-.workspace-frame .product-page .analysis-source-card h4{font-family:Georgia,'Times New Roman',serif;font-size:clamp(21px,2vw,29px);line-height:1.2;color:#241e32;margin:10px 0}
-.workspace-frame .analysis-source-card .source-kicker,.workspace-frame .analysis-source-card>p:first-child{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:750;color:#655079}
-.workspace-frame .analysis-source-identity{border-top:1px solid #d5cbc2;padding-top:14px;margin-top:20px}
-.workspace-frame .technical-value{overflow-wrap:anywhere;word-break:break-word}
-.workspace-frame .analysis-source-card details,.workspace-frame .source-context{margin-top:14px}
-.workspace-frame .analysis-source-card summary,.workspace-frame .source-context summary{cursor:pointer;color:#5b417e;font-weight:700}
-.workspace-frame .analysis-findings{background:#f4f0fa;border:1px solid #d9d0e8;border-radius:10px;padding:clamp(17px,2.5vw,30px);margin:28px 0}
-.workspace-frame .analysis-findings-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:15px}
-.workspace-frame .analysis-origin{color:#5c5268;font-size:14px}
-.workspace-frame .finding-list{display:grid;gap:15px;margin-top:20px}
-.workspace-frame .finding-panel{background:#fffdf9;border:1px solid #ddd4d0;border-left:4px solid #a58ad7;border-radius:8px;padding:clamp(17px,2.2vw,26px)}
-.workspace-frame .finding-possible_conflict{border-left-color:#d88b82}
-.workspace-frame .finding-missing_evidence{border-left-color:#b38c6d}
-.workspace-frame .finding-heading{display:flex;justify-content:space-between;gap:15px;align-items:flex-start}
-.workspace-frame .finding-heading h5{font-family:Georgia,'Times New Roman',serif;color:#241e32;font-size:clamp(20px,2vw,27px);line-height:1.28;margin:8px 0 15px}
-.workspace-frame .finding-evidence{background:#f2ede6;border:1px solid #d7c9bf;padding:18px 20px;border-radius:6px;margin-top:16px}
-.workspace-frame .finding-evidence blockquote{border-left:3px solid #e6a7a1;padding-left:15px;color:#302838}
-.workspace-frame .finding-evidence-invalid,.workspace-frame .finding-evidence-unavailable{border:1px solid #b88976;background:#fff3ee;border-radius:6px;padding:16px 20px}
-.workspace-frame .human-review-note{border-top:1px solid #e3d9d2;padding-top:13px;color:#5a4d5d;font-size:14px}
-.workspace-frame .change-record{background:#f8f3ed;border:1px solid #d9cfc5;border-radius:10px;padding:clamp(18px,2.5vw,30px);margin-top:24px}
-.workspace-frame .decision-history{border-left:2px solid #b8a7ff;padding-left:24px}
-.workspace-frame .analysis-record-note{font-size:13px;color:#665e69;border-top:1px solid #ded5cd;margin-top:24px;padding-top:14px}
+.workspace-frame .reality-check-list {
+  display: grid;
+  gap: 24px;
+}
+.workspace-frame .reality-check-card {
+  background: #faf7f1;
+  border: 1px solid #d8cec4;
+  border-radius: 14px;
+  box-shadow: 12px 12px 0 #29243f0c;
+  padding: clamp(20px, 3vw, 38px);
+  overflow-wrap: anywhere;
+}
+.workspace-frame .reality-check-card > .evidence-card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 24px;
+  margin-bottom: 26px;
+  border-bottom: 1px solid #d7ccc6;
+}
+.workspace-frame .reality-check-card > .evidence-card-heading h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(28px, 3vw, 45px);
+  line-height: 1.13;
+  letter-spacing: -0.035em;
+  color: #241e32;
+  margin: 7px 0 0;
+}
+.workspace-frame .analysis-inputs {
+  margin: 0 0 28px;
+}
+.workspace-frame .analysis-section-heading {
+  margin-bottom: 20px;
+}
+.workspace-frame .product-page .analysis-section-heading h4,
+.workspace-frame .product-page .analysis-findings-heading h4 {
+  font-family: Georgia, "Times New Roman", serif;
+  color: #241e32;
+  font-size: clamp(24px, 2.5vw, 34px);
+  line-height: 1.2;
+  margin: 5px 0 10px;
+}
+.workspace-frame .analysis-source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.workspace-frame .analysis-source-card {
+  position: relative;
+  min-width: 0;
+  background: #f2ede6;
+  border: 1px solid #d8cbc2;
+  border-radius: 4px;
+  padding: 25px 22px 20px;
+  box-shadow: 5px 5px 0 #29243f0b;
+}
+.workspace-frame .analysis-source-card:first-child {
+  border-top: 4px solid #a993e4;
+}
+.workspace-frame .analysis-source-card:last-child {
+  border-top: 4px solid #e6a7a1;
+}
+.workspace-frame .product-page .analysis-source-card h4 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(21px, 2vw, 29px);
+  line-height: 1.2;
+  color: #241e32;
+  margin: 10px 0;
+}
+.workspace-frame .analysis-source-card .source-kicker,
+.workspace-frame .analysis-source-card > p:first-child {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 750;
+  color: #655079;
+}
+.workspace-frame .analysis-source-identity {
+  border-top: 1px solid #d5cbc2;
+  padding-top: 14px;
+  margin-top: 20px;
+}
+.workspace-frame .technical-value {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.workspace-frame .analysis-source-card details,
+.workspace-frame .source-context {
+  margin-top: 14px;
+}
+.workspace-frame .analysis-source-card summary,
+.workspace-frame .source-context summary {
+  cursor: pointer;
+  color: #5b417e;
+  font-weight: 700;
+}
+.workspace-frame .analysis-findings {
+  background: #f4f0fa;
+  border: 1px solid #d9d0e8;
+  border-radius: 10px;
+  padding: clamp(17px, 2.5vw, 30px);
+  margin: 28px 0;
+}
+.workspace-frame .analysis-findings-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}
+.workspace-frame .analysis-origin {
+  color: #5c5268;
+  font-size: 14px;
+}
+.workspace-frame .finding-list {
+  display: grid;
+  gap: 15px;
+  margin-top: 20px;
+}
+.workspace-frame .finding-panel {
+  background: #fffdf9;
+  border: 1px solid #ddd4d0;
+  border-left: 4px solid #a58ad7;
+  border-radius: 8px;
+  padding: clamp(17px, 2.2vw, 26px);
+}
+.workspace-frame .finding-possible_conflict {
+  border-left-color: #d88b82;
+}
+.workspace-frame .finding-missing_evidence {
+  border-left-color: #b38c6d;
+}
+.workspace-frame .finding-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: flex-start;
+}
+.workspace-frame .finding-heading h5 {
+  font-family: Georgia, "Times New Roman", serif;
+  color: #241e32;
+  font-size: clamp(20px, 2vw, 27px);
+  line-height: 1.28;
+  margin: 8px 0 15px;
+}
+.workspace-frame .finding-evidence {
+  background: #f2ede6;
+  border: 1px solid #d7c9bf;
+  padding: 18px 20px;
+  border-radius: 6px;
+  margin-top: 16px;
+}
+.workspace-frame .finding-evidence blockquote {
+  border-left: 3px solid #e6a7a1;
+  padding-left: 15px;
+  color: #302838;
+}
+.workspace-frame .finding-evidence-invalid,
+.workspace-frame .finding-evidence-unavailable {
+  border: 1px solid #b88976;
+  background: #fff3ee;
+  border-radius: 6px;
+  padding: 16px 20px;
+}
+.workspace-frame .human-review-note {
+  border-top: 1px solid #e3d9d2;
+  padding-top: 13px;
+  color: #5a4d5d;
+  font-size: 14px;
+}
+.workspace-frame .change-record {
+  background: #f8f3ed;
+  border: 1px solid #d9cfc5;
+  border-radius: 10px;
+  padding: clamp(18px, 2.5vw, 30px);
+  margin-top: 24px;
+}
+.workspace-frame .decision-history {
+  border-left: 2px solid #b8a7ff;
+  padding-left: 24px;
+}
+.workspace-frame .analysis-record-note {
+  font-size: 13px;
+  color: #665e69;
+  border-top: 1px solid #ded5cd;
+  margin-top: 24px;
+  padding-top: 14px;
+}
 /* Creation form: same product language; native controls remain usable. */
-.workspace-frame .workflow-section .evidence-form{background:#fffaf4;border:1px solid #d9cfc6;border-radius:12px;padding:clamp(18px,2.8vw,32px);margin-top:26px;box-shadow:6px 6px 0 #29243f0b}
-.workspace-frame .workflow-section .evidence-form .field-group{margin-bottom:20px}
-.workspace-frame .workflow-section .evidence-form label{display:block;color:#2d253c;font-weight:700;margin-bottom:9px}
-.workspace-frame .workflow-section .evidence-form select{width:100%;max-width:100%;background:#fff;border:1px solid #bdb1c4;border-radius:7px;color:#241e32;padding:13px 14px;min-height:48px}
-.workspace-frame .workflow-section .evidence-form select:focus-visible{outline:3px solid #b8a7ff;outline-offset:2px}
-.workspace-frame .workflow-section .evidence-form .version-confirmation{background:#f2ede6;border:1px solid #d6cbc3;border-radius:8px;padding:18px 20px;margin:20px 0}
-.workspace-frame .workflow-section .evidence-form .version-confirmation legend{color:#4e3d68;font-weight:750;padding:0 8px}
-.workspace-frame .workflow-section .evidence-form button[type=submit]{background:#b8a7ff;color:#171222;border:1px solid #8d76c8;border-radius:7px;font-weight:800;min-height:52px;transition:background .15s ease}
-.workspace-frame .workflow-section .evidence-form button[type=submit]:hover:not(:disabled){background:#d0c3ff}
-.workspace-frame .workflow-section .evidence-form button[type=submit]:disabled{opacity:.6;cursor:not-allowed}
-@media(max-width:780px){.workspace-frame .analysis-source-grid{grid-template-columns:1fr}.workspace-frame .reality-check-card>.evidence-card-heading,.workspace-frame .finding-heading,.workspace-frame .analysis-findings-heading{flex-direction:column}.workspace-frame .authority-summary{padding:15px}.workspace-frame .authority-summary>div{flex-basis:100%}}
-@media(prefers-reduced-motion:reduce){.workspace-frame .workflow-section .evidence-form button[type=submit]{transition:none}}
+.workspace-frame .workflow-section .evidence-form {
+  background: #fffaf4;
+  border: 1px solid #d9cfc6;
+  border-radius: 12px;
+  padding: clamp(18px, 2.8vw, 32px);
+  margin-top: 26px;
+  box-shadow: 6px 6px 0 #29243f0b;
+}
+.workspace-frame .workflow-section .evidence-form .field-group {
+  margin-bottom: 20px;
+}
+.workspace-frame .workflow-section .evidence-form label {
+  display: block;
+  color: #2d253c;
+  font-weight: 700;
+  margin-bottom: 9px;
+}
+.workspace-frame .workflow-section .evidence-form select {
+  width: 100%;
+  max-width: 100%;
+  background: #fff;
+  border: 1px solid #bdb1c4;
+  border-radius: 7px;
+  color: #241e32;
+  padding: 13px 14px;
+  min-height: 48px;
+}
+.workspace-frame .workflow-section .evidence-form select:focus-visible {
+  outline: 3px solid #b8a7ff;
+  outline-offset: 2px;
+}
+.workspace-frame .workflow-section .evidence-form .version-confirmation {
+  background: #f2ede6;
+  border: 1px solid #d6cbc3;
+  border-radius: 8px;
+  padding: 18px 20px;
+  margin: 20px 0;
+}
+.workspace-frame .workflow-section .evidence-form .version-confirmation legend {
+  color: #4e3d68;
+  font-weight: 750;
+  padding: 0 8px;
+}
+.workspace-frame .workflow-section .evidence-form button[type="submit"] {
+  background: #b8a7ff;
+  color: #171222;
+  border: 1px solid #8d76c8;
+  border-radius: 7px;
+  font-weight: 800;
+  min-height: 52px;
+  transition: background 0.15s ease;
+}
+.workspace-frame
+  .workflow-section
+  .evidence-form
+  button[type="submit"]:hover:not(:disabled) {
+  background: #d0c3ff;
+}
+.workspace-frame .workflow-section .evidence-form button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+@media (max-width: 780px) {
+  .workspace-frame .analysis-source-grid {
+    grid-template-columns: 1fr;
+  }
+  .workspace-frame .reality-check-card > .evidence-card-heading,
+  .workspace-frame .finding-heading,
+  .workspace-frame .analysis-findings-heading {
+    flex-direction: column;
+  }
+  .workspace-frame .authority-summary {
+    padding: 15px;
+  }
+  .workspace-frame .authority-summary > div {
+    flex-basis: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .workspace-frame .workflow-section .evidence-form button[type="submit"] {
+    transition: none;
+  }
+}
 
 /* END NEC RA EVIDENCE ATELIER V2 */
 
@@ -3095,4 +3364,13 @@ footer {
 
 .workspace-frame .notice.version-confirmation p {
   max-width: 100%;
+}
+
+/* NECra accessible account controls */
+.account-control .button-quiet {
+  color: #a9d5c8;
+}
+
+.account-control .button-quiet:hover {
+  color: #c5e6dc;
 }

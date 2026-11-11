@@ -223,3 +223,11 @@ T013–T017 are submission-readiness tasks, not evidence that their acceptance c
 T012 remains in progress until its outstanding release-hardening requirements are satisfied.
 
 Competition submission may occur with disclosed nonblocking limitations where the official rules permit it, but this does not justify an unsupported production-readiness claim.
+
+### T013 — Optional Clocked Compare production integration (candidate patch)
+
+- **Objective:** Add an independent one-shot Compare operation to completed Reality Checks, with immutable version binding, durable results, provider evidence verification, access control, and a visible UI.
+- **Dependencies:** Existing Grounding, project authorization, immutable document versions, and migration infrastructure.
+- **Acceptance criteria:** Forward-only migration tested on a disposable database; API/UI authorization and concurrency tests; exact evidence and Unicode tests; documented provider failure and unknown-outcome handling; all existing test gates pass; deployed UI verified against real provider output.
+- **Verification method:** Review schema migration and DB permissions; run `npm run db:check`, typecheck, lint, unit, PostgreSQL integration, browser tests and build on the supported Node/npm versions; perform an explicitly authorized live Compare test with non-sensitive evidence.
+- **Completion status:** Blocked — candidate code exists, but dependency installation and the required tests were not completed in the artifact preparation environment. Do not deploy.

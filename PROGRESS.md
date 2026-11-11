@@ -577,3 +577,7 @@ The following remain unverified or incomplete:
 6. Submit the verified application and supporting materials.
 
 This entry records observed behavior and known limitations. It does not retroactively change earlier task completion dates or test results.
+
+## 2026-11-10 — Optional Compare candidate patch, not released
+
+A candidate implementation was prepared from the user's uploaded tracked-source ZIP. It adds a separate one-shot Compare table, server route, provider evidence checks, optional UI, and preliminary unit tests. No source code was changed on the user's computer or live deployment. The build environment used Node 22/npm 10, while this project requires Node 24/npm 11; dependency installation timed out, so TypeScript, database migration, unit, integration, browser and production-build verification have **not** passed. The candidate is **blocked** from deployment. Drizzle migration metadata/snapshot consistency and production DB role permissions must be reviewed on the supported toolchain. A real provider Compare request has not been made for this patch.

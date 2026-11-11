@@ -7,6 +7,7 @@ import { DecisionDialog } from "../decisions/decision-dialog";
 
 import { EmptyState, StatusLozenge } from "../ui/primitives";
 import { ProcessRealityCheckButton } from "./process-reality-check-button";
+import { ComparePanel, type CompareDisplay } from "./compare-panel";
 
 const statusLabels = {
   pending: "Created",
@@ -383,8 +384,12 @@ export function RealityCheckList({
   checks,
   processingConfigured,
   canDecide,
+  canWrite = false,
+  comparisons = {},
 }: {
   checks: AnalysisRecord[];
+  canWrite?: boolean;
+  comparisons?: Record<string, CompareDisplay>;
   processingConfigured: boolean;
   canDecide: boolean;
 }) {
@@ -483,6 +488,13 @@ export function RealityCheckList({
             {check.status === "completed" ? (
               <>
                 <CompletedFindings check={check} />
+                <ComparePanel
+                  projectId={check.projectId}
+                  analysisId={check.id}
+                  canWrite={canWrite}
+                  configured={processingConfigured}
+                  record={comparisons[check.id] ?? null}
+                />
                 <DecisionRecord canDecide={canDecide} check={check} />
               </>
             ) : null}

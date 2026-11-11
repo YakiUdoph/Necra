@@ -133,18 +133,18 @@ The project contained an original website redesign agreement and a later request
 
 ### Observed Results
 
-| Functionality | Observed result |
-|---|---|
-| Production application | Successfully deployed and accessible |
-| Authentication | Project owner accessed protected project records |
-| Agreement records | Original agreement and later instructions were available |
-| Agreement Reality Check | Completed using Clocked |
-| Automated findings | Two findings displayed |
-| Evidence disclosure | Missing verified quotations were explicitly identified |
-| Decision permissions | Owner explicitly granted decision authority |
-| Human decision | Rejection recorded with a rationale |
-| Decision persistence | Decision displayed with its associated records |
-| Decision Replay | Seven chronological records displayed |
+| Functionality           | Observed result                                          |
+| ----------------------- | -------------------------------------------------------- |
+| Production application  | Successfully deployed and accessible                     |
+| Authentication          | Project owner accessed protected project records         |
+| Agreement records       | Original agreement and later instructions were available |
+| Agreement Reality Check | Completed using Clocked                                  |
+| Automated findings      | Two findings displayed                                   |
+| Evidence disclosure     | Missing verified quotations were explicitly identified   |
+| Decision permissions    | Owner explicitly granted decision authority              |
+| Human decision          | Rejection recorded with a rationale                      |
+| Decision persistence    | Decision displayed with its associated records           |
+| Decision Replay         | Seven chronological records displayed                    |
 
 The two Clocked findings concerned a possible scope conflict and the absence of established support for unchanged pricing.
 
@@ -223,20 +223,20 @@ Protected server modules and route handlers enforce authorization and validate s
 
 ### Technology Stack
 
-| Layer | Technology |
-|---|---|
-| Application framework | Next.js |
-| User interface | React |
-| Programming language | TypeScript |
-| Styling | Tailwind CSS |
-| Database | PostgreSQL |
-| Database toolkit | Drizzle ORM |
-| Authentication | Better Auth |
-| Validation | Zod |
-| Automated testing | Vitest |
-| Browser testing | Playwright |
-| Analysis provider | Clocked |
-| Deployment | Vercel |
+| Layer                 | Technology   |
+| --------------------- | ------------ |
+| Application framework | Next.js      |
+| User interface        | React        |
+| Programming language  | TypeScript   |
+| Styling               | Tailwind CSS |
+| Database              | PostgreSQL   |
+| Database toolkit      | Drizzle ORM  |
+| Authentication        | Better Auth  |
+| Validation            | Zod          |
+| Automated testing     | Vitest       |
+| Browser testing       | Playwright   |
+| Analysis provider     | Clocked      |
+| Deployment            | Vercel       |
 
 ### Data Integrity
 
@@ -328,14 +328,14 @@ Copy-Item .env.example .env.local
 
 Configure the following values in `.env.local`:
 
-| Variable | Purpose |
-|---|---|
-| `DATABASE_URL` | PostgreSQL connection string |
-| `BETTER_AUTH_SECRET` | Random server-side secret of at least 32 characters |
-| `BETTER_AUTH_URL` | Application origin |
+| Variable             | Purpose                                                    |
+| -------------------- | ---------------------------------------------------------- |
+| `DATABASE_URL`       | PostgreSQL connection string                               |
+| `BETTER_AUTH_SECRET` | Random server-side secret of at least 32 characters        |
+| `BETTER_AUTH_URL`    | Application origin                                         |
 | `AUTH_ALLOW_SIGN_UP` | Enables registration in an isolated evaluation environment |
-| `CLOCKED_API_KEY` | Authorized Clocked credential for live processing |
-| `CLOCKED_BASE_URL` | Clocked service base URL |
+| `CLOCKED_API_KEY`    | Authorized Clocked credential for live processing          |
+| `CLOCKED_BASE_URL`   | Clocked service base URL                                   |
 
 For local development, use:
 
@@ -487,15 +487,15 @@ These limitations are disclosed so evaluators can distinguish implemented functi
 
 Necra maintains seven project governance documents.
 
-| Document | Purpose |
-|---|---|
-| `PRD.md` | Product requirements, users, workflows, scope, and acceptance criteria |
-| `ARCHITECTURE.md` | System architecture, data model, trust boundaries, and integration decisions |
-| `DESIGN.md` | Visual design, interaction behavior, accessibility, and product language |
-| `RULES.md` | Engineering standards, security, evidence integrity, and testing requirements |
-| `TASKS.md` | Implementation tasks, dependencies, and acceptance criteria |
-| `PROGRESS.md` | Verified implementation history, test results, known issues, and current status |
-| `AGENTS.md` | Instructions and required reading order for contributors and coding agents |
+| Document          | Purpose                                                                         |
+| ----------------- | ------------------------------------------------------------------------------- |
+| `PRD.md`          | Product requirements, users, workflows, scope, and acceptance criteria          |
+| `ARCHITECTURE.md` | System architecture, data model, trust boundaries, and integration decisions    |
+| `DESIGN.md`       | Visual design, interaction behavior, accessibility, and product language        |
+| `RULES.md`        | Engineering standards, security, evidence integrity, and testing requirements   |
+| `TASKS.md`        | Implementation tasks, dependencies, and acceptance criteria                     |
+| `PROGRESS.md`     | Verified implementation history, test results, known issues, and current status |
+| `AGENTS.md`       | Instructions and required reading order for contributors and coding agents      |
 
 These documents should be consulted before changing the application.
 
