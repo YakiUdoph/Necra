@@ -11,6 +11,16 @@ Instead of relying on scattered messages or treating an automated assessment as 
 
 > **Project status — November 9, 2026:** The core workflow has been manually tested on the production deployment. This includes reviewing stored agreement versions, inspecting a completed Clocked Reality Check, granting decision authority, recording a human decision, and viewing that decision in Decision Replay. These observations confirm the specific workflow tested, not every possible security, failure, or access scenario.
 
+![Necra project workflow showing agreements, changes, Reality Check, decisions, and Decision Replay](public/screenshots/necra-project-workflow.png)
+
+## Product Preview
+
+| Landing page | Projects workspace |
+| --- | --- |
+| ![Necra landing page](public/screenshots/necra-landing-page.png) | ![Necra authenticated Projects workspace](public/screenshots/necra-projects.png) |
+
+_The authenticated screenshots use a neutral replacement for the signed-in email address._
+
 ---
 
 ## The Problem
