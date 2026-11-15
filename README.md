@@ -15,8 +15,8 @@ Instead of relying on scattered messages or treating an automated assessment as 
 
 ## Product Preview
 
-| Landing page | Projects workspace |
-| --- | --- |
+| Landing page                                                     | Projects workspace                                                               |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | ![Necra landing page](public/screenshots/necra-landing-page.png) | ![Necra authenticated Projects workspace](public/screenshots/necra-projects.png) |
 
 _The authenticated screenshots use a neutral replacement for the signed-in email address._
