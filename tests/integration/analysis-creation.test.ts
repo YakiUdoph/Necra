@@ -17,6 +17,10 @@ import {
 import { AnalysisValidationError } from "../../src/server/analysis/validation";
 import { processAnalysisForActor } from "../../src/server/analysis/processing-service";
 import {
+  CompareAlreadyStartedError,
+  runCompareForActor,
+} from "../../src/server/analysis/compare-service";
+import {
   createDecisionForActor,
   DecisionConflictError,
   DecisionNotFoundError,
@@ -159,6 +163,58 @@ function clockedResponse(agreementVersionId: string, includeEvidence = true) {
   };
 }
 
+function compareResponse(
+  agreementVersionId: string,
+  instructionVersionId: string,
+  agreementText: string,
+  instructionText: string,
+) {
+  const agreement = `agreement-version:${agreementVersionId}`;
+  const instruction = `instruction-version:${instructionVersionId}`;
+  const conflict = {
+    a: {
+      document: agreement,
+      quote: agreementText,
+      start: 0,
+      end: Array.from(agreementText).length,
+      confidence: 0.9,
+    },
+    b: {
+      document: instruction,
+      quote: instructionText,
+      start: 0,
+      end: Array.from(instructionText).length,
+      confidence: 0.9,
+    },
+  };
+  return {
+    model: "TEST ONLY compare model",
+    verdict: "TEST ONLY compare verdict",
+    threshold: 0.5,
+    instructions_used: "TEST ONLY defaults",
+    evidence: "all",
+    documents: [
+      { id: agreement, duplicates: [], overlaps: [], conflicts: [instruction] },
+      { id: instruction, duplicates: [], overlaps: [], conflicts: [agreement] },
+    ],
+    pairs: [
+      {
+        a: agreement,
+        b: instruction,
+        relation: "conflicting",
+        related: 0.9,
+        probabilities: { same: 0, overlapping: 0.1, conflicting: 0.9, unrelated: 0 },
+        duplicates: [],
+        conflicts: [conflict],
+      },
+    ],
+    duplicates: [],
+    overlaps: [],
+    conflicts: [0],
+    related_pairs: [0],
+  };
+}
+
 beforeAll(async () => {
   await adminPool.query(`CREATE DATABASE "${databaseName}"`);
   databaseCreated = true;
@@ -172,6 +228,7 @@ beforeAll(async () => {
       "0003_fancy_kingpin.sql",
       "0004_material_morgan_stark.sql",
       "0005_aberrant_invisible_woman.sql",
+      "0006_clocked_compare.sql",
     ])
       await applyMigration(client, file);
   } finally {
@@ -643,7 +700,7 @@ describe("T011 real PostgreSQL Decision Replay", () => {
     const requestEvent = replay.events.find((event) => event.kind === "change_request");
     expect(requestEvent).toMatchObject({
       id: run.changeRequestId,
-      audit: null,
+      audit: { relation: "direct" },
     });
     const decisionsInReplay = replay.events.filter((event) => event.kind === "decision");
     expect(decisionsInReplay).toEqual([
@@ -716,6 +773,102 @@ afterAll(async () => {
   if (pool) await pool.end();
   if (databaseCreated) await adminPool.query(`DROP DATABASE IF EXISTS "${databaseName}"`);
   await adminPool.end();
+});
+
+describe("Optional Clocked Compare persistence and authorization", () => {
+  it("binds exact inputs, persists a validated result, and rejects duplicates", async () => {
+    const actor = await seedActor("compare-success");
+    const database = drizzle(pool, { schema });
+    const { run, evidence } = await completeCheck(database, actor);
+    const providerKey = randomUUID();
+
+    await expect(
+      pool.query(
+        `INSERT INTO analysis_compare_results
+           (analysis_run_id,project_id,workspace_id,agreement_version_id,instruction_version_id,provider_idempotency_key,request_hash,status)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,'running')`,
+        [
+          run.id,
+          actor.projectId,
+          actor.workspaceId,
+          randomUUID(),
+          run.instructionVersionId,
+          providerKey,
+          "a".repeat(64),
+        ],
+      ),
+    ).rejects.toThrow(/does not match its Reality Check inputs/);
+
+    const result = await runCompareForActor(
+      database,
+      actor.userId,
+      actor.projectId,
+      run.id,
+      {
+        apiKey: "TEST_ONLY_CLOCKED_KEY",
+        baseUrl: "https://clocked.rezolve.ai/clocked",
+        fetchImplementation: async () =>
+          new Response(
+            JSON.stringify(
+              compareResponse(
+                evidence.agreement.id,
+                evidence.instruction.id,
+                evidence.agreement.content,
+                evidence.instruction.content,
+              ),
+            ),
+            { status: 200 },
+          ),
+      },
+    );
+    expect(result).toEqual({ status: "completed", failureCode: null });
+
+    const stored = await pool.query(
+      `SELECT status,agreement_version_id,instruction_version_id,model,response_hash,raw_response,failure_code,completed_at
+       FROM analysis_compare_results WHERE analysis_run_id=$1`,
+      [run.id],
+    );
+    expect(stored.rows[0]).toMatchObject({
+      status: "completed",
+      agreement_version_id: evidence.agreement.id,
+      instruction_version_id: evidence.instruction.id,
+      model: "TEST ONLY compare model",
+      failure_code: null,
+    });
+    expect(stored.rows[0].response_hash).toMatch(/^[0-9a-f]{64}$/);
+    expect(stored.rows[0].raw_response).toBeTruthy();
+    expect(stored.rows[0].completed_at).not.toBeNull();
+
+    await expect(
+      runCompareForActor(database, actor.userId, actor.projectId, run.id, {
+        apiKey: "TEST_ONLY_CLOCKED_KEY",
+        baseUrl: "https://clocked.rezolve.ai/clocked",
+        fetchImplementation: async () => {
+          throw new Error("Duplicate Compare must not reach transport");
+        },
+      }),
+    ).rejects.toBeInstanceOf(CompareAlreadyStartedError);
+  });
+
+  it("denies cross-project Compare before provider transport", async () => {
+    const actor = await seedActor("compare-owner");
+    const outsider = await seedActor("compare-outsider");
+    const database = drizzle(pool, { schema });
+    const { run } = await completeCheck(database, actor);
+    let providerCalled = false;
+
+    await expect(
+      runCompareForActor(database, outsider.userId, actor.projectId, run.id, {
+        apiKey: "TEST_ONLY_CLOCKED_KEY",
+        baseUrl: "https://clocked.rezolve.ai/clocked",
+        fetchImplementation: async () => {
+          providerCalled = true;
+          return new Response("{}", { status: 200 });
+        },
+      }),
+    ).rejects.toBeInstanceOf(AnalysisNotFoundError);
+    expect(providerCalled).toBe(false);
+  });
 });
 
 describe("T007/T008 real PostgreSQL Reality Check lifecycle", () => {

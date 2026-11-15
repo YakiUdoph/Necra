@@ -1140,6 +1140,7 @@ export const analysisCompareResults = pgTable(
   },
   (table) => [
     unique("analysis_compare_one_per_run").on(table.analysisRunId),
+    unique("analysis_compare_provider_key_unique").on(table.providerIdempotencyKey),
     foreignKey({
       columns: [table.analysisRunId, table.projectId, table.workspaceId],
       foreignColumns: [analysisRuns.id, analysisRuns.projectId, analysisRuns.workspaceId],
@@ -1154,6 +1155,14 @@ export const analysisCompareResults = pgTable(
     check(
       "analysis_compare_request_hash_valid",
       sql`${table.requestHash} ~ '^[0-9a-f]{64}$'`,
+    ),
+    check(
+      "analysis_compare_result_shape_valid",
+      sql`(
+        (${table.status} = 'running' and ${table.model} is null and ${table.responseHash} is null and ${table.rawResponse} is null and ${table.failureCode} is null and ${table.completedAt} is null) or
+        (${table.status} = 'completed' and ${table.model} is not null and length(${table.model}) > 0 and ${table.responseHash} is not null and ${table.responseHash} ~ '^[0-9a-f]{64}$' and ${table.rawResponse} is not null and ${table.failureCode} is null and ${table.completedAt} is not null) or
+        (${table.status} in ('failed','outcome_unknown') and ${table.model} is null and ${table.responseHash} is null and ${table.rawResponse} is null and ${table.failureCode} is not null and length(${table.failureCode}) > 0 and ${table.completedAt} is not null)
+      )`,
     ),
   ],
 );

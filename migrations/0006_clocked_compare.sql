@@ -16,13 +16,29 @@ CREATE TABLE "analysis_compare_results" (
   "created_at" timestamptz DEFAULT now() NOT NULL,
   "completed_at" timestamptz,
   CONSTRAINT "analysis_compare_one_per_run" UNIQUE ("analysis_run_id"),
+  CONSTRAINT "analysis_compare_provider_key_unique" UNIQUE ("provider_idempotency_key"),
   CONSTRAINT "analysis_compare_run_scope_fk" FOREIGN KEY ("analysis_run_id", "project_id", "workspace_id") REFERENCES "analysis_runs" ("id", "project_id", "workspace_id") ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT "analysis_compare_status_valid" CHECK ("status" IN ('running','completed','failed','outcome_unknown')),
-  CONSTRAINT "analysis_compare_request_hash_valid" CHECK ("request_hash" ~ '^[0-9a-f]{64}$')
+  CONSTRAINT "analysis_compare_request_hash_valid" CHECK ("request_hash" ~ '^[0-9a-f]{64}$'),
+  CONSTRAINT "analysis_compare_result_shape_valid" CHECK (
+    ("status" = 'running' AND "model" IS NULL AND "response_hash" IS NULL AND "raw_response" IS NULL AND "failure_code" IS NULL AND "completed_at" IS NULL) OR
+    ("status" = 'completed' AND "model" IS NOT NULL AND length("model") > 0 AND "response_hash" IS NOT NULL AND "response_hash" ~ '^[0-9a-f]{64}$' AND "raw_response" IS NOT NULL AND "failure_code" IS NULL AND "completed_at" IS NOT NULL) OR
+    ("status" IN ('failed','outcome_unknown') AND "model" IS NULL AND "response_hash" IS NULL AND "raw_response" IS NULL AND "failure_code" IS NOT NULL AND length("failure_code") > 0 AND "completed_at" IS NOT NULL)
+  )
 );--> statement-breakpoint
 CREATE INDEX "analysis_compare_workspace_created_idx" ON "analysis_compare_results" ("workspace_id", "created_at");--> statement-breakpoint
-CREATE OR REPLACE FUNCTION prevent_analysis_compare_identity_changes() RETURNS trigger LANGUAGE plpgsql AS $$
+CREATE OR REPLACE FUNCTION guard_analysis_compare_result() RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM analysis_runs
+    WHERE id = NEW.analysis_run_id AND project_id = NEW.project_id AND workspace_id = NEW.workspace_id
+      AND agreement_version_id = NEW.agreement_version_id AND instruction_version_id = NEW.instruction_version_id
+  ) THEN
+    RAISE EXCEPTION 'Compare result does not match its Reality Check inputs';
+  END IF;
+  IF TG_OP = 'INSERT' THEN
+    RETURN NEW;
+  END IF;
   IF OLD.id IS DISTINCT FROM NEW.id OR OLD.analysis_run_id IS DISTINCT FROM NEW.analysis_run_id OR
      OLD.project_id IS DISTINCT FROM NEW.project_id OR OLD.workspace_id IS DISTINCT FROM NEW.workspace_id OR
      OLD.agreement_version_id IS DISTINCT FROM NEW.agreement_version_id OR OLD.instruction_version_id IS DISTINCT FROM NEW.instruction_version_id OR
@@ -35,6 +51,6 @@ BEGIN
   END IF;
   RETURN NEW;
 END; $$;--> statement-breakpoint
-CREATE TRIGGER analysis_compare_identity_guard BEFORE UPDATE ON "analysis_compare_results" FOR EACH ROW EXECUTE FUNCTION prevent_analysis_compare_identity_changes();--> statement-breakpoint
+CREATE TRIGGER analysis_compare_identity_guard BEFORE INSERT OR UPDATE ON "analysis_compare_results" FOR EACH ROW EXECUTE FUNCTION guard_analysis_compare_result();--> statement-breakpoint
 CREATE OR REPLACE FUNCTION prevent_analysis_compare_delete() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'Compare result cannot be deleted'; END; $$;--> statement-breakpoint
 CREATE TRIGGER analysis_compare_delete_guard BEFORE DELETE ON "analysis_compare_results" FOR EACH ROW EXECUTE FUNCTION prevent_analysis_compare_delete();
