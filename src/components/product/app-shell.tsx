@@ -11,41 +11,54 @@ interface ShellProject {
   workspaceName: string;
 }
 
+export type WorkspaceSection =
+  | "overview"
+  | "agreements"
+  | "changes"
+  | "reality-check"
+  | "decisions"
+  | "replay";
+
 const projectSections = [
-  { href: "", label: "Overview" },
-  { href: "/agreements", label: "Agreements" },
-  { href: "/changes", label: "Changes" },
-  { href: "/reality-check", label: "Reality Check" },
-  { href: "/decisions", label: "Decisions" },
-  { href: "/replay", label: "Replay" },
+  { href: "", label: "Overview", section: "overview" },
+  { href: "/agreements", label: "Agreements", section: "agreements" },
+  { href: "/changes", label: "Changes", section: "changes" },
+  { href: "/reality-check", label: "Reality Check", section: "reality-check" },
+  { href: "/decisions", label: "Decisions", section: "decisions" },
+  { href: "/replay", label: "Replay", section: "replay" },
 ] as const;
 
 export function AppShell({
   children,
   userEmail,
   project,
+  activeSection,
 }: {
   children: ReactNode;
   userEmail: string;
   project?: ShellProject;
+  activeSection?: WorkspaceSection;
 }) {
   return (
     <div className="workspace-frame">
       <aside className="app-rail" aria-label="Workspace navigation">
         <ShellIdentity project={project} />
-        <ProductNavigation project={project} />
+        <ProductNavigation activeSection={activeSection} project={project} />
         <AccountControl userEmail={userEmail} />
       </aside>
 
       <header className="mobile-bar">
-        <Link className="wordmark" href="/" aria-label="Necra home">
-          Necra<span aria-hidden="true">.</span>
+        <Link className="wordmark" href="/">
+          <span className="workspace-mark" aria-hidden="true">
+            N
+          </span>
+          <span>NECRA</span>
         </Link>
         <details className="mobile-menu">
           <summary>Menu</summary>
           <div className="mobile-menu-panel">
             <ShellIdentity project={project} />
-            <ProductNavigation project={project} />
+            <ProductNavigation activeSection={activeSection} project={project} />
             <AccountControl userEmail={userEmail} />
           </div>
         </details>
@@ -59,8 +72,11 @@ export function AppShell({
 function ShellIdentity({ project }: { project?: ShellProject }) {
   return (
     <div className="shell-identity">
-      <Link className="wordmark" href="/" aria-label="Necra home">
-        Necra<span aria-hidden="true">.</span>
+      <Link className="wordmark" href="/">
+        <span className="workspace-mark" aria-hidden="true">
+          N
+        </span>
+        <span>NECRA</span>
       </Link>
       <div className="project-context">
         <span className="context-label">Workspace</span>
@@ -73,7 +89,13 @@ function ShellIdentity({ project }: { project?: ShellProject }) {
   );
 }
 
-function ProductNavigation({ project }: { project?: ShellProject }) {
+function ProductNavigation({
+  project,
+  activeSection,
+}: {
+  project?: ShellProject;
+  activeSection?: WorkspaceSection;
+}) {
   return (
     <nav className="product-nav" aria-label="Product">
       <Link
@@ -89,7 +111,10 @@ function ProductNavigation({ project }: { project?: ShellProject }) {
       {projectSections.map((item, index) =>
         project ? (
           <Link
-            className="nav-item"
+            aria-current={activeSection === item.section ? "page" : undefined}
+            className={
+              activeSection === item.section ? "nav-item nav-item-active" : "nav-item"
+            }
             href={`/projects/${project.id}${item.href}`}
             key={item.label}
           >

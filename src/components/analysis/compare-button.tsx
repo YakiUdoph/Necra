@@ -16,6 +16,7 @@ export function CompareButton({
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
   async function start() {
+    if (pending || !confirmed) return;
     setPending(true);
     setMessage("");
     try {
@@ -43,8 +44,8 @@ export function CompareButton({
     }
   }
   return (
-    <div aria-busy={pending}>
-      <label>
+    <div className="compare-action" aria-busy={pending}>
+      <label className="compare-confirmation">
         <input
           type="checkbox"
           checked={confirmed}
@@ -57,7 +58,11 @@ export function CompareButton({
         Compare is a separate, chargeable provider operation. One attempt per Reality
         Check; unknown outcomes are never automatically retried.
       </p>
-      {message ? <p role="status">{message}</p> : null}
+      {message ? (
+        <p className="compare-action-status" role="status">
+          {message}
+        </p>
+      ) : null}
       <Button
         type="button"
         variant="secondary"

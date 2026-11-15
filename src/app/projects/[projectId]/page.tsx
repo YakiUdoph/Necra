@@ -119,6 +119,7 @@ export default async function ProjectPage({
 
   return (
     <AppShell
+      activeSection={view}
       project={{
         id: project.id,
         name: project.name,
@@ -129,7 +130,7 @@ export default async function ProjectPage({
       <main className="product-page" id="main-content">
         <PageHeader
           description="Review what is available for this project without treating a request or automated finding as approval."
-          eyebrow={`${project.workspaceName} Â· ${project.role} access`}
+          eyebrow={`${project.workspaceName} · ${project.role} access`}
           status={<StatusLozenge tone="active">Evidence enabled</StatusLozenge>}
           title={
             view === "overview"
