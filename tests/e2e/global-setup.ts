@@ -24,6 +24,7 @@ export default async function globalSetup() {
     await applyMigration(client, "0003_fancy_kingpin.sql");
     await applyMigration(client, "0004_material_morgan_stark.sql");
     await applyMigration(client, "0005_aberrant_invisible_woman.sql");
+    await applyMigration(client, "0006_clocked_compare.sql");
   } finally {
     client.release();
     await pool.end();

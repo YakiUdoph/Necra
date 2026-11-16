@@ -123,6 +123,25 @@ A task is `Complete` only after every acceptance criterion passes and its verifi
 - **Verification method:** Fresh-environment build; full automated suite; manual exploratory, keyboard, responsive, and failure-path review; authorized staging E2E; backup restoration exercise; documented release checklist with real results.
 - **Completion status:** In progress.
 - **Latest verification:** On 2026-11-07, the reviewed T008–T012 checkpoint was committed as `bc56504` and published without force to the previously empty `YakiUdoph/Necra` GitHub repository. The final local gate passed strict typecheck, lint, 15 unit files/80 tests, formatting, production build, migration consistency, staged/history secret-pattern review, and artifact/path review. This publication does not satisfy the remaining deployment, backup/restore, production smoke, or live deployed acceptance criteria.
+- **Latest release attempt:** On 2026-11-16, release branch
+  `release/necra-final-20261115` was pushed and pull request #1 was opened against
+  `main`. A README-only conflict with the subsequently updated remote `main` was
+  resolved by merging that commit without changing application behavior. The exact
+  merged head received a READY Vercel preview and successful GitHub Vercel checks;
+  the landing page and health endpoint responded successfully. Authenticated preview
+  verification is blocked because preview has no authentication or database
+  configuration, and production data/secrets were not reused. Production backup,
+  restore, migration 0006, live Compare, merge, promotion, and production smoke
+  verification remain incomplete.
+- **Latest staging-database attempt:** On 2026-11-16, repository migration history
+  and Drizzle's hash/ordering behavior were inspected. The repository has seven
+  migrations, while the owner-reported production and recovery state has six journal
+  rows and no `analysis_compare_results` table. Exact production hash-to-migration
+  matching and staging migration were blocked because no branch-level Neon connection,
+  API key, CLI session, isolated staging URL, Vercel custom environment, or
+  release-branch database variable was available. Production and the preserved recovery
+  branch were not accessed or modified. Local Drizzle consistency passed, and the two
+  focused Compare unit files passed 7 tests.
 
 ## Submission readiness work — November 10, 2026
 
@@ -150,7 +169,7 @@ They do not replace earlier tasks or retroactively alter completed development h
 
 ### T014 — Investigate change-request audit coverage
 
-**Status:** Not started.
+**Status:** Complete.
 
 **Objective:** Determine why the November 9 production Decision Replay displayed a change request without a matching audit event.
 
@@ -163,6 +182,12 @@ They do not replace earlier tasks or retroactively alter completed development h
 - Do not generate fictional audit events to conceal the gap.
 
 **Verification:** Relevant automated tests and an authorized end-to-end workflow.
+
+**Latest verification:** On 2026-11-15, the corrected creation transaction and direct
+Decision Replay association passed the disposable-PostgreSQL regression file (24 passed,
+1 live-only test skipped) and the authenticated Playwright workflow. Historical gaps remain
+visible and no audit event is backfilled. T014 is complete; this does not verify every T015
+production-permission acceptance criterion.
 
 ### T015 — Verify production permissions and decision workflow
 
@@ -223,3 +248,33 @@ T013–T017 are submission-readiness tasks, not evidence that their acceptance c
 T012 remains in progress until its outstanding release-hardening requirements are satisfied.
 
 Competition submission may occur with disclosed nonblocking limitations where the official rules permit it, but this does not justify an unsupported production-readiness claim.
+
+### T013 — Optional Clocked Compare production integration (candidate patch)
+
+- **Objective:** Add an independent one-shot Compare operation to completed Reality Checks, with immutable version binding, durable results, provider evidence verification, access control, and a visible UI.
+- **Dependencies:** Existing Grounding, project authorization, immutable document versions, and migration infrastructure.
+- **Acceptance criteria:** Forward-only migration tested on a disposable database; API/UI authorization and concurrency tests; exact evidence and Unicode tests; documented provider failure and unknown-outcome handling; all existing test gates pass; deployed UI verified against real provider output.
+- **Verification method:** Review schema migration and DB permissions; run `npm run db:check`, typecheck, lint, unit, PostgreSQL integration, browser tests and build on the supported Node/npm versions; perform an explicitly authorized live Compare test with non-sensitive evidence.
+- **Latest local attempt:** On 2026-11-13, the Compare candidate received exact-input and
+  terminal-result database constraints, a generated Drizzle snapshot, focused authorization/
+  persistence/duplicate regression coverage, and truthful UI states. Drizzle consistency,
+  87 unit tests, lint, formatting, and a production build passed locally. The disposable
+  PostgreSQL integration file could not connect to loopback PostgreSQL, no live provider
+  request was made, and no deployed workflow was verified; the task remains blocked.
+- **Latest release-preparation verification:** On 2026-11-15, Drizzle consistency passed,
+  migration 0006 applied through the focused disposable-PostgreSQL regression file, and all
+  24 applicable tests passed with 1 live-only test skipped. The authenticated browser suite
+  also passed, but it did not make a live Compare request. No deployed Compare workflow was
+  verified.
+- **Completion status:** Blocked — local migration and regression coverage now pass, but a
+  real authorized Compare call and deployed UI verification remain outstanding. Do not
+  deploy the Compare candidate as a completed feature.
+
+### T018 — Premium cinematic interface redesign
+
+- **Objective:** Apply one cohesive, original visual system to the public landing page and authenticated workspace without changing evidence, authorization, persistence, or provider behavior.
+- **Dependencies:** T004 and the implemented T005–T011 product surfaces.
+- **Acceptance criteria:** The landing page uses original Necra messaging, responsive staircase typography, working CTAs, and reduced-motion-safe cinematic transitions; the authenticated Projects, Agreements, Changes, Reality Check, Decisions, Replay, and implemented Compare surfaces share the same accessible design language while keeping consequential document content calm and readable; desktop and mobile layouts have no unintended horizontal overflow; no third-party branded asset or background video is shipped; relevant unit, accessibility/browser, and production-build checks pass.
+- **Verification method:** Static component regression tests; typecheck, lint, unit suite, formatting, and production build; representative 1440px and 390px browser review; existing authenticated Playwright workflow when its guarded disposable PostgreSQL prerequisite is available.
+- **Completion status:** Complete.
+- **Latest verification:** On 2026-11-15, the public landing page and sign-in route were reviewed at 1440px and 390px with no horizontal overflow, including a reduced-motion mobile pass. WCAG-tagged axe scans passed for the landing page at desktop/mobile and sign-in at desktop/mobile after correcting landing contrast and accessible-name findings. Strict types, warning-free lint, 18 unit files/89 tests, formatting, and the production build passed across the recorded gate and targeted follow-up; the first build attempt correctly rejected the local HTTP production auth URL, and the process-scoped HTTPS rerun passed without changing `.env.local`. The guarded authenticated Playwright workflow then passed in installed Chrome against the existing disposable PostgreSQL container (1 test in 2.2 minutes), covering protected project navigation, persisted evidence/check/decision/replay behavior, WCAG-tagged axe review, keyboard operation, authorization denials, and 390px overflow. Two protected-screen contrast failures found during the first authenticated runs were corrected before the passing rerun.

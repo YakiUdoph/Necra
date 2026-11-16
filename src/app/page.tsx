@@ -1,78 +1,247 @@
-import Image from "next/image";
 import Link from "next/link";
+
 import "./atelier.css";
 
-const trail = [
-  { index: "01", label: "The agreement", detail: "Keep the original record intact.", kind: "source" },
-  { index: "02", label: "The new request", detail: "Capture later instructions separately.", kind: "change" },
-  { index: "03", label: "The Reality Check", detail: "Inspect findings against selected evidence.", kind: "review" },
-  { index: "04", label: "The human decision", detail: "Record what an authorized person decided.", kind: "decision" },
+const workflow = [
+  {
+    index: "01",
+    label: "Preserve the agreement",
+    detail: "Keep the exact source, version, and provenance that define the baseline.",
+    tag: "Source",
+  },
+  {
+    index: "02",
+    label: "Record what changed",
+    detail:
+      "Capture later instructions separately—without turning a request into approval.",
+    tag: "Request",
+  },
+  {
+    index: "03",
+    label: "Check the evidence",
+    detail: "Compare selected versions and inspect what the available passages support.",
+    tag: "Reality check",
+  },
+  {
+    index: "04",
+    label: "Decide explicitly",
+    detail: "Let an authorized person record the outcome and preserve the audit trail.",
+    tag: "Decision",
+  },
 ] as const;
 
 export default function HomePage() {
   return (
     <div className="atelier">
-      <a className="atelier-skip" href="#main-content">Skip to content</a>
       <header className="atelier-header">
-        <Link className="atelier-wordmark" href="/" aria-label="Necra home" style={{ display: "inline-flex", alignItems: "center", gap: "10px" }}><Image src="/necra-logo.png" alt="" aria-hidden="true" width={36} height={36} style={{ borderRadius: "9px", flexShrink: 0 }} />necra<span>.</span></Link>
+        <Link className="atelier-wordmark" href="/">
+          <span className="atelier-wordmark-mark" aria-hidden="true">
+            N
+          </span>
+          <span>NECRA</span>
+        </Link>
         <nav className="atelier-nav" aria-label="Primary navigation">
-          <a href="#method">The method</a>
-          <a href="#workspace">Inside Necra</a>
+          <a href="#method">Method</a>
+          <a href="#workspace">Workspace</a>
           <Link href="/sign-in">Sign in</Link>
         </nav>
-        <Link className="atelier-nav-cta" href="/sign-up">Open your workspace <span aria-hidden="true">↗</span></Link>
+        <Link className="atelier-nav-cta" href="/sign-in">
+          Open Necra <span aria-hidden="true">↗</span>
+        </Link>
       </header>
 
       <main id="main-content">
         <section className="atelier-hero" aria-labelledby="atelier-title">
-          <div className="atelier-orbit atelier-orbit-one" aria-hidden="true" />
-          <div className="atelier-orbit atelier-orbit-two" aria-hidden="true" />
-          <div className="atelier-hero-inner">
-            <div className="atelier-hero-copy">
-              <p className="atelier-kicker"><span className="atelier-kicker-line" /> THE RECORD, RECONSIDERED <span> / 001</span></p>
-              <h1 id="atelier-title">When the scope <span className="atelier-hero-italic">shifts,</span><br />the truth <span className="atelier-outline">stays.</span></h1>
-              <p className="atelier-hero-description">Agreements change. Memories blur. Necra keeps the original evidence, later requests, findings, and human decisions in one traceable record.</p>
+          <div className="atelier-hero-grid" aria-hidden="true" />
+          <div className="atelier-hero-copy">
+            <p className="atelier-kicker">
+              <span>Agreement change review</span>
+              <span>01 / Evidence first</span>
+            </p>
+            <h1 id="atelier-title" aria-label="Know what changed. Know who decided.">
+              <span className="atelier-title-line atelier-title-line-one">Know what</span>
+              <span className="atelier-title-line atelier-title-line-two">changed.</span>
+              <span className="atelier-title-line atelier-title-line-three">
+                Know who <strong>decided.</strong>
+              </span>
+            </h1>
+            <div className="atelier-hero-support">
+              <p>
+                Necra connects the original agreement, later instructions, evidence-backed
+                findings, and explicit human decisions in one traceable record.
+              </p>
               <div className="atelier-hero-actions">
-                <Link className="atelier-button" href="/sign-up">Start with the evidence <span aria-hidden="true">↗</span></Link>
-                <a className="atelier-text-link" href="#method">Discover the method <span aria-hidden="true">↓</span></a>
+                <Link className="atelier-button" href="/sign-in">
+                  Enter the workspace <span aria-hidden="true">→</span>
+                </Link>
+                <a className="atelier-text-link" href="#method">
+                  Follow the record <span aria-hidden="true">↓</span>
+                </a>
               </div>
             </div>
+          </div>
 
-            <div className="atelier-exhibit">
-              <div className="atelier-exhibit-top"><span>EXHIBIT A / THE ORIGINAL</span><span>NECRA — RECORD STUDY</span></div>
-              <div className="atelier-paper">
-                <div className="atelier-paper-top"><span>AGREEMENT / ORIGINAL</span><span className="atelier-paper-mark">01</span></div>
-                <p className="atelier-paper-title">What was actually agreed?</p>
-                <div className="atelier-paper-lines" aria-hidden="true"><i/><i/><i/><i/></div>
-                <div className="atelier-paper-note"><span>↳</span> Original evidence is preserved, not silently rewritten.</div>
-                <div className="atelier-paper-bottom"><span>DOCUMENT RECORD</span><span>UNCHANGED SOURCE</span></div>
+          <div className="atelier-record-engine" aria-hidden="true">
+            <div className="atelier-engine-orbit atelier-engine-orbit-one" />
+            <div className="atelier-engine-orbit atelier-engine-orbit-two" />
+            <div className="atelier-engine-core">
+              <span>NECRA / 001</span>
+              <strong>Agreement</strong>
+              <i />
+              <i />
+              <i />
+              <small>Original version preserved</small>
+            </div>
+            <div className="atelier-engine-card atelier-engine-card-request">
+              <span>02 / Request</span>Later instruction
+            </div>
+            <div className="atelier-engine-card atelier-engine-card-finding">
+              <span>03 / Finding</span>Evidence linked
+            </div>
+            <div className="atelier-engine-card atelier-engine-card-decision">
+              <span>04 / Decision</span>Human recorded
+            </div>
+            <div className="atelier-engine-scan" />
+          </div>
+
+          <div className="atelier-hero-footer">
+            <span>Evidence before inference</span>
+            <span>A request is not an approval</span>
+            <span>01 / 03</span>
+          </div>
+        </section>
+
+        <section className="atelier-principle" aria-label="Necra principle">
+          <p>Separate the signal.</p>
+          <div>
+            <span>A request</span>
+            <strong>≠</strong>
+            <span>An approval</span>
+          </div>
+          <div>
+            <span>A finding</span>
+            <strong>≠</strong>
+            <span>A decision</span>
+          </div>
+        </section>
+
+        <section className="atelier-method" id="method" aria-labelledby="method-title">
+          <div className="atelier-section-index">
+            <span>02 / The method</span>
+            <span>From source to decision</span>
+          </div>
+          <div className="atelier-method-heading">
+            <h2 id="method-title">
+              One record.<span>Four distinct moments.</span>
+            </h2>
+            <p>
+              Every step keeps its own meaning. Evidence stays evidence. Automated output
+              stays separate from the people authorized to decide.
+            </p>
+          </div>
+          <ol className="atelier-workflow">
+            {workflow.map((item) => (
+              <li key={item.index}>
+                <span className="atelier-workflow-index">{item.index}</span>
+                <div>
+                  <span className="atelier-workflow-tag">{item.tag}</span>
+                  <h3>{item.label}</h3>
+                  <p>{item.detail}</p>
+                </div>
+                <span className="atelier-workflow-arrow" aria-hidden="true">
+                  ↗
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section
+          className="atelier-workspace"
+          id="workspace"
+          aria-labelledby="workspace-title"
+        >
+          <div className="atelier-section-index atelier-section-index-light">
+            <span>03 / Inside Necra</span>
+            <span>Professional evidence workspace</span>
+          </div>
+          <div className="atelier-workspace-layout">
+            <div className="atelier-workspace-copy">
+              <h2 id="workspace-title">
+                Serious records.<span>Clear next steps.</span>
+              </h2>
+              <p>
+                Work through agreements, requests, Reality Checks, decisions, and replay
+                without losing the exact versions or blurring human authority.
+              </p>
+              <Link className="atelier-button atelier-button-light" href="/sign-in">
+                Open your workspace <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+            <div
+              className="atelier-workspace-preview"
+              aria-label="Necra workflow preview"
+              role="img"
+            >
+              <div className="atelier-preview-rail">
+                <span className="atelier-preview-logo">N</span>
+                <i className="atelier-preview-active" />
+                <i />
+                <i />
+                <i />
               </div>
-              <div className="atelier-exhibit-thread" aria-hidden="true"><span/><span/><span/></div>
-              <div className="atelier-change-slip"><span className="atelier-change-dot"/><div><small>LATER INSTRUCTION</small><strong>A new request enters the record.</strong></div><span className="atelier-slip-arrow">↗</span></div>
-              <div className="atelier-exhibit-caption">A conceptual product illustration — not a customer record or generated finding.</div>
+              <div className="atelier-preview-canvas">
+                <span className="atelier-preview-label">Project / Reality Check</span>
+                <h3>Website redesign agreement</h3>
+                <div className="atelier-preview-columns">
+                  <article>
+                    <span>Agreement / v1</span>
+                    <strong>Original scope</strong>
+                    <i />
+                    <i />
+                    <i />
+                  </article>
+                  <article>
+                    <span>Later instruction / v1</span>
+                    <strong>Requested change</strong>
+                    <i />
+                    <i />
+                    <i />
+                  </article>
+                </div>
+                <div className="atelier-preview-status">
+                  <span>Evidence linked</span>
+                  <strong>Human review required</strong>
+                </div>
+                <p className="atelier-preview-disclosure">
+                  Illustrative interface — no customer data or provider result is shown.
+                </p>
+              </div>
             </div>
           </div>
-          <div className="atelier-hero-bottom"><span>BUILT FOR CLARITY, NOT ASSUMPTIONS</span><a href="#method">SCROLL TO FOLLOW THE EVIDENCE <span aria-hidden="true">↓</span></a><span>01 / 03</span></div>
         </section>
 
-        <section className="atelier-manifesto" aria-label="Necra principle"><span>THE DISTINCTION THAT MATTERS</span><p>A request is <em>not</em> an approval.<br />A finding is <em>not</em> a decision.</p><span className="atelier-manifesto-star" aria-hidden="true">✳</span></section>
-
-        <section className="atelier-method" id="method" aria-labelledby="atelier-method-title">
-          <div className="atelier-section-top"><span>01 / THE METHOD</span><span>FOLLOW THE RECORD, NOT THE NOISE</span></div>
-          <div className="atelier-method-intro"><h2 id="atelier-method-title">Clarity has<br /><em>a paper trail.</em></h2><p>Four distinct moments. One accountable history. Every stage remains visible without being mistaken for the next.</p></div>
-          <div className="atelier-trail">
-            {trail.map((item) => <article className={`atelier-trail-item atelier-trail-${item.kind}`} key={item.index}><div className="atelier-trail-rail"><span className="atelier-trail-node"/><span className="atelier-trail-number">{item.index}</span></div><div className="atelier-trail-content"><h3>{item.label}</h3><p>{item.detail}</p></div><span className="atelier-trail-symbol" aria-hidden="true">↗</span></article>)}
-          </div>
+        <section className="atelier-final" aria-labelledby="final-title">
+          <p>Make the record clear</p>
+          <h2 id="final-title">
+            When the scope moves,<span>keep the truth in view.</span>
+          </h2>
+          <Link className="atelier-button" href="/sign-in">
+            Begin with Necra <span aria-hidden="true">→</span>
+          </Link>
         </section>
-
-        <section className="atelier-workspace" id="workspace" aria-labelledby="atelier-workspace-title">
-          <div className="atelier-section-top"><span>02 / INSIDE NECRA</span><span>THE WORKSPACE</span></div>
-          <div className="atelier-workspace-grid"><div className="atelier-workspace-copy"><p className="atelier-workspace-overline">EVIDENCE, WITH CONTEXT</p><h2 id="atelier-workspace-title">Not another<br /><em>approval inbox.</em></h2><p>Inspect agreement versions, separate later instructions, review recorded Reality Check findings, and replay authorized decisions without rewriting history.</p><Link href="/sign-up" className="atelier-inline-cta">Create your workspace <span aria-hidden="true">↗</span></Link></div><div className="atelier-dossier"><div className="atelier-dossier-head"><span>CASE FILE / ANATOMY</span><span>NO. 001</span></div><div className="atelier-dossier-title">One record.<br /><em>Every turning point.</em></div><div className="atelier-dossier-entry"><span>01 / SOURCE</span><strong>Agreement history</strong><span className="atelier-dossier-status">PRESERVED</span></div><div className="atelier-dossier-entry"><span>02 / CONTEXT</span><strong>Later instructions</strong><span className="atelier-dossier-status">SEPARATE</span></div><div className="atelier-dossier-entry"><span>03 / REVIEW</span><strong>Reality Check</strong><span className="atelier-dossier-status">EVIDENCE-BASED</span></div><div className="atelier-dossier-entry"><span>04 / AUTHORITY</span><strong>Decision Replay</strong><span className="atelier-dossier-status">HUMAN-LED</span></div><div className="atelier-dossier-foot">Illustrative information architecture. No customer data shown.</div></div></div>
-        </section>
-
-        <section className="atelier-final" aria-labelledby="atelier-final-title"><div className="atelier-final-glow" aria-hidden="true"/><p>03 / MAKE THE RECORD CLEAR</p><h2 id="atelier-final-title">Know what changed.<br /><em>Know who decided.</em></h2><Link className="atelier-button atelier-final-button" href="/sign-up">Begin with Necra <span aria-hidden="true">↗</span></Link></section>
       </main>
-      <footer className="atelier-footer"><Link className="atelier-wordmark" href="/">necra<span>.</span></Link><p>Evidence before inference. Decisions by people.</p><Link href="/sign-in">Sign in ↗</Link></footer>
+
+      <footer className="atelier-footer">
+        <Link className="atelier-wordmark" href="/">
+          <span className="atelier-wordmark-mark" aria-hidden="true">
+            N
+          </span>
+          <span>NECRA</span>
+        </Link>
+        <p>Evidence before inference. Decisions by people.</p>
+        <Link href="/sign-in">Sign in ↗</Link>
+      </footer>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 import { AppShell } from "@/components/product/app-shell";
 import { ProjectCreateForm } from "@/components/projects/project-create-form";
@@ -46,13 +47,13 @@ export default async function ProjectsPage() {
               <ul className="project-list atelier-project-list">
                 {projects.map((project) => (
                   <li key={project.id}>
-                    <a className="project-link" href={`/projects/${project.id}`}>
+                    <Link className="project-link" href={`/projects/${project.id}`}>
                       <span className="project-name">{project.name}</span>
                       <span className="project-workspace">{project.workspaceName}</span>
                       <span className="project-open" aria-hidden="true">
                         Open →
                       </span>
-                    </a>
+                    </Link>
                     <StatusLozenge tone="neutral">{project.role}</StatusLozenge>
                   </li>
                 ))}

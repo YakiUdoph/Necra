@@ -6,6 +6,8 @@ This file is the factual handoff for the next developer or reviewer. It records 
 
 Phase 0 governance and T001–T011 are complete. The repository contains a strict TypeScript Next.js application, an accessible responsive product shell, PostgreSQL-backed authentication, default-deny project authorization, immutable text evidence, authorized durable Agreement Reality Check creation, a live-verified server-only Clocked adapter, an evidence-integrity-checked findings presentation, deliberate append-only human decisions, and authorized persisted-record-only Decision Replay.
 
+The November 15 release-preparation run also completed T014's new-record change-request audit correction and T018's premium interface verification. T012 and the remaining submission/operational tasks are still incomplete, and the optional production Compare candidate remains blocked from release pending live and deployed verification.
+
 The T008–T012 checkpoint published to the verified `YakiUdoph/Necra` GitHub repository has passed authenticated live Compare and Grounding verification with fictional evidence, real PostgreSQL persistence, the authorized findings projection, the authenticated browser decision route, chronological replay of genuine persisted records, and the local operational-hardening checks recorded below. This verifies the narrow tested integration, presentation, decision, replay, and local hardening paths; it is not a production-readiness claim, and sensitive production evidence remains blocked on the unresolved privacy/operational terms listed below.
 
 Authenticated users can deliberately create a private workspace/project, but signup alone grants no access to an existing workspace. Exact pasted agreement and later-instruction text can be saved, retrieved, and revised without overwriting history. Owners/collaborators can confirm exact ready versions, create and process an idempotent check, and return after reload to inspect its persisted claims, input identities, provider origin, and only those source passages whose version, quotation, and offsets revalidate against immutable text. An active owner or collaborator with explicit `can_decide` authority can deliberately approve or reject that exact completed check and reload its durable change record. Any active project reader can inspect the tenant-scoped chronological Decision Replay, including persisted source text, evidence links, audit gaps, human/external origins, and superseded decisions. File ingestion/extraction and independent per-finding correction/dismissal controls remain unavailable. Evidence, check creation, provider output, and replay never create approval.
@@ -577,3 +579,220 @@ The following remain unverified or incomplete:
 6. Submit the verified application and supporting materials.
 
 This entry records observed behavior and known limitations. It does not retroactively change earlier task completion dates or test results.
+
+## 2026-11-10 — Optional Compare candidate patch, not released
+
+A candidate implementation was prepared from the user's uploaded tracked-source ZIP. It adds a separate one-shot Compare table, server route, provider evidence checks, optional UI, and preliminary unit tests. No source code was changed on the user's computer or live deployment. The build environment used Node 22/npm 10, while this project requires Node 24/npm 11; dependency installation timed out, so TypeScript, database migration, unit, integration, browser and production-build verification have **not** passed. The candidate is **blocked** from deployment. Drizzle migration metadata/snapshot consistency and production DB role permissions must be reviewed on the supported toolchain. A real provider Compare request has not been made for this patch.
+
+## 2026-11-13 — One-pass stabilization and UI refinement attempt
+
+- Preserved branch `clocked-compare-integration` at starting commit `043fc23` and all
+  pre-existing untracked backup artifacts. No production service, database, migration,
+  credential, deployment, commit, or remote was changed.
+- Confirmed that Compare keeps provider credentials server-only, requires verified session,
+  trusted mutation origin, write membership, completed exact-version inputs, immutable hash
+  revalidation, runtime response validation, exact Unicode quotation checks, database-
+  coordinated usage ceilings, and one stored attempt per Reality Check. Provider behavior
+  beyond the recorded contract and prior fictional live observations was not re-verified.
+- Corrected the known change-request audit defect for newly created records: the same
+  transaction now appends a direct `change_request.created` audit event alongside
+  `analysis.created`, sharing one correlation identifier. Decision Replay links the new
+  event directly while preserving honest gaps for older records.
+- Hardened migration 0006 with a unique provider idempotency key, terminal-state/result-shape
+  constraints, and an insert/update guard binding duplicated agreement/instruction version
+  IDs to the referenced Reality Check. Added the missing generated Drizzle snapshot.
+- Implemented exactly three UI refinements: repaired two broken primary-flow characters;
+  distinguished configured, read-only, processing, failed, invalid-evidence, and uncertain
+  Compare states with truthful recovery text; and reorganized validated Compare output into
+  a restrained relationship summary with labeled agreement/instruction passage lanes that
+  collapse to one column on narrow screens. The React review also added a client-side
+  pending/confirmation re-entry guard without changing server enforcement.
+- Focused unit verification passed: `npm.cmd run test -- --run --reporter=verbose
+  tests/unit/compare-evidence.test.ts tests/unit/compare-panel.test.tsx
+  tests/unit/decision-replay.test.tsx` ran 3 files/10 tests. `npm.cmd run db:check` passed
+  outside the sandbox with `Everything's fine` after the documented sandbox ENOMEM failure.
+- The single comprehensive `npm.cmd run check` passed typecheck, 17 unit files/87 tests,
+  and formatting. Its lint phase completed with three new specificity warnings, which were
+  corrected; targeted `npm.cmd run lint` then passed warning-free over 144 files. The initial
+  production build compiled and typechecked but correctly rejected the local HTTP
+  `BETTER_AUTH_URL`. A targeted process-only HTTPS override rerun of `npm.cmd run build`
+  passed; `.env.local` was not modified. After the CSS-only warning correction, the final
+  targeted Compare panel rerun passed 1 file/3 tests.
+- `npm.cmd run test:integration -- tests/integration/analysis-creation.test.ts` was attempted
+  once with the guarded local disposable-database setting, but PostgreSQL was not listening
+  on `127.0.0.1:5432`; the file failed before setup and all 25 tests were skipped. The added
+  real-database Compare/audit cases and browser E2E are therefore **NOT VERIFIED** in this
+  attempt. No Clocked request was sent.
+- T012 and the optional Compare task remain incomplete. T014 is now in progress rather than
+  complete because its database-backed and authorized end-to-end acceptance checks have not
+  run.
+
+## 2026-11-14 — README product-screenshot attempt blocked
+
+- Inspected the existing README, product-image assets, Playwright configuration, browser
+  workflow, and acceptance credential configuration without exposing credential values.
+- Started the real local Necra application for a 1440-pixel-wide authenticated browser
+  capture and attempted the normal sign-in flow with the configured acceptance account.
+- Authentication could not complete because the configured local PostgreSQL endpoint at
+  `127.0.0.1:55432` refused the connection. The repository does not document an approved
+  command for starting or tunneling that endpoint.
+- No project or agreement content was opened, no fixture or application data was created,
+  and no screenshot was generated. `README.md` remains unchanged and T013 remains in
+  progress pending access to a genuine, non-sensitive workspace.
+- Automated tests were not run because this was a documentation capture attempt and the
+  database prerequisite was unavailable.
+
+## 2026-11-14 — Genuine product screenshots added to README
+
+- Reviewed the three conversation attachments available to this session. The authenticated
+  workflow and Projects screenshots exposed a personal email address, so only that address
+  was replaced with the neutral test value `redacted@example.test`; the landing-page image
+  required no privacy edit.
+- Saved the three available images under `public/screenshots/` with descriptive filenames.
+  A fourth attachment was not available to the session and was not fabricated.
+- Added the project workflow image near the top of `README.md`, followed by a compact Product
+  Preview containing the landing-page and Projects images. The existing How to Test Necra
+  section and all other documentation were preserved.
+- Automated tests were not run because this change only adds README images and documentation.
+
+## 2026-11-15 — Premium cinematic redesign attempt
+
+- Re-read the seven governance documents in order, confirmed T012 remains the first unfinished release task, inspected the existing dirty working tree without resetting or discarding the Compare/audit work, and treated the redesign as a bounded presentation and usability hardening pass. No database schema, authentication, authorization, evidence, decision, provider, deployment, commit, or remote state was changed by this pass.
+- Reviewed the attached 5.13-second, 1916×1080 Targo motion reference at six points. Reused only general composition principles—staircase typography, split fields, chamfered actions, and coordinated object motion. The video was not embedded because it contains another company’s branding and visual assets; no CloudFront or other third-party asset was added.
+- Refined the public landing page with original Necra messaging, a working sign-in CTA path, a visibly labeled illustrative workspace preview, responsive staircase type, CSS-only record choreography, hover feedback, and scroll/page transitions. Updated the authenticated shell, active navigation, projects, evidence surfaces, Reality Check/Compare presentation, decisions, replay, forms, status/empty/loading states, and sign-in surface to the graphite/cyan/neutral palette with local Quantico headings and readable document typography. Consequential agreement and evidence content received no ambient background video or continuous text animation.
+- Reduced-motion rules remove page/panel transforms, hover movement, orbit/scan repetition, and loading motion while preserving content and state. Browser review at 1440×1000 and 390×844 found no horizontal overflow on the landing page or sign-in route; the 390px sign-in pass explicitly emulated reduced motion. Public navigation targets and sign-in CTAs resolved locally with HTTP 200 responses.
+- Focused component verification passed before the main gate: landing, primitive, and Reality Check suites ran 3 files/11 tests. The main `npm.cmd run check` passed strict types, warning-free lint, and 18 unit files/89 tests, then stopped at formatting because the existing README screenshot table and local motion-review helper were not formatted. Both received formatting-only changes. `npm.cmd run format:check` then passed over 146 files.
+- The first production build compiled and typechecked, then correctly rejected the local HTTP `BETTER_AUTH_URL` during page-data collection. A process-only `BETTER_AUTH_URL=https://localhost:3000` rerun passed and built every public, authentication, project, evidence, Reality Check, Compare, decision, and replay route; `.env.local` was not modified.
+- Added narrow regression coverage for landing CTA/anchor integrity and the authenticated shell’s active-section `aria-current` state. The final targeted run passed 2 files/3 tests, and the final lint run passed over 147 files.
+- A standalone WCAG-tagged axe review initially failed because the helper used `browser.newPage()` instead of the package-required explicit browser context. The corrected scan found landing contrast and wordmark accessible-name issues at desktop/mobile while desktop sign-in passed. Removing opacity from scroll-driven content, strengthening the muted/dark-field colors, preserving dark text on cyan actions, and using the visible `NECRA` wordmark as the link name resolved them. The focused final scan reported zero violations for the landing page at 1440px and 390px and sign-in at 1440px and 390px; the mobile scans emulated reduced motion.
+- `npm.cmd run test:e2e` was attempted once and stopped before database creation or browser launch because `TEST_DATABASE_ADMIN_URL` was not configured. No credential was guessed, no protected data was accessed, and no authenticated workspace claim is made. T018 remains in progress pending the guarded disposable-PostgreSQL browser workflow and current protected-workspace desktop/mobile inspection.
+
+## 2026-11-15 — Final release-preparation verification
+
+- Re-read the seven governing documents in order and preserved every tracked and untracked
+  working-tree item. No commit, push, merge, deployment, live provider request, or production
+  migration was performed.
+- Confirmed that `.env.local` contained a guarded test-admin URL, but it referenced the
+  earlier WSL test role and was not present in the test process. Docker Desktop exposed the
+  existing loopback-only `necra-postgres-test` PostgreSQL 15 container with a different
+  test-only role. The authenticated run received that container's existing credentials only
+  through its process environment; no credential value was printed, written to source, or
+  committed.
+- The first service attempts failed before database creation because Windows could not reach
+  the WSL listener and then because the stale local URL did not authenticate to the Docker
+  container. Once the correct disposable container configuration was used, Playwright reached
+  the protected project accessibility check and found two genuine redesign regressions: the
+  rail wordmark rendered at 2:1 contrast, and overview labels/actions rendered at 4.45:1.
+  Both were corrected in `src/components/product/evidence-workspace.css`.
+- The final `npm.cmd run test:e2e` passed 1 installed-Chrome test in 2.2 minutes. It exercised
+  real signup/sign-in, private project creation, immutable agreement/instruction versions,
+  Reality Check creation, persisted findings, explicit decision and Decision Replay reloads,
+  authorization denials, session expiry/logout, keyboard behavior, WCAG-tagged axe checks,
+  and the protected 390px layout. Clocked live mode was disabled and no provider request was
+  made.
+- `npm.cmd run test:integration -- tests/integration/analysis-creation.test.ts` passed 1 file:
+  24 tests passed and 1 live-only provider test was skipped. This applied migration 0006 on a
+  disposable database and verified the new change-request audit association plus Compare
+  input binding, persistence, duplicate prevention, and cross-project denial.
+- `npm.cmd run db:check` passed with `Everything's fine`. Final `npm.cmd run lint` and
+  `npm.cmd run format:check` each passed over 147 files. A final process-scoped HTTPS
+  `npm.cmd run build` passed for every public, authenticated, evidence, Reality Check,
+  Compare, decision, and replay route. `git diff --check` passed with only line-ending
+  warnings. A filename-only dirty-tree secret-pattern review found only the documented README
+  placeholder PostgreSQL URLs and test-only assignments in the integration test; no candidate
+  credential or private key was found.
+- Migration 0006 is required before any application build containing the tracked Compare
+  read/write path is promoted to production, because that code queries and writes
+  `analysis_compare_results`. The migration and its generated snapshot are locally consistent
+  and disposable-database tested, but production was not inspected or migrated. The Compare
+  candidate remains blocked until an authorized live Compare call and deployed UI verification
+  pass.
+- Verified that the disposable browser-test database was absent after cleanup, then stopped
+  `necra-postgres-test` and the WSL PostgreSQL cluster started during diagnosis. No unexpected
+  database was reset or deleted.
+- T014 is complete: the confirmed implementation omission is fixed for newly created change
+  requests, historical gaps remain visible, and PostgreSQL plus authorized browser regression
+  verification passed. T018 is complete after the protected-workspace accessibility and mobile
+  verification. T012, T013, and T015–T017 remain incomplete.
+
+## 2026-11-16 — Controlled release attempt stopped at infrastructure gates
+
+- Confirmed `release/necra-final-20261115` as the existing release branch in the
+  intended `YakiUdoph/Necra` repository. The tracked working tree was clean; all
+  pre-existing backup and diagnostic files remained untracked and were neither staged
+  nor deleted.
+- Verified the requested release commits: `94a913f` hardens Compare persistence and
+  audit records, `921e24f` delivers the premium interface, and `ecb49f3` records the
+  November 15 verification. Pushed the branch normally without force and opened
+  <https://github.com/YakiUdoph/Necra/pull/1> against `main`.
+- GitHub initially reported the pull request as conflicting after remote `main` added
+  the already verified README screenshots. Merged remote `main`, resolved the sole
+  README table-formatting conflict while preserving the screenshots and testing
+  instructions, and committed `d989687` (`merge: synchronize release candidate with
+  main`). The updated pull request became mergeable. No approval or merge occurred.
+- GitHub reported successful Vercel checks for the pre-merge release head and started
+  a new preview for the merged head. Vercel deployment
+  `dpl_3QhDv43BXsDLGSXKueMDiuLRMw29` reached READY for exact commit `d989687` at
+  `https://necra-bu7dfme2r-nyaknno-udofias-projects.vercel.app`.
+- Authenticated staging did not pass. The preview landing page and `/api/health`
+  returned HTTP 200, and the health body identified `necra-web`. `/sign-in` and
+  `/projects` rendered server error boundaries; scoped runtime logs reported that
+  `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` were absent from preview. Project metadata
+  showed the required application variables only for production. Production secrets
+  and the production database were not copied into preview.
+- Vercel metadata identified the intended project as `necra` under
+  `nyaknno-udofias-projects`, Node.js 24.x, with a Neon marketplace integration on its
+  free plan. The available metadata did not identify the exact production database
+  resource or prove a recoverable backup, restore procedure, or applied migration
+  journal. Migration 0006 was not run or prepared as safe-to-run.
+- No live Clocked request was sent because the available configuration did not prove
+  that credit use was free or specifically authorized. No production migration, pull
+  request merge, Vercel promotion, production deployment, or production smoke test was
+  performed. T012 and the optional production Compare task remain incomplete.
+
+## 2026-11-16 — Staging migration verification blocked before database access
+
+- Re-read the seven governing documents in order. The repository contains references
+  to the Serial Hackathon Winner Playbook but no local copy; an exact-title web search
+  did not identify an authoritative copy. Existing competition requirements were
+  preserved.
+- Inspected `drizzle.migrate.config.ts`, `drizzle.config.ts`, the Drizzle journal, the
+  installed Drizzle migrator implementation, and every SQL migration. `npm run
+  db:migrate` uses `DATABASE_URL` and `drizzle.migrate.config.ts`; Drizzle records the
+  SHA-256 of each complete SQL file plus the journal's `when` value in
+  `drizzle.__drizzle_migrations`. It applies entries by `created_at` ordering, not by
+  database row ID or filename.
+- Repository hashes are: 0000
+  `ab72b8afc382e7dfa1c98cbbe9e873fc69ddef4dfa9ec1b542077c82c25af9ee`, 0001
+  `b2394381457084590f122a633d366dededb938b41fdf51c735b91cab99e93200`, 0002
+  `819d53202dec426b80cfcf98b979cc0612cebf7b3cb6e8f4b8e0f5f662b4c33f`, 0003
+  `72727369902e52174ae3cdb71df28470c4433c5d6ad13e30fe42533cebdc6feb`, 0004
+  `2dd9564826bccb1841991b0501126cdff97e0221de4a856262f49cb5d561f4f6`, 0005
+  `4bde2e4ebbaf9a59f04355269cd331041f724781efe3a9508c870212bf23b116`, and
+  0006 `9e8606fbd3e5c41a0234e499332a6870e3f733305b01833133bf5e4644c509a4`.
+  The 0006 journal timestamp is `1794353000000` and its SQL creates
+  `analysis_compare_results` plus its constraints, index, and immutability guards.
+- The owner-reported production and restored recovery state—six migration rows and no
+  Compare table—is consistent with 0006 being pending, but exact hash mapping could not
+  be completed without reading those six journal hashes and timestamps. No journal ID
+  was treated as a filename or migration identity.
+- Vercel inspection found no custom environment and no environment variables scoped to
+  `release/necra-final-20261115`. The installed Neon marketplace integration is on its
+  free plan and advertises MCP support, but no Neon plugin connection, Neon API key,
+  Neon CLI session, branch-scoped connection URL, or other safe database access was
+  available. The existing local database URLs are loopback-only test settings.
+- Production and the preserved snapshot/recovery branch were not accessed, migrated,
+  restored, deleted, or reconfigured. No new Neon resource was created and no paid
+  resource was consumed. Migration 0006 and database-backed Compare tests were not run
+  against staging.
+- The sandboxed `npm.cmd run db:check` hit the previously observed Windows
+  `uv_os_get_passwd` ENOMEM error; the approved unrestricted rerun passed with
+  `Everything's fine`. `npm.cmd run test -- --run
+  tests/unit/compare-evidence.test.ts tests/unit/compare-panel.test.tsx` passed 2 files
+  and 7 tests. No Clocked request was sent.
+- Minimum safe continuation: connect the suggested Neon plugin or provide a
+  branch-scoped migration URL for an explicitly named disposable staging branch cloned
+  from the preserved recovery state. Verify its Neon project/branch/database identity
+  and six journal hashes first, then run the existing `npm run db:migrate` mechanism
+  with that URL only. Add separate preview-only application credentials afterward;
+  never reuse production secrets or the preserved recovery branch as staging.

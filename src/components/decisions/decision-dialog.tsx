@@ -225,7 +225,7 @@ export function DecisionDialog(props: DecisionDialogProps) {
               Cancel
             </Button>
             <Button disabled={pending || !outcome || !confirmed} type="submit">
-              {pending ? "Recording decisionâ€¦" : "Confirm and record decision"}
+              {pending ? "Recording decision…" : "Confirm and record decision"}
             </Button>
           </div>
         </form>

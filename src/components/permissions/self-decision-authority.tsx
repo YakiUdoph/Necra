@@ -55,42 +55,29 @@ export function SelfDecisionAuthority({
 
       if (!response.ok) {
         setError(
-          result.error ??
-            "Permission change was rejected. No success is assumed.",
+          result.error ?? "Permission change was rejected. No success is assumed.",
         );
         return;
       }
 
-      setMessage(
-        "Permission update accepted. Refreshing the verified project status.",
-      );
+      setMessage("Permission update accepted. Refreshing the verified project status.");
 
       router.refresh();
     } catch {
-      setError(
-        "Network failure. The outcome is unknown; refresh before trying again.",
-      );
+      setError("Network failure. The outcome is unknown; refresh before trying again.");
     } finally {
       setPending(false);
     }
   }
 
   return (
-    <section
-      aria-label="Your decision permissions"
-      style={{ marginBlock: "1rem" }}
-    >
+    <section aria-label="Your decision permissions" style={{ marginBlock: "1rem" }}>
       <p>
-        Decision authority is separate from project ownership. This control
-        changes only your existing project membership; it does not approve
-        any request.
+        Decision authority is separate from project ownership. This control changes only
+        your existing project membership; it does not approve any request.
       </p>
 
-      <Button
-        disabled={pending}
-        onClick={updateAuthority}
-        variant="secondary"
-      >
+      <Button disabled={pending} onClick={updateAuthority} variant="secondary">
         {pending
           ? "Updating permission…"
           : canDecide

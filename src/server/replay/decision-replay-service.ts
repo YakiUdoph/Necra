@@ -370,6 +370,7 @@ export async function getDecisionReplayForActor(
     const supportedAudits = audits.filter((event) =>
       [
         "evidence.version_created",
+        "change_request.created",
         "analysis.created",
         "analysis.provider_result_validated",
         "decision.recorded",
@@ -451,7 +452,7 @@ export async function getDecisionReplayForActor(
         occurredAt: request.createdAt,
         actorLabel: actorLabel(request.actorName, request.actorEmail),
         origin: "human",
-        audit: null,
+        audit: auditByTarget.get(`change_request.created:${request.id}`) ?? null,
         title: request.title,
         instructionVersionId: request.instructionVersionId,
         status: request.status,

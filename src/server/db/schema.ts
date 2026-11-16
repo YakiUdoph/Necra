@@ -1115,3 +1115,54 @@ export type Finding = typeof findings.$inferSelect;
 export type EvidenceReference = typeof evidenceReferences.$inferSelect;
 export type Decision = typeof decisions.$inferSelect;
 export type AuditEvent = typeof auditEvents.$inferSelect;
+
+// Separate, one-shot Clocked Compare operations. Grounding records remain unchanged.
+export const analysisCompareResults = pgTable(
+  "analysis_compare_results",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    analysisRunId: uuid("analysis_run_id").notNull(),
+    projectId: uuid("project_id").notNull(),
+    workspaceId: uuid("workspace_id").notNull(),
+    agreementVersionId: uuid("agreement_version_id").notNull(),
+    instructionVersionId: uuid("instruction_version_id").notNull(),
+    providerIdempotencyKey: uuid("provider_idempotency_key").notNull(),
+    requestHash: varchar("request_hash", { length: 64 }).notNull(),
+    status: text("status").notNull(),
+    model: text("model"),
+    responseHash: varchar("response_hash", { length: 64 }),
+    rawResponse: jsonb("raw_response").$type<Record<string, unknown>>(),
+    transportMetadata:
+      jsonb("transport_metadata").$type<Record<string, string | number>>(),
+    failureCode: text("failure_code"),
+    createdAt,
+    completedAt: timestamp("completed_at", { withTimezone: true, mode: "date" }),
+  },
+  (table) => [
+    unique("analysis_compare_one_per_run").on(table.analysisRunId),
+    unique("analysis_compare_provider_key_unique").on(table.providerIdempotencyKey),
+    foreignKey({
+      columns: [table.analysisRunId, table.projectId, table.workspaceId],
+      foreignColumns: [analysisRuns.id, analysisRuns.projectId, analysisRuns.workspaceId],
+      name: "analysis_compare_run_scope_fk",
+    })
+      .onDelete("restrict")
+      .onUpdate("restrict"),
+    check(
+      "analysis_compare_status_valid",
+      sql`${table.status} in ('running','completed','failed','outcome_unknown')`,
+    ),
+    check(
+      "analysis_compare_request_hash_valid",
+      sql`${table.requestHash} ~ '^[0-9a-f]{64}$'`,
+    ),
+    check(
+      "analysis_compare_result_shape_valid",
+      sql`(
+        (${table.status} = 'running' and ${table.model} is null and ${table.responseHash} is null and ${table.rawResponse} is null and ${table.failureCode} is null and ${table.completedAt} is null) or
+        (${table.status} = 'completed' and ${table.model} is not null and length(${table.model}) > 0 and ${table.responseHash} is not null and ${table.responseHash} ~ '^[0-9a-f]{64}$' and ${table.rawResponse} is not null and ${table.failureCode} is null and ${table.completedAt} is not null) or
+        (${table.status} in ('failed','outcome_unknown') and ${table.model} is null and ${table.responseHash} is null and ${table.rawResponse} is null and ${table.failureCode} is not null and length(${table.failureCode}) > 0 and ${table.completedAt} is not null)
+      )`,
+    ),
+  ],
+);

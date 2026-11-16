@@ -306,26 +306,46 @@ export async function createAnalysisForActor(
         })
         .returning({ id: analysisRuns.id });
       if (!analysis) throw new AnalysisStorageError();
-      await transaction.insert(auditEvents).values({
-        workspaceId: actor.workspaceId,
-        projectId,
-        origin: "human",
-        actorUserId,
-        actorIdentityId: actor.identityId,
-        eventType: "analysis.created",
-        targetType: "analysis_run",
-        targetId: analysis.id,
-        requestCorrelationId: randomUUID(),
-        metadata: {
-          agreementDocumentId: agreement.sourceDocumentId,
-          agreementVersionId: agreement.versionId,
-          agreementContentHash: agreement.contentHash,
-          instructionDocumentId: instruction.sourceDocumentId,
-          instructionVersionId: instruction.versionId,
-          instructionContentHash: instruction.contentHash,
-          status: "pending",
+      const requestCorrelationId = randomUUID();
+      await transaction.insert(auditEvents).values([
+        {
+          workspaceId: actor.workspaceId,
+          projectId,
+          origin: "human",
+          actorUserId,
+          actorIdentityId: actor.identityId,
+          eventType: "change_request.created",
+          targetType: "change_request",
+          targetId: changeRequest.id,
+          requestCorrelationId,
+          metadata: {
+            instructionVersionId: instruction.versionId,
+            status: "requested",
+            analysisRunId: analysis.id,
+          },
         },
-      });
+        {
+          workspaceId: actor.workspaceId,
+          projectId,
+          origin: "human",
+          actorUserId,
+          actorIdentityId: actor.identityId,
+          eventType: "analysis.created",
+          targetType: "analysis_run",
+          targetId: analysis.id,
+          requestCorrelationId,
+          metadata: {
+            agreementDocumentId: agreement.sourceDocumentId,
+            agreementVersionId: agreement.versionId,
+            agreementContentHash: agreement.contentHash,
+            instructionDocumentId: instruction.sourceDocumentId,
+            instructionVersionId: instruction.versionId,
+            instructionContentHash: instruction.contentHash,
+            changeRequestId: changeRequest.id,
+            status: "pending",
+          },
+        },
+      ]);
       return getAnalysisInScope(transaction, projectId, analysis.id);
     });
   } catch (error) {
