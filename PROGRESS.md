@@ -749,3 +749,50 @@ A candidate implementation was prepared from the user's uploaded tracked-source 
   that credit use was free or specifically authorized. No production migration, pull
   request merge, Vercel promotion, production deployment, or production smoke test was
   performed. T012 and the optional production Compare task remain incomplete.
+
+## 2026-11-16 — Staging migration verification blocked before database access
+
+- Re-read the seven governing documents in order. The repository contains references
+  to the Serial Hackathon Winner Playbook but no local copy; an exact-title web search
+  did not identify an authoritative copy. Existing competition requirements were
+  preserved.
+- Inspected `drizzle.migrate.config.ts`, `drizzle.config.ts`, the Drizzle journal, the
+  installed Drizzle migrator implementation, and every SQL migration. `npm run
+  db:migrate` uses `DATABASE_URL` and `drizzle.migrate.config.ts`; Drizzle records the
+  SHA-256 of each complete SQL file plus the journal's `when` value in
+  `drizzle.__drizzle_migrations`. It applies entries by `created_at` ordering, not by
+  database row ID or filename.
+- Repository hashes are: 0000
+  `ab72b8afc382e7dfa1c98cbbe9e873fc69ddef4dfa9ec1b542077c82c25af9ee`, 0001
+  `b2394381457084590f122a633d366dededb938b41fdf51c735b91cab99e93200`, 0002
+  `819d53202dec426b80cfcf98b979cc0612cebf7b3cb6e8f4b8e0f5f662b4c33f`, 0003
+  `72727369902e52174ae3cdb71df28470c4433c5d6ad13e30fe42533cebdc6feb`, 0004
+  `2dd9564826bccb1841991b0501126cdff97e0221de4a856262f49cb5d561f4f6`, 0005
+  `4bde2e4ebbaf9a59f04355269cd331041f724781efe3a9508c870212bf23b116`, and
+  0006 `9e8606fbd3e5c41a0234e499332a6870e3f733305b01833133bf5e4644c509a4`.
+  The 0006 journal timestamp is `1794353000000` and its SQL creates
+  `analysis_compare_results` plus its constraints, index, and immutability guards.
+- The owner-reported production and restored recovery state—six migration rows and no
+  Compare table—is consistent with 0006 being pending, but exact hash mapping could not
+  be completed without reading those six journal hashes and timestamps. No journal ID
+  was treated as a filename or migration identity.
+- Vercel inspection found no custom environment and no environment variables scoped to
+  `release/necra-final-20261115`. The installed Neon marketplace integration is on its
+  free plan and advertises MCP support, but no Neon plugin connection, Neon API key,
+  Neon CLI session, branch-scoped connection URL, or other safe database access was
+  available. The existing local database URLs are loopback-only test settings.
+- Production and the preserved snapshot/recovery branch were not accessed, migrated,
+  restored, deleted, or reconfigured. No new Neon resource was created and no paid
+  resource was consumed. Migration 0006 and database-backed Compare tests were not run
+  against staging.
+- The sandboxed `npm.cmd run db:check` hit the previously observed Windows
+  `uv_os_get_passwd` ENOMEM error; the approved unrestricted rerun passed with
+  `Everything's fine`. `npm.cmd run test -- --run
+  tests/unit/compare-evidence.test.ts tests/unit/compare-panel.test.tsx` passed 2 files
+  and 7 tests. No Clocked request was sent.
+- Minimum safe continuation: connect the suggested Neon plugin or provide a
+  branch-scoped migration URL for an explicitly named disposable staging branch cloned
+  from the preserved recovery state. Verify its Neon project/branch/database identity
+  and six journal hashes first, then run the existing `npm run db:migrate` mechanism
+  with that URL only. Add separate preview-only application credentials afterward;
+  never reuse production secrets or the preserved recovery branch as staging.

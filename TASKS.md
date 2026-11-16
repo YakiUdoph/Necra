@@ -133,6 +133,15 @@ A task is `Complete` only after every acceptance criterion passes and its verifi
   configuration, and production data/secrets were not reused. Production backup,
   restore, migration 0006, live Compare, merge, promotion, and production smoke
   verification remain incomplete.
+- **Latest staging-database attempt:** On 2026-11-16, repository migration history
+  and Drizzle's hash/ordering behavior were inspected. The repository has seven
+  migrations, while the owner-reported production and recovery state has six journal
+  rows and no `analysis_compare_results` table. Exact production hash-to-migration
+  matching and staging migration were blocked because no branch-level Neon connection,
+  API key, CLI session, isolated staging URL, Vercel custom environment, or
+  release-branch database variable was available. Production and the preserved recovery
+  branch were not accessed or modified. Local Drizzle consistency passed, and the two
+  focused Compare unit files passed 7 tests.
 
 ## Submission readiness work — November 10, 2026
 
