@@ -123,6 +123,16 @@ A task is `Complete` only after every acceptance criterion passes and its verifi
 - **Verification method:** Fresh-environment build; full automated suite; manual exploratory, keyboard, responsive, and failure-path review; authorized staging E2E; backup restoration exercise; documented release checklist with real results.
 - **Completion status:** In progress.
 - **Latest verification:** On 2026-11-07, the reviewed T008–T012 checkpoint was committed as `bc56504` and published without force to the previously empty `YakiUdoph/Necra` GitHub repository. The final local gate passed strict typecheck, lint, 15 unit files/80 tests, formatting, production build, migration consistency, staged/history secret-pattern review, and artifact/path review. This publication does not satisfy the remaining deployment, backup/restore, production smoke, or live deployed acceptance criteria.
+- **Latest release attempt:** On 2026-11-16, release branch
+  `release/necra-final-20261115` was pushed and pull request #1 was opened against
+  `main`. A README-only conflict with the subsequently updated remote `main` was
+  resolved by merging that commit without changing application behavior. The exact
+  merged head received a READY Vercel preview and successful GitHub Vercel checks;
+  the landing page and health endpoint responded successfully. Authenticated preview
+  verification is blocked because preview has no authentication or database
+  configuration, and production data/secrets were not reused. Production backup,
+  restore, migration 0006, live Compare, merge, promotion, and production smoke
+  verification remain incomplete.
 
 ## Submission readiness work — November 10, 2026
 

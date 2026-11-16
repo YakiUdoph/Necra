@@ -714,3 +714,38 @@ A candidate implementation was prepared from the user's uploaded tracked-source 
   requests, historical gaps remain visible, and PostgreSQL plus authorized browser regression
   verification passed. T018 is complete after the protected-workspace accessibility and mobile
   verification. T012, T013, and T015–T017 remain incomplete.
+
+## 2026-11-16 — Controlled release attempt stopped at infrastructure gates
+
+- Confirmed `release/necra-final-20261115` as the existing release branch in the
+  intended `YakiUdoph/Necra` repository. The tracked working tree was clean; all
+  pre-existing backup and diagnostic files remained untracked and were neither staged
+  nor deleted.
+- Verified the requested release commits: `94a913f` hardens Compare persistence and
+  audit records, `921e24f` delivers the premium interface, and `ecb49f3` records the
+  November 15 verification. Pushed the branch normally without force and opened
+  <https://github.com/YakiUdoph/Necra/pull/1> against `main`.
+- GitHub initially reported the pull request as conflicting after remote `main` added
+  the already verified README screenshots. Merged remote `main`, resolved the sole
+  README table-formatting conflict while preserving the screenshots and testing
+  instructions, and committed `d989687` (`merge: synchronize release candidate with
+  main`). The updated pull request became mergeable. No approval or merge occurred.
+- GitHub reported successful Vercel checks for the pre-merge release head and started
+  a new preview for the merged head. Vercel deployment
+  `dpl_3QhDv43BXsDLGSXKueMDiuLRMw29` reached READY for exact commit `d989687` at
+  `https://necra-bu7dfme2r-nyaknno-udofias-projects.vercel.app`.
+- Authenticated staging did not pass. The preview landing page and `/api/health`
+  returned HTTP 200, and the health body identified `necra-web`. `/sign-in` and
+  `/projects` rendered server error boundaries; scoped runtime logs reported that
+  `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` were absent from preview. Project metadata
+  showed the required application variables only for production. Production secrets
+  and the production database were not copied into preview.
+- Vercel metadata identified the intended project as `necra` under
+  `nyaknno-udofias-projects`, Node.js 24.x, with a Neon marketplace integration on its
+  free plan. The available metadata did not identify the exact production database
+  resource or prove a recoverable backup, restore procedure, or applied migration
+  journal. Migration 0006 was not run or prepared as safe-to-run.
+- No live Clocked request was sent because the available configuration did not prove
+  that credit use was free or specifically authorized. No production migration, pull
+  request merge, Vercel promotion, production deployment, or production smoke test was
+  performed. T012 and the optional production Compare task remain incomplete.
